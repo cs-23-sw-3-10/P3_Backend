@@ -13,8 +13,7 @@ public class Schedule {
     @Id
     private int scheduleId;
     private boolean isActive;
-    @OneToMany(mappedBy = "schedule")
-    private List<BladeTask> bladeTaskList;
+
 
 
 }

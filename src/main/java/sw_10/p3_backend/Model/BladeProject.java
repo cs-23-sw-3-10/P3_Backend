@@ -8,19 +8,17 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "bladeProject")
-@Getter
-@Setter
-@Data
+@Table(name = "blade_project")
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class BladeProject {
     private static String[] customerList;
     private static String[] projectLeaderList;
-    private static BladeProject[] bladeProjectList; ;
+    private static BladeProject[] bladeProjectList;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int bladeProjectId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Date startDate;
     private Date endDate;
     private String bladeName;

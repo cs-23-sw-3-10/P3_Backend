@@ -8,7 +8,5 @@ public class ResourceOrder {
     @Id
     private int resourceOrderId;
 
-    @OneToOne(mappedBy = "resourceOrder")
-    private BladeTask bladeTask;
 
 }
