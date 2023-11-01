@@ -11,6 +11,15 @@ public class Booking {
     private String bookingDate;
 
     @ManyToOne
-    @JoinColumn(name = "equipmentId")
+    @JoinColumn(name = "bladeTaskid")
+    private BladeTask bladeTask;
+    @ManyToOne
+    @JoinColumn(name = "engineerid")
+    private Engineer engineer;
+    @ManyToOne
+    @JoinColumn(name = "technicianid")
+    private Technician technician;
+    @ManyToOne
+    @JoinColumn(name = "equipmentid")
     private Equipment equipment;
 }

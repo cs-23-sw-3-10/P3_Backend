@@ -3,6 +3,8 @@ package sw_10.p3_backend.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+
 @Entity
 @Table(name = "bladeTask")
 @NoArgsConstructor
@@ -28,6 +30,8 @@ public class BladeTask {
     @JoinColumn(name = "schedule_id")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
+    @OneToMany(mappedBy = "bladeTask",cascade = CascadeType.ALL)
+    private ArrayList<Booking> bookings = new ArrayList<>();
     public BladeTask(int startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);
         setDuration(duration);
