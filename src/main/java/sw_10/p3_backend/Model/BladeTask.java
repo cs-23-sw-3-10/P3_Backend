@@ -1,31 +1,37 @@
 package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "bladeTask")
+@NoArgsConstructor
+@Setter @Getter
 public class BladeTask {
-    private static enum taskType {PRODUCTION, MAINTENANCE, BREAKDOWN, OTHER};//Temp change later!
-    private static enum taskStatus {PENDING, ACTIVE, FAILED, FINISHED};
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int BladeTaskId;
+    private Long id;
     private int startDate;
     private int endDate;
     private int duration;
     private String taskName;
-    private taskType taskType;
+    //private taskType taskType;
     private int attachedPeriod;
     private int attachedTask;
-    private taskStatus taskStatus;
-    @OneToOne
-    @JoinColumn(name = "resourceOrderId")
-    private ResourceOrder resourceOrder;
-    @ManyToOne
-    @JoinColumn(name = "bladeProjectid")
-    private BladeProject bladeProject;
+    //private taskStatus taskStatus;
 
     @ManyToOne
-    @JoinColumn(name = "scheduleId")
-    private Schedule schedule;
+    @JoinColumn(name = "bladeprojectid")
+    @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
+
+    public BladeTask(int startDate, int duration, BladeProject bladeProject){
+        setStartDate(startDate);
+        setDuration(duration);
+        setBladeProject(bladeProject);
+    }
+
+    public String getBladeProject(){
+        return this.bladeProject.getBladeName();
+    }
+
 }

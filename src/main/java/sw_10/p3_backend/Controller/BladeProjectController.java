@@ -18,12 +18,12 @@ public class BladeProjectController {
     @Autowired
     private ProjectLogic projectLogic;
 
-    @GetMapping("/testGetAllBladeProjects")
+    @GetMapping("/AllBladeProjects")
     public ResponseEntity<Iterable<BladeProject>> getAllBladeProjects() {
         return new ResponseEntity<Iterable<BladeProject>>(projectLogic.getAllProjects(), HttpStatus.OK);
     }
 
-    @PostMapping("/testAddBladeProject")
+    @PostMapping("/AddBladeProject")
     public ResponseEntity<BladeProject> newBladeProject(@RequestBody Map<String, String> body) {
         return new ResponseEntity<BladeProject>(projectLogic.createProject(body.get("name"),body.get("leader"),body.get("costumer")), HttpStatus.OK);
     }
