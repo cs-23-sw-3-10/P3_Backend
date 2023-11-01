@@ -1,10 +1,9 @@
 package sw_10.p3_backend.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.awt.print.Book;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class Equipment {
 
     private Date calibrationExpirationDate;
 
-    @OneToMany(mappedBy = "equipment")
-    private List<Booking> bookingList;
+    @OneToMany(mappedBy = "equipment",cascade = CascadeType.ALL)
+    private ArrayList<Booking> bookings = new ArrayList<>();
 
 }
