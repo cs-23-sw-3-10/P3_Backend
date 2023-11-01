@@ -1,8 +1,10 @@
 package sw_10.p3_backend.Model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,11 +14,6 @@ public class Schedule {
     private int scheduleId;
     private boolean isActive;
 
-    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
-    private List<BladeTask> bladeTasks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
-    private List<Conflict> conflicts = new ArrayList<>();
 
 
 }
