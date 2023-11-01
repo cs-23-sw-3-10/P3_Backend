@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "bladeTask")
+@Table(name = "blade_task")
 @NoArgsConstructor
 @Setter @Getter
 public class BladeTask {
