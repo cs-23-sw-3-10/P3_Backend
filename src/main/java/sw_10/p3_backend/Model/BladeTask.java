@@ -24,6 +24,10 @@ public class BladeTask {
     @JoinColumn(name = "bladeprojectid")
     @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
 
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
+
     public BladeTask(int startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);
         setDuration(duration);
