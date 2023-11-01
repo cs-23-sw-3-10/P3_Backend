@@ -13,7 +13,7 @@ public class Schedule {
     private boolean isActive;
 
     @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
-    private ArrayList<BladeTask> bladeTasks = new ArrayList<>();
+    private ArrayList<BladeProject> bladeProject = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
     private ArrayList<Conflict> conflicts = new ArrayList<>();

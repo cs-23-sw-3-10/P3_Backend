@@ -28,6 +28,11 @@ public class BladeProject {
     @OneToMany(mappedBy = "bladeProject",cascade = CascadeType.ALL)
     private ArrayList<BladeTask> bladeTasks = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
+
+
     public BladeProject(String bladeName, String projectLeader, String customer) {
         setBladeName(bladeName);
         setProjectLeader(projectLeader);
