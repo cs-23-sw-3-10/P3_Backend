@@ -1,11 +1,13 @@
-INSERT INTO booking (booking_date) VALUES ('2019-01-01');
-INSERT INTO booking (booking_date) VALUES ('2019-01-02');
-INSERT INTO booking (booking_date) VALUES ('2019-01-03');
+INSERT INTO schedule (is_active) VALUES
+                                     (true),
+                                     (false);
 
-INSERT INTO blade_project (start_date, end_date, blade_name, project_leader, customer) VALUES
-('2023-01-01', '2023-12-31', 'Blade Project 1', 'Leader A', 'Customer A'),
-('2023-01-02', '2023-12-30', 'Blade Project 2', 'Leader B', 'Customer B'),
-('2023-01-03', '2023-12-29', 'Blade Project 3', 'Leader C', 'Customer C');
+INSERT INTO blade_project
+    (start_date, end_date, blade_name, project_leader, customer, schedule_id)
+VALUES
+('2023-01-01', '2023-12-31', 'Blade Project 1', 'Leader A', 'Customer A',1),
+('2023-01-02', '2023-12-30', 'Blade Project 2', 'Leader B', 'Customer B',1),
+('2023-01-03', '2023-12-29', 'Blade Project 3', 'Leader C', 'Customer C',1);
 
 INSERT INTO blade_task
 (start_date, end_date, duration, task_name, attached_period, attached_task, bladeprojectid)
@@ -29,5 +31,25 @@ VALUES
     (20230107, 20231225, 359, 'Task 1 for Project 3', 7, 7, 3),
     (20230108, 20231224, 358, 'Task 2 for Project 3', 8, 8, 3),
     (20230109, 20231223, 357, 'Task 3 for Project 3', 9, 9, 3);
+
+-- 3 bookings for BladeTask with ID 1
+
+INSERT INTO equipment
+(type)
+VALUES
+    ('hammer'),
+    ('hammer'),
+    ('saw');
+
+
+
+INSERT INTO booking
+(start_date, end_date, blade_taskid, equipmentid)
+VALUES
+    (20230107, 20231225, 7, 1),
+    (20230107, 20231225, 7, 1),
+    (20230107, 20231225, 7, 3);
+
+
 
 -- Add more data as needed

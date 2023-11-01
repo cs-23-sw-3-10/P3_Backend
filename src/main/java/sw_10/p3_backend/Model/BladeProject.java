@@ -26,7 +26,7 @@ public class BladeProject {
     private String customer;
 
     @OneToMany(mappedBy = "bladeProject",cascade = CascadeType.ALL)
-    private ArrayList<BladeTask> bladeTasks = new ArrayList<>();
+    private List<BladeTask> bladeTasks = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")
