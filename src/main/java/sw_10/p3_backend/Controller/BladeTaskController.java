@@ -29,7 +29,7 @@ public class BladeTaskController {
         return new ResponseEntity<BladeTask>(bladeTaskLogic.createBladeTask(body),HttpStatus.OK);
     }
 
-    @PostMapping("/removeBT") //Er usikker på om det skal være post eller delete her
+    @PostMapping("/removeBT")
     public ResponseEntity<String> deleteTask(@RequestBody Map<String, String> body){
         String status=bladeTaskLogic.deleteTask(body);
         return new ResponseEntity<>(status,HttpStatus.OK);
