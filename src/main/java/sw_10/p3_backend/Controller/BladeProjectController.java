@@ -25,7 +25,7 @@ public class BladeProjectController {
 
     @PostMapping("/AddBladeProject")
     public ResponseEntity<BladeProject> newBladeProject(@RequestBody Map<String, String> body) {
-        return new ResponseEntity<BladeProject>(projectLogic.createProject(body.get("name"),body.get("leader"),body.get("costumer")), HttpStatus.OK);
+        return new ResponseEntity<BladeProject>(projectLogic.createProject(body), HttpStatus.OK);
     }
 
 }
