@@ -1,25 +1,30 @@
 package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter @Setter
 @Entity
 @Table(name = "booking")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bookingId;
-    private String bookingDate;
+    private int startDate;
+    private int endDate;
 
     @ManyToOne
     @JoinColumn(name = "bladeTaskid")
-    private BladeTask bladeTask;
+    @Getter(AccessLevel.NONE) private BladeTask bladeTask;
     @ManyToOne
     @JoinColumn(name = "engineerid")
-    private Engineer engineer;
+    @Getter(AccessLevel.NONE) private Engineer engineer;
     @ManyToOne
     @JoinColumn(name = "technicianid")
-    private Technician technician;
+    @Getter(AccessLevel.NONE) private Technician technician;
     @ManyToOne
     @JoinColumn(name = "equipmentid")
-    private Equipment equipment;
+    @Getter(AccessLevel.NONE) private Equipment equipment;
 }

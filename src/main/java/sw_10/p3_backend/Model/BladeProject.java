@@ -7,17 +7,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity
+@Entity//tells Hibernate to make a table out of this class
 @Table(name = "blade_project")
-@Getter @Setter
-@AllArgsConstructor
+@Getter @Setter //Lombok annotations to generate getters and setters
+@AllArgsConstructor //Lombok annotation to generate constructor with all arguments
 @NoArgsConstructor
 public class BladeProject {
     private static String[] customerList;
     private static String[] projectLeaderList;
     private static BladeProject[] bladeProjectList;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//tells Hibernate to use auto increment
     private Long id;
     private Date startDate;
     private Date endDate;
@@ -26,7 +26,7 @@ public class BladeProject {
     private String customer;
 
     @OneToMany(mappedBy = "bladeProject",cascade = CascadeType.ALL)
-    private ArrayList<BladeTask> bladeTasks = new ArrayList<>();
+    private List<BladeTask> bladeTasks = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "schedule_id")

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "blade_task")
@@ -28,10 +29,10 @@ public class BladeTask {
 
 
     @OneToMany(mappedBy = "bladeTask",cascade = CascadeType.ALL)
-    private ArrayList<Booking> bookings = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "bladeTask",cascade = CascadeType.ALL)
-    private ArrayList<ResourceOrder> resourceOrder = new ArrayList<>();
+    private List<ResourceOrder> resourceOrder = new ArrayList<>();
 
     public BladeTask(int startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);

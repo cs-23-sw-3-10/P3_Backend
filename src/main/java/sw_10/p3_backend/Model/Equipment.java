@@ -1,16 +1,20 @@
 package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter @Setter
 @Entity
 @Table(name = "equipment")
 public class Equipment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int equipmentId;
     private static List<String> equpmentList;
     private String type;
@@ -18,6 +22,6 @@ public class Equipment {
     private Date calibrationExpirationDate;
 
     @OneToMany(mappedBy = "equipment",cascade = CascadeType.ALL)
-    private ArrayList<Booking> bookings = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
 }
