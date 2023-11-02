@@ -2,9 +2,11 @@ package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Getter @Setter
 @Entity
 @Table(name = "booking")
