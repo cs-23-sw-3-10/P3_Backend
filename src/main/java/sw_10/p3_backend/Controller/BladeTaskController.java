@@ -28,4 +28,10 @@ public class BladeTaskController {
     public ResponseEntity<BladeTask> createBT(@RequestBody Map<String, String> body){
         return new ResponseEntity<BladeTask>(bladeTaskLogic.createBladeTask(body),HttpStatus.OK);
     }
+
+    @PostMapping("/removeBT") //Er usikker på om det skal være post eller delete her
+    public ResponseEntity<String> deleteTask(@RequestBody Map<String, String> body){
+        String status=bladeTaskLogic.deleteTask(body);
+        return new ResponseEntity<>(status,HttpStatus.OK);
+    }
 }

@@ -33,6 +33,17 @@ public class BladeTaskLogic {
             }
         }
 
+    public String deleteTask(Map<String, String> body){
+        try {
+            long id=Long.parseLong(body.get("id"));
+            bladeTaskRepository.deleteById(id);
+            return "BT deleted";
+        }
+        catch (Exception e) {
+            return "Error deleting BT" + e;
+        }
+    }
+
         public BladeTask createBladeTask(Map<String, String> body){
             int startDate = Integer.parseInt(body.get("startDate"));
             int duration =  Integer.parseInt(body.get("duration"));
@@ -41,5 +52,6 @@ public class BladeTaskLogic {
             BladeTask nybt = new BladeTask(startDate, duration, bp);
             return bladeTaskRepository.save(nybt);
         }
+
     }
 

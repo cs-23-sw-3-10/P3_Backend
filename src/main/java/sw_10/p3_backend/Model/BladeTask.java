@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "blade_task")
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter @Getter
 public class BladeTask {
     @Id
