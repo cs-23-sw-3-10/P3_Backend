@@ -8,8 +8,14 @@ import java.util.ArrayList;
 @Table(name = "technician")
 public class Technician extends Employee{
     @Id
-    private int technicianId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private String type;
+    private int workHours;
+    private int maxWorkHours;
+    private int count;
 
-    @OneToMany(mappedBy = "technician",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
     private ArrayList<Booking> bookings = new ArrayList<>();
 }

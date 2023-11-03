@@ -7,31 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "blade_task")
+@Table(name = "bladeTask")
 @NoArgsConstructor
 @Setter @Getter
 public class BladeTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private int startDate;
     private int endDate;
     private int duration;
+    private String testType; //TODO: Change to enum //private taskType taskType;
+    private int attachPeriod;
+    private int detachPeriod;
     private String taskName;
-    //private taskType taskType;
-    private int attachedPeriod;
-    private int attachedTask;
-    //private taskStatus taskStatus;
+    private int testRig;
+    private int state; //TODO: Change to enum
 
     @ManyToOne
-    @JoinColumn(name = "bladeprojectid")
+    @JoinColumn(name = "bladeProjectId")
     @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    @OneToMany(mappedBy = "bladeTask",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "bladeTask",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<ResourceOrder> resourceOrder = new ArrayList<>();
 
     public BladeTask(int startDate, int duration, BladeProject bladeProject){
@@ -39,9 +40,4 @@ public class BladeTask {
         setDuration(duration);
         setBladeProject(bladeProject);
     }
-
-    public String getBladeProject(){
-        return this.bladeProject.getBladeName();
-    }
-
 }

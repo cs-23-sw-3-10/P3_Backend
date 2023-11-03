@@ -9,11 +9,11 @@ import lombok.Getter;
 public class Conflict {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int conflictId;
+    private int id;
 
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "scheduleId")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
 }
