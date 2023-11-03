@@ -17,13 +17,13 @@ import java.util.List;
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int scheduleId;
+    private int id;
     private boolean isActive;
 
-    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<BladeProject> bladeProject = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<Conflict> conflicts = new ArrayList<>();
 
 }
