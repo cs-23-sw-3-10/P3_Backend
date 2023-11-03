@@ -6,7 +6,7 @@ import java.util.List;
 public abstract class Employee {
     private int workHours;
     private int maxWorkHours;
-    private ArrayList<Booking> bookingList = new ArrayList<>();
+    private List<Booking> bookingList = new ArrayList<>();
 
 
 }
