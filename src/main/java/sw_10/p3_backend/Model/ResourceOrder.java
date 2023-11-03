@@ -3,7 +3,9 @@ package sw_10.p3_backend.Model;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
+@Getter @Setter
 @Entity
 @Table(name = "resourceOrder")
 public class ResourceOrder {

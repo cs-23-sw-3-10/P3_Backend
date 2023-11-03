@@ -1,9 +1,13 @@
 package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
+@Getter @Setter
 @Entity
 @Table(name = "technician")
 public class Technician extends Employee{
@@ -17,5 +21,5 @@ public class Technician extends Employee{
 
 
     @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
-    private ArrayList<Booking> bookings = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 }
