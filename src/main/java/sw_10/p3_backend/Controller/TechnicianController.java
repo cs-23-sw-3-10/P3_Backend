@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import sw_10.p3_backend.Model.Engineer;
 import sw_10.p3_backend.Model.Technician;
 import sw_10.p3_backend.Repository.TechnicianRepository;
 
@@ -14,7 +13,6 @@ import java.util.Map;
 
 @RestController
 public class TechnicianController {
-
     private final TechnicianRepository technicianRepository;
 
     @Autowired

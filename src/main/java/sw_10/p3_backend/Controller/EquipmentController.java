@@ -9,14 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Repository.EquipmentRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 
 @RestController
 public class EquipmentController {
-
-
     private final EquipmentRepository equipmentRepository;
 
     @Autowired
