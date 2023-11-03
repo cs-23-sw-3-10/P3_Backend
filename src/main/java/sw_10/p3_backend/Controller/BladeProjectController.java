@@ -19,13 +19,24 @@ public class BladeProjectController {
     private ProjectLogic projectLogic;
 
     @GetMapping("/AllBladeProjects")
-    public ResponseEntity<Iterable<BladeProject>> getAllBladeProjects() {
-        return new ResponseEntity<Iterable<BladeProject>>(projectLogic.getAllProjects(), HttpStatus.OK);
+    public ResponseEntity<?> getAllBladeProjects() {
+        try {
+            Iterable<BladeProject> bladeProjects = projectLogic.getAllProjects();
+            boolean isNotEmpty = bladeProjects.iterator().hasNext();
+            if (isNotEmpty) {
+                return new ResponseEntity<Iterable<BladeProject>>(bladeProjects, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<String>("No blade projects found", HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<String>("An error occured: "+e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @PostMapping("/AddBladeProject")
     public ResponseEntity<BladeProject> newBladeProject(@RequestBody Map<String, String> body) {
-        return new ResponseEntity<BladeProject>(projectLogic.createProject(body.get("name"),body.get("leader"),body.get("costumer")), HttpStatus.OK);
+        return new ResponseEntity<BladeProject>(projectLogic.createProject(body), HttpStatus.OK);
     }
 
 }
