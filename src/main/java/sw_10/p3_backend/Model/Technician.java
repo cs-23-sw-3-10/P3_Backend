@@ -16,6 +16,6 @@ public class Technician extends Employee{
     private int count;
 
 
-    @OneToMany(mappedBy = "technician",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
     private ArrayList<Booking> bookings = new ArrayList<>();
 }

@@ -21,7 +21,7 @@ public class Equipment {
     private Date calibrationExpirationDate;
     private String name;
 
-    @OneToMany(mappedBy = "equipment",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
 }
