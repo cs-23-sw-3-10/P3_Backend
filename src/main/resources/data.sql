@@ -1,4 +1,4 @@
---Inserting data for 'schedule' table
+--Inserting data for 'schedule' table 
 INSERT INTO schedule (id, is_active)
 VALUES (1, TRUE),
        (2, FALSE);
