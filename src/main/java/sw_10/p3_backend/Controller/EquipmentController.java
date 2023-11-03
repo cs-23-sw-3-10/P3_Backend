@@ -33,7 +33,6 @@ public class EquipmentController {
         }catch (Exception e){
             return new ResponseEntity<>("An error occured: "+e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @GetMapping("/EquipmentByType")
