@@ -52,6 +52,5 @@ public class BladeTaskLogic {
             BladeTask nybt = new BladeTask(startDate, duration, bp);
             return bladeTaskRepository.save(nybt);
         }
-
     }
 

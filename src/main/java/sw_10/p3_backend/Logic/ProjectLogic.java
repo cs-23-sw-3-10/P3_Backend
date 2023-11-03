@@ -23,5 +23,7 @@ public class ProjectLogic {
         return project;
     }
 
-    public List<BladeProject> getAllProjects(){return BladeProjectRepository.findAll();}
+    public List<BladeProject> getAllProjects(){
+        return BladeProjectRepository.findAll();
+    }
 }
