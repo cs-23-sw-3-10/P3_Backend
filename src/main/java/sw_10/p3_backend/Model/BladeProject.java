@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity//tells Hibernate to make a table out of this class
-@Table(name = "blade_project")
+@Table(name = "bladeProject")
 @Getter @Setter //Lombok annotations to generate getters and setters
 @AllArgsConstructor //Lombok annotation to generate constructor with all arguments
 @NoArgsConstructor
@@ -17,24 +17,24 @@ public class BladeProject {
     private static String[] projectLeaderList;
     private static BladeProject[] bladeProjectList;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//tells Hibernate to use auto increment
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private Date startDate;
     private Date endDate;
-    private String bladeName;
-    private String projectLeader;
     private String customer;
+    private String projectLeader;
+    private String projectName;
 
-    @OneToMany(mappedBy = "bladeProject",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bladeProject", cascade = CascadeType.ALL)
     private List<BladeTask> bladeTasks = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "scheduleId")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public BladeProject(String bladeName, String projectLeader, String customer) {
-        setBladeName(bladeName);
+    public BladeProject(String projectName, String projectLeader, String customer) {
+        setProjectName(projectName);
         setProjectLeader(projectLeader);
         setCustomer(customer);
     }

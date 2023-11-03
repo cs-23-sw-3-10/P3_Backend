@@ -9,8 +9,11 @@ import java.util.ArrayList;
 @Table(name = "engineer")
 public class Engineer extends Employee{
     @Id
-    private int engineerId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String name;
+    private int workHours;
+    private int maxWorkHours;
 
     @OneToMany(mappedBy = "engineer",cascade = CascadeType.ALL)
     private ArrayList<Booking> bookings = new ArrayList<>();

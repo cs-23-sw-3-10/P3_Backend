@@ -15,11 +15,11 @@ import java.util.List;
 public class Equipment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int equipmentId;
+    private int id;
     private static List<String> equpmentList;
     private String type;
-
     private Date calibrationExpirationDate;
+    private String name;
 
     @OneToMany(mappedBy = "equipment",cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();

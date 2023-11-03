@@ -8,7 +8,8 @@ import lombok.Getter;
 @Table(name = "resourceOrder")
 public class ResourceOrder {
     @Id
-    private int resourceOrderId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String type;
     private int startDate;
     private int endDate;
@@ -16,7 +17,7 @@ public class ResourceOrder {
     private int workHours;
 
     @ManyToOne
-    @JoinColumn(name = "bladeTask_id")
+    @JoinColumn(name = "bladeTaskId")
     @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
 
