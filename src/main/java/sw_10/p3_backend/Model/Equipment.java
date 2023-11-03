@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class Equipment {
     private int equipmentId;
     private static List<String> equpmentList;
     private String type;
+    private String name;
 
     private Date calibrationExpirationDate;
 

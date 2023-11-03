@@ -35,11 +35,42 @@ VALUES
 -- 3 bookings for BladeTask with ID 1
 
 INSERT INTO equipment
+(type,name)
+VALUES
+    ('exciter','exciter-1'),
+    ('exciter','exciter-2'),
+    ('exciter','exciter-3'),
+    ('stabilizer','stabilizer-1'),
+    ('stabilizer','stabilizer-2'),
+    ('stabilizer','stabilizer-3'),
+    ('stabilizer','stabilizer-4'),
+    ('stabilizer','stabilizer-5'),
+    ('stabilizer','stabilizer-6');
+
+INSERT INTO engineer
+(name)
+VALUES
+    ('Mogens'),
+    ('Preben'),
+    ('Ole');
+
+INSERT INTO technician
 (type)
 VALUES
-    ('hammer'),
-    ('hammer'),
-    ('saw');
+    ('Smith'),
+    ('Smith'),
+    ('Smith'),
+    ('Smith'),
+    ('Smith'),
+    ('Smith'),
+    ('Electrician'),
+    ('Electrician'),
+    ('Electrician'),
+    ('Electrician');
+
+
+
+
 
 
 
