@@ -33,9 +33,14 @@ public class BladeProject {
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public BladeProject(String projectName, String projectLeader, String customer) {
+    public BladeProject(Schedule schedule, String projectName,String customer, String projectLeader) {
         setProjectName(projectName);
         setProjectLeader(projectLeader);
         setCustomer(customer);
+        setSchedule(schedule);
+    }
+
+    public BladeProject(String projectName){
+        setProjectName(projectName);
     }
 }

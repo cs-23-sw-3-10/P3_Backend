@@ -25,6 +25,10 @@ public class ScheduleLogic {
         return scheduleRepository.findScheduleByIsActive(body.get("state"));
     }
 
+    public List<Schedule> findAll(){
+        return scheduleRepository.findAll();
+    }
+
     public List<Booking> getBooking(Map<String,Integer> body){
 
     String type = getType(body.get("type"));

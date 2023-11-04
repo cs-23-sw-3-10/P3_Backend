@@ -4,19 +4,19 @@ VALUES (1, TRUE),
        (2, FALSE);
 
  --Inserting data for 'blade_project' table
-INSERT INTO blade_project (id, schedule_id, start_date, end_date, customer, project_leader, project_name)
-VALUES (1, 1, '20230101', '20230228', 'Customer A', 'Leader A', 'Project A'),
-       (2, 2, '20230201', '20230328', 'Customer B', 'Leader B', 'Project B');
+INSERT INTO blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name)
+VALUES (1, '20230101', '20230228', 'Customer A', 'Leader A', 'Project A'),
+       (2, '20230201', '20230328', 'Customer B', 'Leader B', 'Project B');
 
  --Inserting data for 'blade_task' table with 3 consecutive tasks for each project
-INSERT INTO blade_task (id, blade_project_id, start_date, end_date, duration, test_type, attach_period, detach_period,
-                        task_name, test_rig, state)
-VALUES (1, 1, '20230101', '20230115', 15, 'Type A', 2, 3, 'Task A1', 1, '0'),
-       (2, 1, '20230116', '20230130', 15, 'Type B', 2, 3, 'Task A2', 1, '0'),
-       (3, 1, '20230131', '20230330', 15, 'Type C', 2, 3, 'Task A3', 1, '0'),
-       (4, 2, '20230201', '20230215', 15, 'Type D', 2, 3, 'Task B1', 2, '1'),
-       (5, 2, '20230216', '20230228', 15, 'Type E', 2, 3, 'Task B2', 2, '1'),
-       (6, 2, '20230231', '20230331', 15, 'Type F', 2, 3, 'Task B3', 2, '1');
+INSERT INTO blade_task ( blade_project_id, start_date, end_date, duration, test_type, attach_period, detach_period,
+                        task_name, test_rig)
+VALUES ( 1, '20230101', '20230115', 15, 'Type A', 2, 3, 'Task A1', 1),
+       ( 1, '20230116', '20230130', 15, 'Type B', 2, 3, 'Task A2', 1),
+       ( 1, '20230131', '20230330', 15, 'Type C', 2, 3, 'Task A3', 1),
+       ( 2, '20230201', '20230215', 15, 'Type D', 2, 3, 'Task B1', 2),
+       ( 2, '20230216', '20230228', 15, 'Type E', 2, 3, 'Task B2', 2),
+       ( 2, '20230231', '20230331', 15, 'Type F', 2, 3, 'Task B3', 2);
 
  --Inserting data for 'equipment', 'engineer' and 'technician' tables
 INSERT INTO equipment (id, type, calibration_expiration_date, name)

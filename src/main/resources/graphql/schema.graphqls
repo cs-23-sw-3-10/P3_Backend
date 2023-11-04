@@ -1,0 +1,123 @@
+type Query {
+    bladeProjects: [BladeProject],
+    conflicts: [Conflict]
+    getAllBladeTasks: [BladeTask]
+    getOneBladeTasks(id:ID!):BladeTask
+    schedule: [Schedule]
+}
+
+type Mutation{
+    createBladeProject(scheduleId: Int, name: String, customer: String, projectLeader: String) :BladeProject
+    createBladeTask(bladeTask:BladeTaskInput!):BladeTask
+}
+
+type BladeProject {
+    id: ID!
+    schedule: Schedule
+    start_date: Int
+    end_date: Int
+    customer: String
+    projectLeader: String
+    projectName: String
+    bladeTasks(duration: Int): [BladeTask]
+    resourceOrder: [ResourceOrder]
+}
+
+type BladeTask {
+    id: ID!
+    project: BladeProject
+    startDate: Int
+    endDate: Int
+    duration: Int
+    testType: String
+    attachPeriod: Int
+    detachPeriod: Int
+    taskName: String
+    testRig: Int
+    bookings: [Booking]
+    resourceOrder: [ResourceOrder]
+}
+
+type Schedule {
+    id: ID!
+    isActive: Boolean
+    bladeProject: [BladeProject]
+    conflicts: [Conflict]
+}
+
+type ResourceOrder {
+    id: ID!
+    duration: Int
+    start_date: String
+    end_date: String
+    type: String
+    workHours: Int
+    task: BladeTask
+}
+
+type Booking {
+    id: ID!
+    start_date: String
+    end_date: String
+    duration: Int
+    resourceType: String
+    workHours: Int
+    task: BladeTask
+    equipment: Equipment
+    engineer: Engineer
+    technician: Technician
+}
+
+type Engineer {
+    id: ID!
+    name: String
+    workHours: Int
+    maxWorkHours: Int
+    bookings: [Booking]
+}
+
+type Technician {
+    id: ID!
+    type: String
+    workHours: Int
+    maxWorkHours: Int
+    count: Int
+    bookings: [Booking]
+}
+
+type Equipment {
+    id: ID!
+    type: String
+    calibrationExpirationDate: String
+    name: String
+    bookings: [Booking]
+}
+
+type Conflict {
+    id: ID!
+    type: String
+    message: String
+    schedule: Schedule
+}
+
+input BladeProjectInput {
+    scheduleId: ID
+    start_date: String
+    end_date: String
+    customer: String
+    projectLeader: String
+    projectName: String
+}
+
+input BladeTaskInput {
+    startDate: Int
+    endDate: Int
+    duration: Int
+    attachPeriod: Int
+    detachPeriod: Int
+    testRig: Int
+    bladeProjectId: ID
+    taskName: String
+    testType: String
+}
+
