@@ -18,6 +18,6 @@ public class ConflictController {
     @QueryMapping
     public List<Conflict> AllConflicts(){
         return conflictRepository.findAll();
-    }
+    } //Consider adding logic and error handling
 
 }

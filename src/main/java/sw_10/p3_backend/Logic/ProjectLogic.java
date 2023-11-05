@@ -25,7 +25,6 @@ public class ProjectLogic {
         this.scheduleRepository = scheduleRepository;
     }
 
-    @Transactional
     public BladeProject createProject(Integer scheduleId, String name, String customer, String projectLeader) {
         try {
             Schedule schedule = scheduleRepository.findById(Long.valueOf(scheduleId)).orElseThrow(
@@ -37,7 +36,6 @@ public class ProjectLogic {
             throw e;
         }catch (Exception e) {
             throw new ScheduleCreationException("Error creating project",e);
-
         }
     }
 

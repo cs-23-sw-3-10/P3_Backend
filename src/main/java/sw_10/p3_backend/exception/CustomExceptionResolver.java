@@ -13,7 +13,7 @@ public class CustomExceptionResolver extends DataFetcherExceptionResolverAdapter
 
     @Override
     protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env){
-        if(ex instanceof ScheduleNotFoundException) {
+        if(ex instanceof ScheduleNotFoundException || ex instanceof IdNotFoundException) {
             return GraphqlErrorBuilder.newError()
                     .errorType(ErrorType.NOT_FOUND)
                     .message(ex.getMessage())

@@ -1,51 +1,37 @@
 package sw_10.p3_backend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Model.Engineer;
 import sw_10.p3_backend.Repository.EngineerRepository;
+import sw_10.p3_backend.exception.IdNotFoundException;
+import java.util.List;
 
-import java.util.Map;
-
-@RestController
+@Controller
 public class EngineerController {
     private final EngineerRepository engineerRepository;
 
-    @Autowired
     public EngineerController(EngineerRepository engineerRepository){ //dependency injection
         this.engineerRepository=engineerRepository;
     }
-    @GetMapping("/AllEngineers")
-    public ResponseEntity<?> getAllEngineers() {
-        try{
-            Iterable<Engineer> engineers=engineerRepository.findAll();
-            boolean isNotEmpty=engineers.iterator().hasNext();
 
-            if(isNotEmpty){
-                return new ResponseEntity<Iterable<Engineer>>(engineers, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>("No engineers found",HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e){
-            return new ResponseEntity<>("An error occured: "+e, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @QueryMapping
+    public List<Engineer> AllEngineers(){
+        return engineerRepository.findAll();
     }
 
-    @GetMapping("/EngineerByName")
-    public ResponseEntity<?> getEngineerByName(@RequestBody Map<String, String> body) {
+    @QueryMapping
+    public Engineer EngineerById(@Argument Integer id){
         try {
-            Engineer engineer=engineerRepository.findByName(body.get("name"));
-            if(engineer!= null){
-                return new ResponseEntity<Engineer>(engineer, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>("Engineer not found",HttpStatus.NOT_FOUND);
-            }
-        }catch (Exception e){
-            return new ResponseEntity<String>("An error occured: "+e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return engineerRepository.findById(id.longValue()).orElseThrow(() -> new IdNotFoundException("No engineer found with id:" + id));//Consider adding logic layer and move error handling
+        }catch (IdNotFoundException e)
+        {
+            System.out.println("Engineer not found: " + e.getMessage());
+            throw e;
+        }catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

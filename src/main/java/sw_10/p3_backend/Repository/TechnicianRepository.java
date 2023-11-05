@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 import sw_10.p3_backend.Model.Engineer;
 import sw_10.p3_backend.Model.Technician;
 
+import java.util.List;
+
 @Repository
 public interface TechnicianRepository extends JpaRepository<Technician,Long>{
-    Iterable<Technician> findByType(String type);
+    Technician findByType(String type);
 }

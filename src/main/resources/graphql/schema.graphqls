@@ -1,9 +1,23 @@
 type Query {
     AllBladeProjects: [BladeProject],
+
     AllBladeTasks: [BladeTask]
-    AllConflicts: [Conflict]
-    AllSchedules: [Schedule]
     BladeTaskById(id:ID!):BladeTask
+
+    AllConflicts: [Conflict]
+
+    AllSchedules: [Schedule]
+    ScheduleById(id:ID!):Schedule
+
+    AllEngineers: [Engineer]
+    EngineerById(id:ID!):Engineer
+
+    AllEquipment: [Equipment]
+    EquipmentById(id:ID!):Equipment
+    EquipmentByType(type:String):[Equipment]
+
+    AllTechnicians: [Technician]
+    TechnicianByType(type:String): Technician
 }
 
 type Mutation{
