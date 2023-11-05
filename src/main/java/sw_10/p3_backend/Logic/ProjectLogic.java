@@ -7,6 +7,9 @@ import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
+import sw_10.p3_backend.exception.ScheduleCreationException;
+import sw_10.p3_backend.exception.ScheduleNotFoundException;
+
 import java.util.List;
 
 
@@ -43,14 +46,3 @@ public class ProjectLogic {
     }
 }
 
-class ScheduleNotFoundException extends RuntimeException{
-    public ScheduleNotFoundException(String message) {
-        super(message);
-    }
-}
-
-class ScheduleCreationException extends RuntimeException{
-    public ScheduleCreationException(String message, Throwable cause){
-        super(message, cause);
-    }
-}

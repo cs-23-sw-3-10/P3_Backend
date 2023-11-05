@@ -29,7 +29,7 @@ public class BladeProjectController {
 
 
     @QueryMapping
-    public List<BladeProject> bladeProjects() {
+    public List<BladeProject> AllBladeProjects() {
         return projectLogic.findAll();
     }
 

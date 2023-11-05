@@ -27,19 +27,13 @@ public class BladeTaskController {
         this.bladeTaskLogic = bladeTaskLogic;
     }
 
-    /*@PostMapping("/addBT")
-    public ResponseEntity<BladeTask> createBT(@RequestBody Map<String, String> body){
-        return new ResponseEntity<BladeTask>(bladeTaskLogic.createBladeTask(body),HttpStatus.OK);
-    }
-*/
-
     @QueryMapping
-    public List<BladeTask> getAllBladeTasks(){
+    public List<BladeTask> AllBladeTasks(){
         return bladeTaskLogic.findAll();
     }
 
     @QueryMapping
-    public BladeTask getOneBladeTask(@Argument Integer id){
+    public BladeTask BladeTaskById(@Argument Integer id){
         return bladeTaskLogic.findOne(id);
     }
 
@@ -50,7 +44,6 @@ public class BladeTaskController {
 
     @MutationMapping
     public BladeTask createBladeTask(@Argument BladeTaskInput bladeTask){
-        System.out.println(bladeTask);
         return bladeTaskLogic.createBladeTask(bladeTask);
     }
 }

@@ -16,7 +16,7 @@ public class ConflictController {
         this.conflictRepository = conflictRepository;
     }
     @QueryMapping
-    public List<Conflict> conflicts(){
+    public List<Conflict> AllConflicts(){
         return conflictRepository.findAll();
     }
 

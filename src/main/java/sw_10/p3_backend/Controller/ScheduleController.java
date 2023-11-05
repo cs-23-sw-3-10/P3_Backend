@@ -33,7 +33,7 @@ public class ScheduleController {
     }
 
     @QueryMapping
-    public List<Schedule> schedule(){
+    public List<Schedule> AllSchedules(){
         return scheduleLogic.findAll();
     }
 }

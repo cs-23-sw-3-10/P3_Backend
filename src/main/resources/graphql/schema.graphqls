@@ -1,9 +1,9 @@
 type Query {
-    bladeProjects: [BladeProject],
-    conflicts: [Conflict]
-    getAllBladeTasks: [BladeTask]
-    getOneBladeTasks(id:ID!):BladeTask
-    schedule: [Schedule]
+    AllBladeProjects: [BladeProject],
+    AllBladeTasks: [BladeTask]
+    AllConflicts: [Conflict]
+    AllSchedules: [Schedule]
+    BladeTaskById(id:ID!):BladeTask
 }
 
 type Mutation{
