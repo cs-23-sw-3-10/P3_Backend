@@ -71,8 +71,8 @@ type ResourceOrder {
 
 type Booking {
     id: ID!
-    start_date: String
-    end_date: String
+    startDate: Int
+    endDate: Int
     duration: Int
     resourceType: String
     workHours: Int

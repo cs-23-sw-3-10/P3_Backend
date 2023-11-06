@@ -28,7 +28,6 @@ INSERT INTO technician (id, type, work_hours, max_work_hours, count)
 VALUES (1, 'Technician A', 40, 160, 1),
        (2, 'Technician B', 30, 120, 2);
 
-
 insert into equipment (name, type, calibration_expiration_date) values ('EquipmentR33', 'Framing (Steel)', '26-12-2022');
 insert into equipment (name, type, calibration_expiration_date) values ('EquipmentO06', 'Ornamental Railings', '20-09-2023');
 insert into equipment (name, type, calibration_expiration_date) values ('EquipmentY81', 'Masonry', '19-04-2023');
@@ -229,3 +228,10 @@ insert into equipment (name, type, calibration_expiration_date) values ('Equipme
 insert into equipment (name, type, calibration_expiration_date) values ('EquipmentJ39', 'Doors, Frames & Hardware', '18-10-2023');
 insert into equipment (name, type, calibration_expiration_date) values ('EquipmentQ22', 'Painting & Vinyl Wall Covering', '03-12-2022');
 insert into equipment (name, type, calibration_expiration_date) values ('EquipmentP19', 'Site Furnishings', '30-07-2023');
+
+INSERT INTO booking (duration, equipment_id, work_hours, start_date,end_date,resource_type, blade_task_id)
+VALUES (10,1,34,2,3,'test',1),
+       (11,1,34,2,3,'test',1),
+       (14,1,34,2,3,'test',1),
+       (16,1,34,2,3,'test',1),
+       (18,1,34,2,3,'test',1);
