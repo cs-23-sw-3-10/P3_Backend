@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 @Table(name = "bladeTask")
 @NoArgsConstructor
-@AllArgsConstructor
 @Setter @Getter
 public class BladeTask {
     @Id
@@ -23,7 +22,7 @@ public class BladeTask {
     private int detachPeriod;
     private String taskName;
     private int testRig;
-    private int state; //TODO: Change to enum
+    //private int state; //TODO: Change to enum
 
     @ManyToOne
     @JoinColumn(name = "bladeProjectId")
@@ -36,9 +35,21 @@ public class BladeTask {
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<ResourceOrder> resourceOrder = new ArrayList<>();
 
-    public BladeTask(int startDate, int duration, BladeProject bladeProject){
+    public BladeTask(int startDate, int endDate, BladeProject bladeProject){
         setStartDate(startDate);
         setDuration(duration);
         setBladeProject(bladeProject);
+    }
+
+    public BladeTask(int startDate, int endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.duration = duration;
+        this.testType = testType;
+        this.attachPeriod = attachPeriod;
+        this.detachPeriod = detachPeriod;
+        this.taskName = taskName;
+        this.testRig = testRig;
+        this.bladeProject = bladeProject;
     }
 }

@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
+import sw_10.p3_backend.Model.BladeTaskInput;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,20 +25,10 @@ public class BladeTaskLogic {
         this.bladeProjectRepository = bladeProjectRepository;
     }
 
-    public String deleteAllTasks(){
-        try {
-            bladeTaskRepository.deleteAll();
-            return "All tasks deleted";
-        }
-        catch (Exception e) {
-            return "Error deleting tasks" + e;
-            }
-        }
 
-    public String deleteTask(Map<String, String> body){
+    public String deleteTask(Integer id){
         try {
-            long id=Long.parseLong(body.get("id"));
-            bladeTaskRepository.deleteById(id);
+            bladeTaskRepository.deleteById(id.longValue());
             return "BT deleted";
         }
         catch (Exception e) {
@@ -44,13 +36,20 @@ public class BladeTaskLogic {
         }
     }
 
-        public BladeTask createBladeTask(Map<String, String> body){
-            int startDate = Integer.parseInt(body.get("startDate"));
-            int duration =  Integer.parseInt(body.get("duration"));
-            long bpid = Long.parseLong(body.get("bpId"));
-            BladeProject bp = bladeProjectRepository.findById(bpid).get();
-            BladeTask nybt = new BladeTask(startDate, duration, bp);
+        public BladeTask createBladeTask(BladeTaskInput input){
+
+            BladeProject bp = bladeProjectRepository.findById((long) input.bladeProjectId()).get();
+            BladeTask nybt = new BladeTask(input.startDate(), input.endDate(), input.duration(),input.testType(), input.attachPeriod(), input.detachPeriod(),input.taskName(),input.testRig(),bp);
             return bladeTaskRepository.save(nybt);
         }
+
+        public List<BladeTask> findAll(){
+            return bladeTaskRepository.findAll();
+        }
+
+    public BladeTask findOne(Integer id){
+        return bladeTaskRepository.findById(Long.valueOf(id)).get();
+    }
+
     }
 
