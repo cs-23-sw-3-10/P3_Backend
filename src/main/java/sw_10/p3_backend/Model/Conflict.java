@@ -17,6 +17,8 @@ public class Conflict {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String type;
+    private String message;
 
 
     @ManyToOne

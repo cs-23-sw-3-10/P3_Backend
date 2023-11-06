@@ -1,42 +1,31 @@
 package sw_10.p3_backend.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import sw_10.p3_backend.Logic.ProjectLogic;
 import sw_10.p3_backend.Model.BladeProject;
+import java.util.List;
 
-import java.util.Map;
 
-@RestController
+@Controller
 public class BladeProjectController {
 
-    @Autowired
-    private ProjectLogic projectLogic;
+    private final ProjectLogic projectLogic;
 
-    @GetMapping("/AllBladeProjects")
-    public ResponseEntity<?> getAllBladeProjects() {
-        try {
-            Iterable<BladeProject> bladeProjects = projectLogic.getAllProjects();
-            boolean isNotEmpty = bladeProjects.iterator().hasNext();
-            if (isNotEmpty) {
-                return new ResponseEntity<Iterable<BladeProject>>(bladeProjects, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<String>("No blade projects found", HttpStatus.NOT_FOUND);
-            }
-        }catch (Exception e){
-            return new ResponseEntity<String>("An error occured: "+e, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+    public BladeProjectController(ProjectLogic projectLogic) {
+        this.projectLogic = projectLogic;
     }
 
-    @PostMapping("/AddBladeProject")
-    public ResponseEntity<BladeProject> newBladeProject(@RequestBody Map<String, String> body) {
-        return new ResponseEntity<BladeProject>(projectLogic.createProject(body), HttpStatus.OK);
+    @QueryMapping
+    public List<BladeProject> AllBladeProjects() {
+        return projectLogic.findAll();
     }
 
+    @MutationMapping
+    public BladeProject createBladeProject(@Argument Integer scheduleId, @Argument String name, @Argument String customer, @Argument String projectLeader) {
+        return projectLogic.createProject(scheduleId, name, customer, projectLeader);
+    }
 }
