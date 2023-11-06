@@ -33,13 +33,13 @@ type BladeProject {
     customer: String
     projectLeader: String
     projectName: String
-    bladeTasks(duration: Int): [BladeTask]
+    bladeTasks: [BladeTask]
     resourceOrder: [ResourceOrder]
 }
 
 type BladeTask {
     id: ID!
-    project: BladeProject
+    bladeProject: BladeProject
     startDate: Int
     endDate: Int
     duration: Int
