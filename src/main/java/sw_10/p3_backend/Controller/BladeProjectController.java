@@ -4,6 +4,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import sw_10.p3_backend.Logic.ProjectLogic;
 import sw_10.p3_backend.Model.BladeProject;
 import java.util.List;
@@ -27,5 +28,4 @@ public class BladeProjectController {
     public BladeProject createBladeProject(@Argument Integer scheduleId, @Argument String name, @Argument String customer, @Argument String projectLeader) {
         return projectLogic.createProject(scheduleId, name, customer, projectLeader);
     }
-
 }

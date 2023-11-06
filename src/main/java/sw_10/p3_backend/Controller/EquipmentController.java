@@ -38,7 +38,6 @@ public class EquipmentController {
             return equipmentRepository.findAllByType(type); //consider adding handling for nothing found
     }
 
-
     @QueryMapping
     public Equipment EquipmentById(@Argument Integer id){
         try{
@@ -51,5 +50,4 @@ public class EquipmentController {
         throw new RuntimeException(e);
     }//consider adding handling for nothing found
     }
-
 }
