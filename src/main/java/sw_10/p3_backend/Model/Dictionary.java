@@ -22,11 +22,11 @@ public class Dictionary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String type;
+    private String category;
     private String label;
 
-    public Dictionary(String type, String label){
-        setType(type);
+    public Dictionary(String category, String label){
+        setCategory(category);
         setLabel(label);
     }
 

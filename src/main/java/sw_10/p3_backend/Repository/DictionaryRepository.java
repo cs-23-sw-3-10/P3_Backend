@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface DictionaryRepository extends JpaRepository<Dictionary,Long> {
     //@Query(value = "SELECT * FROM Dictionary WHERE category = :category", nativeQuery = true)
-    @Query("SELECT e FROM Dictionary e WHERE e.type = :type" )
-    List<Dictionary> findAllByType(String type);
+    @Query("SELECT e FROM Dictionary e WHERE e.category = :category")
+    //@Query("SELECT e FROM Dictionary e WHERE e.category = :category" )
+    List<Dictionary> findAllByCategory(String category);
 }

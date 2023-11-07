@@ -28,7 +28,7 @@ INSERT INTO technician (id, type, work_hours, max_work_hours, count)
 VALUES (1, 'Technician A', 40, 160, 1),
        (2, 'Technician B', 30, 120, 2);
 
-INSERT INTO dictionary (type, label)
+INSERT INTO dictionary (category, label)
 VALUES ('testType', 'Flapwise Static Proof'),
        ('testType', 'Edgewise Static Proof'),
        ('testType', 'Post Fatigue Static'),
