@@ -46,10 +46,10 @@ class BladeProjectRepositoryTest {
         bladeProjectRepository.save(new BladeProject());
         bladeProjectRepository.save(new BladeProject());
 
-        bladeProjectRepository.findAll().stream().map(BladeProject::getProjectName).forEach(System.out::println);
 
+        // Verify that three was added
         assertThat(bladeProjectRepository.findAll()).hasSize(3);
-        // and then verify the results
+
 
         bladeProjectRepository.deleteAll();
 
