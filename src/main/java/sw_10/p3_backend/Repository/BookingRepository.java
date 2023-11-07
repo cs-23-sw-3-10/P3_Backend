@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sw_10.p3_backend.Model.Booking;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking,Long> {
 
         @Query("SELECT e FROM Booking e WHERE e.startDate < :end AND e.endDate > :start AND e.equipment.type = :type " )
-        List<Booking> findOverlappingEvents(Date start, Date end, String type);
+        List<Booking> findOverlappingEvents(LocalDate start, LocalDate end, String type);
 
 
 }
