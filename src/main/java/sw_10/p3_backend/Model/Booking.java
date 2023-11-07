@@ -2,6 +2,7 @@ package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,8 +13,8 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int startDate;
-    private int endDate;
+    private Date startDate;
+    private Date endDate;
     private int duration;
     private String resourceType; //TODO: Change to enum
     private int workHours;
