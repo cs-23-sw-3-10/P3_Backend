@@ -19,7 +19,8 @@ type Query {
     AllTechnicians: [Technician]
     TechnicianByType(type:String): Technician
 
-    DictionaryAllByType(type:String):[Dictionary]
+    DictionaryAllByCategory(category:String):[Dictionary]
+
 
 }
 
@@ -31,8 +32,8 @@ type Mutation{
 type BladeProject {
     id: ID!
     schedule: Schedule
-    start_date: Int
-    end_date: Int
+    startDate: Int
+    endDate: Int
     customer: String
     projectLeader: String
     projectName: String
@@ -41,7 +42,7 @@ type BladeProject {
 }
 type Dictionary {
     id: ID!
-    type: String
+    category: String
     label: String
 }
 
@@ -70,8 +71,8 @@ type Schedule {
 type ResourceOrder {
     id: ID!
     duration: Int
-    start_date: String
-    end_date: String
+    startDate: String
+    endDate: String
     type: String
     workHours: Int
     task: BladeTask
@@ -79,8 +80,8 @@ type ResourceOrder {
 
 type Booking {
     id: ID!
-    start_date: String
-    end_date: String
+    startDate: String
+    endDate: String
     duration: Int
     resourceType: String
     workHours: Int
@@ -124,8 +125,8 @@ type Conflict {
 
 input BladeProjectInput {
     scheduleId: ID
-    start_date: String
-    end_date: String
+    startDate: String
+    endDate: String
     customer: String
     projectLeader: String
     projectName: String
