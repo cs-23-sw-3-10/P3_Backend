@@ -47,11 +47,11 @@ class BookingRepositoryTest {
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
 
-        Booking booking1 = new Booking(1,20201012, 20201021,10, "hammer", 0, null,null,null,e1);
-        Booking booking2 = new Booking(2,20201022, 20201102,10, "hammer", 0, null,null,null,e1);
-        Booking booking3 = new Booking(3,20201103, 20201112,10, "hammer", 0, null,null,null,e2);
+        Booking booking1 = new Booking(1,new Date(2020-10-1), new Date(2020-10-10),10, "hammer", 0, null,null,null,e1);
+        Booking booking2 = new Booking(2,new Date(2020-10-11), new Date(2020-10-20),10, "hammer", 0, null,null,null,e1);
+        Booking booking3 = new Booking(3,new Date(2020-10-21), new Date(2020-10-30),10, "hammer", 0, null,null,null,e2);
 
-
+        System.out.println(new Date(2020-10-10));
 
         // Save bookings to the repository
         bookingRepository.save(booking1);
@@ -60,7 +60,7 @@ class BookingRepositoryTest {
 
         // When
         // Check for overlapping events for same type
-        List<Booking> overlappingBookings = bookingRepository.findOverlappingEvents(20201012,20201102,"hammer");
+        List<Booking> overlappingBookings = bookingRepository.findOverlappingEvents(new Date(2020-10-1),new Date(2020-10-20),"hammer");
         // Then
         // Assert the overlapping bookings are found and non-overlapping are not
         List<Integer> overlappingIds = overlappingBookings.stream()
@@ -70,8 +70,8 @@ class BookingRepositoryTest {
         assertThat(overlappingIds).containsExactlyInAnyOrder(booking1.getId(), booking2.getId());
         assertThat(overlappingIds).doesNotContain(booking3.getId());
 
-        List<Booking> overlappingBookingsdiffenttype = bookingRepository.findOverlappingEvents(20201012,20201112,"saw");
-        assertThat(overlappingBookingsdiffenttype).hasSize(1);
+        List<Booking> overlappingBookingsDifferentType = bookingRepository.findOverlappingEvents(new Date(2020-10-1),new Date(2020-10-30),"saw");
+        assertThat(overlappingBookingsDifferentType).hasSize(1);
     }
 
 
