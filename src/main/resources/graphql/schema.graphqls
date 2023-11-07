@@ -18,6 +18,9 @@ type Query {
 
     AllTechnicians: [Technician]
     TechnicianByType(type:String): Technician
+
+    DictionaryAllByType(type:String):[Dictionary]
+
 }
 
 type Mutation{
@@ -35,6 +38,11 @@ type BladeProject {
     projectName: String
     bladeTasks(duration: Int): [BladeTask]
     resourceOrder: [ResourceOrder]
+}
+type Dictionary {
+    id: ID!
+    type: String
+    label: String
 }
 
 type BladeTask {
