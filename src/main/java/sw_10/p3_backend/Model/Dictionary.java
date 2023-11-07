@@ -17,6 +17,7 @@ import java.util.Set;
 @Entity // This tells Hibernate to make a table out of this class
 @Table(name = "dictionary")
 @NoArgsConstructor
+@AllArgsConstructor
 @Setter @Getter
 public class Dictionary {
     @Id
