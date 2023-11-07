@@ -40,8 +40,8 @@ type BladeProject {
 type BladeTask {
     id: ID!
     bladeProject: BladeProject
-    startDate: Int
-    endDate: Int
+    startDate: String
+    endDate: String
     duration: Int
     testType: String
     attachPeriod: Int
