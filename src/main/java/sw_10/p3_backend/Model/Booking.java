@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
@@ -13,10 +15,12 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private Date startDate;
     private Date endDate;
     private int duration;
-    private String resourceType; //TODO: Change to enum
+    private String resourceType;
+  
     private int workHours;
 
     @ManyToOne

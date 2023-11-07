@@ -15,15 +15,20 @@ public class BladeTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private Date startDate;
     private Date endDate;
+
     private int duration;
-    private String testType; //TODO: Change to enum //private taskType taskType;
+
+    private String testType;
     private int attachPeriod;
     private int detachPeriod;
     private String taskName;
     private int testRig;
-    //private int state; //TODO: Change to enum
+
+    public enum taskState { NOT_STARTED, IN_PROGRESS, COMPLETED }
+    private taskState state;
 
     @ManyToOne
     @JoinColumn(name = "bladeProjectId")
