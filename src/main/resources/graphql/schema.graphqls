@@ -37,7 +37,7 @@ type BladeProject {
     customer: String
     projectLeader: String
     projectName: String
-    bladeTasks(duration: Int): [BladeTask]
+    bladeTasks: [BladeTask]
     resourceOrder: [ResourceOrder]
 }
 type Dictionary {
@@ -48,9 +48,9 @@ type Dictionary {
 
 type BladeTask {
     id: ID!
-    project: BladeProject
-    startDate: Int
-    endDate: Int
+    bladeProject: BladeProject
+    startDate: String
+    endDate: String
     duration: Int
     testType: String
     attachPeriod: Int

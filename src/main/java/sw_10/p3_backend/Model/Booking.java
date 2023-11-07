@@ -2,6 +2,7 @@ package sw_10.p3_backend.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.Date;
 
 import java.util.Date;
 
@@ -14,10 +15,12 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int startDate;
+
+    private Date startDate;
     private Date endDate;
-    private Date duration;
+    private int duration;
     private String resourceType;
+  
     private int workHours;
 
     @ManyToOne

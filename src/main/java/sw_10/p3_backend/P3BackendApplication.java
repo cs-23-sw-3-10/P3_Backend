@@ -11,6 +11,7 @@ public class P3BackendApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(P3BackendApplication.class, args);
+
     }
 
 }

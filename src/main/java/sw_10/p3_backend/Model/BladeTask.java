@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 @Entity
 @Table(name = "bladeTask")
@@ -14,8 +15,10 @@ public class BladeTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int startDate; //start_date
-    private int endDate;
+
+    private Date startDate;
+    private Date endDate;
+
     private int duration;
 
     private String testType;
@@ -38,13 +41,13 @@ public class BladeTask {
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<ResourceOrder> resourceOrder = new ArrayList<>();
 
-    public BladeTask(int startDate, int endDate, BladeProject bladeProject){
+    public BladeTask(Date startDate, Date endDate, BladeProject bladeProject){
         setStartDate(startDate);
         setDuration(duration);
         setBladeProject(bladeProject);
     }
 
-    public BladeTask(int startDate, int endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {
+    public BladeTask(Date startDate, Date endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.duration = duration;
