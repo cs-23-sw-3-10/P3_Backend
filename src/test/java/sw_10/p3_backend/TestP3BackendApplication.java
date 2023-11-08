@@ -1,13 +1,18 @@
 package sw_10.p3_backend;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
+
 
 @TestConfiguration(proxyBeanMethods = false)
 public class TestP3BackendApplication {
+
+
     @Bean
     @ServiceConnection
     PostgreSQLContainer postgreSQLContainer(){
