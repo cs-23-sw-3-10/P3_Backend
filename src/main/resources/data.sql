@@ -11,7 +11,8 @@ VALUES ('testType', 'Flapwise Static Proof'),
        ('testType', 'Flapwise Fatigue'),
        ('testType', 'Edgewise Fatigue'),
        ('technician', 'Blacksmith'),
-       ('technician', 'Mechanical');
+       ('technician', 'Mechanical'),
+       ('testRigs', '6');
 
 --Inserting data for 'blade_project' table
 insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (1, '2023-12-07 03:08:02', '2024-06-07 03:08:02', 'Goldwind', 'Curran Chanter', 'Gw-53');
