@@ -21,7 +21,7 @@ public class ScheduleLogic {
         try {
             return scheduleRepository.findById(Long.valueOf(id)).orElseThrow(() -> new IdNotFoundException("No schedule found with id: " + id));
         }catch (IdNotFoundException e) {
-            System.out.println("schedule not found: " + e.getMessage());
+            System.out.println("ScheduleById: " + e.getMessage());
             throw e;
         }catch (Exception e) {
         throw new RuntimeException("Error getting schedule",e);

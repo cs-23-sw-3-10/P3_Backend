@@ -7,10 +7,12 @@ import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.BladeTaskInput;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
+import sw_10.p3_backend.exception.IdNotFoundException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class BladeTaskLogic {
@@ -48,7 +50,19 @@ public class BladeTaskLogic {
         }
 
     public BladeTask findOne(Integer id){
-        return bladeTaskRepository.findById(Long.valueOf(id)).get();
+        try {
+            Optional<BladeTask> bladeTask = bladeTaskRepository.findById(Long.valueOf(id));
+            if (bladeTask.isEmpty()) {
+                throw new IdNotFoundException("BladeTask not found with id: " + id);
+            }
+            return bladeTask.get();
+        } catch (IdNotFoundException e) {
+            System.out.println("BladeTask not found: " + e.getMessage());
+            throw e;
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Error getting BladeTask",e);
+        }
     }
 
     }

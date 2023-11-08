@@ -24,7 +24,7 @@ public class DictionaryLogic {
             }
             return dictionaries;
         } catch (IdNotFoundException e) {
-            System.out.println("dictionary not found: " + e.getMessage());
+            System.out.println("dictionaryAllByCategory: " + e.getMessage());
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Error getting dictionary", e);
