@@ -29,6 +29,7 @@ class BladeProjectControllerIntTest {
                   }
                 }
                 """;
+
         graphQlTester.document(document).execute().path("allBladeProjects").entityList(BladeProject.class).hasSize(4);
 
     }
