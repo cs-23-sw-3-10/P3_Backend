@@ -57,7 +57,7 @@ class BookingRepositoryTest {
 
         LocalDate test = LocalDate.now();
         System.out.println(test);
-        
+
         // Save bookings to the repository
         bookingRepository.save(booking1);
         bookingRepository.save(booking2);
