@@ -32,8 +32,8 @@ type Mutation{
 type BladeProject {
     id: ID!
     schedule: Schedule
-    startDate: Int
-    endDate: Int
+    startDate: String
+    endDate: String
     customer: String
     projectLeader: String
     projectName: String
@@ -133,8 +133,8 @@ input BladeProjectInput {
 }
 
 input BladeTaskInput {
-    startDate: Int
-    endDate: Int
+    startDate: String
+    endDate: String
     duration: Int
     attachPeriod: Int
     detachPeriod: Int

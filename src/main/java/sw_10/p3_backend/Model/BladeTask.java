@@ -3,6 +3,7 @@ package sw_10.p3_backend.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -16,9 +17,9 @@ public class BladeTask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private Date startDate;
-    private Date endDate;
-
+    private LocalDate startDate;
+    private LocalDate endDate;
+  
     private int duration;
 
     private String testType;
@@ -41,13 +42,13 @@ public class BladeTask {
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<ResourceOrder> resourceOrder = new ArrayList<>();
 
-    public BladeTask(Date startDate, Date endDate, BladeProject bladeProject){
+    public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);
         setDuration(duration);
         setBladeProject(bladeProject);
     }
 
-    public BladeTask(Date startDate, Date endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {
+    public BladeTask(LocalDate startDate, LocalDate endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.duration = duration;
