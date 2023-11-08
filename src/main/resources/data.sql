@@ -2,6 +2,17 @@
 INSERT INTO schedule (id, is_active)
 VALUES (1, TRUE),
        (2, FALSE);
+       
+--Inserting data for 'dictionary' table
+INSERT INTO dictionary (category, label)
+VALUES ('testType', 'Flapwise Static Proof'),
+       ('testType', 'Edgewise Static Proof'),
+       ('testType', 'Post Fatigue Static'),
+       ('testType', 'Flapwise Fatigue'),
+       ('testType', 'Edgewise Fatigue'),
+       ('technician', 'Blacksmith'),
+       ('technician', 'Mechanical'),
+       ('testRigs', '6');
 
 --Inserting data for 'blade_project' table
 insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (1, '2023-12-07 03:08:02', '2024-06-07 03:08:02', 'Goldwind', 'Curran Chanter', 'Gw-53');
@@ -146,6 +157,7 @@ insert into engineer (name, work_hours, max_work_hours) values ('Gabriello Saban
 
 insert into technician (id, type, work_hours, max_work_hours, count) values (1, 'Smith', 34, 32, 10);
 insert into technician (id, type, work_hours, max_work_hours, count) values (2, 'Electrician', 11, 34, 16);
+
 
 insert into equipment (type, name, calibration_expiration_date) values ('Stabilizer A', 'Sta-1', '2024-05-14 13:47:53');
 insert into equipment (type, name, calibration_expiration_date) values ('Single Axis Exciter B', 'Exc-2', '2025-12-08 15:13:36');

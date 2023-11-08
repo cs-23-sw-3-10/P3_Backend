@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
@@ -17,8 +19,8 @@ public class ResourceOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type;
-    private int startDate;
-    private int endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private int duration;
     private int workHours;
 
