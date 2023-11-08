@@ -32,6 +32,4 @@ public class ScheduleLogic {
         return scheduleRepository.findAll();
     }
 
-
-
 }

@@ -6,6 +6,8 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.Date;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter @Setter
@@ -15,10 +17,13 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private LocalDate startDate;
     private LocalDate endDate;
+
     private int duration;
-    private String resourceType; //TODO: Change to enum
+    private String resourceType;
+  
     private int workHours;
 
     @ManyToOne
