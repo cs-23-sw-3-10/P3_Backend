@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Equipment {
     private int id;
     private static List<String> equpmentList;
     private String type;
-    private Date calibrationExpirationDate;
+    private LocalDate calibrationExpirationDate;
     private String name;
 
     @OneToMany(mappedBy = "equipment", cascade = CascadeType.ALL)

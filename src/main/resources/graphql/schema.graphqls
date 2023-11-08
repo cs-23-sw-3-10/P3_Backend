@@ -28,8 +28,8 @@ type Mutation{
 type BladeProject {
     id: ID!
     schedule: Schedule
-    start_date: Int
-    end_date: Int
+    startDate: String
+    endDate: String
     customer: String
     projectLeader: String
     projectName: String
@@ -62,8 +62,8 @@ type Schedule {
 type ResourceOrder {
     id: ID!
     duration: Int
-    start_date: String
-    end_date: String
+    startDate: String
+    endDate: String
     type: String
     workHours: Int
     task: BladeTask
@@ -71,8 +71,8 @@ type ResourceOrder {
 
 type Booking {
     id: ID!
-    start_date: String
-    end_date: String
+    startDate: String
+    endDate: String
     duration: Int
     resourceType: String
     workHours: Int
@@ -116,16 +116,16 @@ type Conflict {
 
 input BladeProjectInput {
     scheduleId: ID
-    start_date: String
-    end_date: String
+    startDate: String
+    endDate: String
     customer: String
     projectLeader: String
     projectName: String
 }
 
 input BladeTaskInput {
-    startDate: Int
-    endDate: Int
+    startDate: String
+    endDate: String
     duration: Int
     attachPeriod: Int
     detachPeriod: Int
