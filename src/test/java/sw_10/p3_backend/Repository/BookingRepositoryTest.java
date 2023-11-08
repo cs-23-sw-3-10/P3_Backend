@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 class BookingRepositoryTest {
 
     // This container starts a PostgreSQL database container
+
+
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0");
@@ -45,8 +47,8 @@ class BookingRepositoryTest {
     void testFindOverlappingEventsShouldReturnOverlappingBookings(){
 
 
-        Equipment e1 = new Equipment(1, "hammer", new Date(11), "hammer1", null);
-        Equipment e2 = new Equipment(2, "saw", new Date(11), "hammer1", null);
+        Equipment e1 = new Equipment(1, "hammer", LocalDate.of(2000,10,10), "hammer1", null);
+        Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "hammer1", null);
 
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
