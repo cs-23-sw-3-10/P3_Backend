@@ -80,6 +80,7 @@ type ResourceOrder {
 
 type Booking {
     id: ID!
+
     startDate: String
     endDate: String
     duration: Int

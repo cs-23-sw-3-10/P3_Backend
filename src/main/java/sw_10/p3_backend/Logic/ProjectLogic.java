@@ -2,6 +2,7 @@ package sw_10.p3_backend.Logic;
 
 
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
@@ -15,10 +16,11 @@ import java.util.List;
 
 @Service
 public class ProjectLogic {
-    
+
 
     private final BladeProjectRepository BladeProjectRepository;
     private final ScheduleRepository scheduleRepository;
+
 
     public ProjectLogic(BladeProjectRepository bladeProjectRepository, ScheduleRepository scheduleRepository){
         this.BladeProjectRepository = bladeProjectRepository;
