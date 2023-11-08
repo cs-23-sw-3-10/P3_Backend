@@ -17,7 +17,9 @@ public class Conflict {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String type;
+
+    //public enum conflictType { OVERLAP, PERSONNEL, EQUIPMENT }
+    private int type;
     private String message;
 
 
