@@ -13,14 +13,8 @@ public class EquipmentLogic {
         this.equipmentRepository = equipmentRepository;
     }
 
-    public Equipment EquipmentById(Integer id){
-        try {
-            return equipmentRepository.findById(Long.valueOf(id)).orElseThrow(() -> new IdNotFoundException("No equipment found with id: " + id));
-        } catch (IdNotFoundException e) {
-            System.out.println("EquipmentById: " + e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Error getting engineer",e);
-        }
+    public Equipment EquipmentById(Integer id) throws IdNotFoundException {
+        // Custom Exception Handling
+        return equipmentRepository.findById(Long.valueOf(id)).orElseThrow(() -> new IdNotFoundException("No equipment found with id: " + id));
     }
 }

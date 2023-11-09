@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.EquipmentLogic;
 import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Repository.EquipmentRepository;
+import sw_10.p3_backend.exception.IdNotFoundException;
 
 import java.util.List;
 
@@ -21,7 +22,6 @@ public class EquipmentController {
         this.equipmentRepository = equipmentRepository;
         this.equipmentLogic = equipmentLogic;
     }
-
 
     @QueryMapping
     public List<Equipment> AllEquipment() {
