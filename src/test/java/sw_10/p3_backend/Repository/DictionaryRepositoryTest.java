@@ -4,23 +4,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Dictionary;
-import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.TestP3BackendApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 // ActiveProfiles specify that application-test.properties will be used for database config(In order to not inject data from data.sql)
 // Use Testcontainers to create a real PostgreSQL database container instead of mockup

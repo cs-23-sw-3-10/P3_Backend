@@ -34,8 +34,10 @@ class EngineerControllerIntTest {
     @Autowired
     HttpGraphQlTester httpGraphQlTester;
 
+
     @Test
     void findAllEngineersShouldReturnAllEngineers(){
+
         String document = """
                 query AllEngineers {
                     AllEngineers {

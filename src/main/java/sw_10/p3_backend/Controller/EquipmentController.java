@@ -3,19 +3,12 @@ package sw_10.p3_backend.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Repository.EquipmentRepository;
 import sw_10.p3_backend.exception.IdNotFoundException;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Controller
