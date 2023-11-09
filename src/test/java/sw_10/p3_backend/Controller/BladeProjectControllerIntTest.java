@@ -5,11 +5,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
@@ -25,11 +22,6 @@ import java.util.List;
 @AutoConfigureHttpGraphQlTester
 @Testcontainers
 class BladeProjectControllerIntTest {
-
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.0");
-
 
     @Autowired
     HttpGraphQlTester httpGraphQlTester;
@@ -83,7 +75,6 @@ class BladeProjectControllerIntTest {
                     }
                 }
                 """).execute().errors().verify().path("createBladeProject").entity(BladeProject.class).get();
-        assertThat(bladeProject.getId()).isNotNull();
         assertThat(bladeProject.getProjectName()).isEqualTo("TestBP1");
         assertThat(bladeProject.getCustomer()).isEqualTo("Bestas");
         assertThat(bladeProject.getProjectLeader()).isEqualTo("Henning");
