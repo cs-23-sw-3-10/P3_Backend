@@ -13,4 +13,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             .allowedOrigins("http://localhost:3000")
             .allowedMethods("GET","POST","DELETE","HEAD","OPTIONS");
     }
+
+    //i made a change
+
 }
