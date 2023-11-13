@@ -6,9 +6,8 @@ import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
-import sw_10.p3_backend.exception.IdNotFoundException;
-import sw_10.p3_backend.exception.ScheduleCreationException;
-import sw_10.p3_backend.exception.ScheduleNotFoundException;
+import sw_10.p3_backend.exception.InputInvalidException;
+
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class BladeProjectLogic {
     }
 
     public String deleteProject(Long id) {
-        BladeProject project = BladeProjectRepository.findById(id).orElseThrow(() -> new IdNotFoundException("Project with id " + id + " not found"));
+        BladeProject project = BladeProjectRepository.findById(id).orElseThrow(() -> new InputInvalidException("Project with id " + id + " not found"));
         if(project.getBladeTasks().isEmpty()) {//makes sure the project has no tasks before deleting
             BladeProjectRepository.deleteById(id);
             return "Project deleted";

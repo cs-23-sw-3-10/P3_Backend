@@ -26,8 +26,9 @@ public class BladeTask {
     private String taskName;
     private int testRig;
 
-    public BladeTask(LocalDate startDate, LocalDate endDate, Integer duration, String s, Integer integer, Integer integer1, String s1, BladeProject bladeProject) {
-
+    public void addResourceOrder(ResourceOrder resourceOrder) {
+        resourceOrders.add(resourceOrder);
+        resourceOrder.setBladeTask(this);
     }
 
     public enum taskState { NOT_STARTED, IN_PROGRESS, COMPLETED }
@@ -42,7 +43,7 @@ public class BladeTask {
     private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
-    private List<ResourceOrder> resourceOrder = new ArrayList<>();
+    private List<ResourceOrder> resourceOrders = new ArrayList<>();
 
     public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);
@@ -58,7 +59,6 @@ public class BladeTask {
         this.attachPeriod = attachPeriod;
         this.detachPeriod = detachPeriod;
         this.taskName = taskName;
-        this.testRig = testRig;
         this.bladeProject = bladeProject;
     }
 }

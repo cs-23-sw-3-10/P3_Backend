@@ -2,9 +2,7 @@ package sw_10.p3_backend.Logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sw_10.p3_backend.Model.BladeProject;
-import sw_10.p3_backend.Model.BladeTask;
-import sw_10.p3_backend.Model.BladeTaskInput;
+import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
@@ -12,8 +10,6 @@ import sw_10.p3_backend.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,26 +36,63 @@ public class BladeTaskLogic {
         }
     }
 
-        public BladeTask createBladeTask(BladeTaskInput input){
-            //get bladeproject from input and find it in db and save it to bt
-            BladeProject bladeProject = bladeProjectRepository.findById((long) input.bladeProjectId()).get();
+    public BladeTask createBladeTask(BladeTaskInput input) {
+        // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
+        validateBladeTaskInput(input);
+        
+        // Find the blade project in the database
+        BladeProject bladeProject = bladeProjectRepository.findById((long) input.bladeProjectId())
+                .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + input.bladeProjectId()));
 
-            LocalDate endDate = null;
-            //calculate end date from start date and duration
-            if(input.startDate() != null) {
-                endDate = input.startDate().plusDays(input.duration());
-            }
+        LocalDate endDate = calculateEndDate(input);
+        
+        
+        //Set testrig to 0 if none is provided
+        int testRigValue = Optional.ofNullable(input.testRig()).orElse(0);
 
-            BladeTask newBladeTask = new BladeTask(input.startDate(), endDate, input.duration(), input.testType(),
-                        input.attachPeriod(), input.detachPeriod(), input.taskName(),
-                        input.testRig(), bladeProject);
+        // Create a new BladeTask instance
+        BladeTask newBladeTask = new BladeTask(
+                input.startDate(),
+                endDate,
+                input.duration(),
+                input.testType(),
+                input.attachPeriod(),
+                input.detachPeriod(),
+                input.taskName(),
+                testRigValue,
+                bladeProject
+        );
 
-            return bladeTaskRepository.save(newBladeTask);
+
+        System.out.println(input);
+
+// Create a new ResourceOrder for each ResourceOrderInput in the input
+        for (ResourceOrderInput resourceOrderInput : input.resourceOrders()) {
+            // Create a new ResourceOrder instance
+            ResourceOrder resourceOrder = new ResourceOrder(
+                    resourceOrderInput.type(),
+                    resourceOrderInput.amount(),
+                    resourceOrderInput.equipmentAssignmentStatus(),
+                    resourceOrderInput.workHours(),
+                    newBladeTask);
+
+
+
+            // Save the new ResourceOrder in the database
+            newBladeTask.addResourceOrder(resourceOrder);
+
         }
 
-        public List<BladeTask> findAll(){
-            return bladeTaskRepository.findAll();
-        }
+        // Save the new BladeTask in the database
+        bladeTaskRepository.save(newBladeTask);
+
+        // Return the new BladeTask
+        return newBladeTask;
+    }
+
+    public List<BladeTask> findAll(){
+        return bladeTaskRepository.findAll();
+    }
 
     public BladeTask findOne(Integer id) throws NotFoundException {
         try {
@@ -73,5 +106,34 @@ public class BladeTaskLogic {
             throw new RuntimeException("Error getting BladeTask", e);
         }
     }
+
+    private void validateBladeTaskInput(BladeTaskInput input){
+        if (input.duration() == null) {
+            throw new InputInvalidException("duration is mandatory");
+        }
+        if (input.testType() == null) {
+            throw new InputInvalidException("testType is mandatory");
+        }
+        if (input.attachPeriod() == null) {
+            throw new InputInvalidException("attachPeriod is mandatory");
+        }
+        if (input.detachPeriod() == null) {
+            throw new InputInvalidException("detachPeriod is mandatory");
+        }
+        if (input.taskName() == null) {
+            throw new InputInvalidException("taskName is mandatory");
+        }
+        if(input.startDate()!= null && LocalDate.now().isAfter(input.startDate())){
+            throw new InputInvalidException("startDate cannot be in the past");
+        }
+    }
+
+    private LocalDate calculateEndDate(BladeTaskInput input) {
+        if (input.startDate() != null && input.duration() != null) {
+            return input.startDate().plusDays(input.duration());
+        }
+        return null;
+    }
 }
+
 

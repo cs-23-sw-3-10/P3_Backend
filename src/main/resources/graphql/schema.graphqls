@@ -61,7 +61,7 @@ type BladeTask {
     taskName: String
     testRig: Int
     bookings: [Booking]
-    resourceOrder: [ResourceOrder]
+    resourceOrders: [ResourceOrder]
 }
 
 type Schedule {
@@ -73,12 +73,10 @@ type Schedule {
 
 type ResourceOrder {
     id: ID!
-    duration: Int
-    startDate: String
-    endDate: String
     type: String
+    amount: Int
     workHours: Int
-    task: BladeTask
+    equipmentAssignmentStatus: [Boolean]
 }
 
 type Booking {
@@ -146,5 +144,12 @@ input BladeTaskInput {
     bladeProjectId: ID!
     taskName: String!
     testType: String!
+    resourceOrders: [ResourceOrderInput]
 }
 
+input ResourceOrderInput {
+    type: String
+    amount: Int
+    workHours: Int
+    equipmentAssignmentStatus: [Boolean]
+}
