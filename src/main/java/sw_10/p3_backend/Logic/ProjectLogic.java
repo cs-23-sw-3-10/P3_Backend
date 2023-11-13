@@ -1,6 +1,7 @@
 package sw_10.p3_backend.Logic;
 
 
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,8 +9,7 @@ import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
-import sw_10.p3_backend.exception.ScheduleCreationException;
-import sw_10.p3_backend.exception.ScheduleNotFoundException;
+import sw_10.p3_backend.exception.NotFoundException;
 
 import java.util.List;
 
@@ -30,14 +30,14 @@ public class ProjectLogic {
     public BladeProject createProject(Integer scheduleId, String name, String customer, String projectLeader) {
         try {
             Schedule schedule = scheduleRepository.findById(Long.valueOf(scheduleId)).orElseThrow(
-                    ()->new ScheduleNotFoundException("No schedule found with id:" + scheduleId));
+                    ()->new NotFoundException("No schedule found with id:" + scheduleId));
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader);
             return BladeProjectRepository.save(project);
-        } catch (ScheduleNotFoundException e) {
+        } catch (NotFoundException e) {
             System.out.println("schedule not found: " + e.getMessage());
             throw e;
         }catch (Exception e) {
-            throw new ScheduleCreationException("Error creating project",e);
+            throw new RuntimeException("Error creating project",e);
         }
     }
 

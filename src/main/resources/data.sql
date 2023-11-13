@@ -1,8 +1,8 @@
---Inserting data for 'schedule' table 
+--Inserting data for 'schedule' table
 INSERT INTO schedule (id, is_active)
 VALUES (1, TRUE),
        (2, FALSE);
-       
+
 --Inserting data for 'dictionary' table
 INSERT INTO dictionary (category, label)
 VALUES ('testType', 'Flapwise Static Proof'),
@@ -39,7 +39,7 @@ insert into blade_project (schedule_id, start_date, end_date, customer, project_
 
 
 
- --Inserting data for 'blade_task' table with 3 consecutive tasks for each project
+--Inserting data for 'blade_task' table with 3 consecutive tasks for each project
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2023-12-07 08:07:32', 20, '2023-12-27', 'flapwise static proof', 4, 2, 'BT-1', 5);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-02-27', 15, '2024-03-13', 'flapwise fatigue', 3, 2, 'BT-2', 4);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-05-12', 10, '2024-05-22', 'flapwise fatigue', 2, 1, 'BT-3', 2);
@@ -143,7 +143,7 @@ insert into blade_task (blade_project_id, start_date, duration, end_date, test_t
 
 
 
- --Inserting data for 'equipment', 'engineer' and 'technician' tables
+--Inserting data for 'equipment', 'engineer' and 'technician' tables
 insert into engineer (name, work_hours, max_work_hours) values ('Rodney Serle', 39, 96);
 insert into engineer (name, work_hours, max_work_hours) values ('Garvey Hush', 66, 120);
 insert into engineer (name, work_hours, max_work_hours) values ('Hart Giocannoni', 137, 53);

@@ -11,16 +11,28 @@ import org.springframework.graphql.execution.ErrorType;
 @Component
 public class CustomExceptionResolver extends DataFetcherExceptionResolverAdapter {
 
-    @Override
-    protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env){
-        if(ex instanceof ScheduleNotFoundException || ex instanceof IdNotFoundException) {
+    protected GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
+        if (ex instanceof NotFoundException) {
             return GraphqlErrorBuilder.newError()
                     .errorType(ErrorType.NOT_FOUND)
-                    .message(ex.getMessage())
+                    .message("NotFound: " + ex.getMessage())
                     .path(env.getExecutionStepInfo().getPath())
                     .location(env.getField().getSourceLocation())
                     .build();
-        }else
-            return null;
+        } else if (ex instanceof InputInvalidException) {
+            return GraphqlErrorBuilder.newError()
+                    .errorType(ErrorType.BAD_REQUEST)
+                    .message("InputInvalid: " + ex.getMessage())
+                    .path(env.getExecutionStepInfo().getPath())
+                    .location(env.getField().getSourceLocation())
+                    .build();
+        } else {
+            return GraphqlErrorBuilder.newError()
+                    .errorType(ErrorType.INTERNAL_ERROR)
+                    .message("InternalError: " + ex.getMessage())
+                    .path(env.getExecutionStepInfo().getPath())
+                    .location(env.getField().getSourceLocation())
+                    .build();
         }
     }
+}

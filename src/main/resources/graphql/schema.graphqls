@@ -21,6 +21,7 @@ type Query {
 
     DictionaryAllByCategory(category:String):[Dictionary]
 
+    DeleteBladeProject(id:ID!):BladeProject
 
 }
 

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.BladeTaskLogic;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.BladeTaskInput;
+import sw_10.p3_backend.exception.InputInvalidException;
+
 import java.util.List;
 
 
@@ -26,8 +28,17 @@ public class BladeTaskController {
     }
 
     @QueryMapping
-    public BladeTask BladeTaskById(@Argument Integer id){
-        return bladeTaskLogic.findOne(id);
+    public BladeTask BladeTaskById(@Argument Integer id) {
+        try {
+            if (id == null) { // Just in case. Should be caught by GraphQL validation.
+                throw new InputInvalidException("cannot parse null");
+            }
+            return bladeTaskLogic.findOne(id);
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @MutationMapping
