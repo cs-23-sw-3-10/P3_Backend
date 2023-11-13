@@ -8,6 +8,7 @@ import sw_10.p3_backend.Model.BladeTaskInput;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,10 +38,18 @@ public class BladeTaskLogic {
     }
 
         public BladeTask createBladeTask(BladeTaskInput input){
+            //get bladeproject from input and find it in db and save it to bt
+            BladeProject bladeProject = bladeProjectRepository.findById((long) input.bladeProjectId()).get();
 
-            BladeProject bp = bladeProjectRepository.findById((long) input.bladeProjectId()).get();
-            BladeTask nybt = new BladeTask(input.startDate(), input.endDate(), input.duration(),input.testType(), input.attachPeriod(), input.detachPeriod(),input.taskName(),input.testRig(),bp);
-            return bladeTaskRepository.save(nybt);
+            //calculate end date from start date and duration
+            LocalDate endDate = input.startDate().plusDays(input.duration());
+
+
+            BladeTask newBladeTask = new BladeTask(input.startDate(), endDate, input.duration(), input.testType(),
+                        input.attachPeriod(), input.detachPeriod(), input.taskName(),
+                        input.testRig(), bladeProject);
+
+            return bladeTaskRepository.save(newBladeTask);
         }
 
         public List<BladeTask> findAll(){

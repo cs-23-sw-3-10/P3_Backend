@@ -28,6 +28,10 @@ public class BladeTask {
     private String taskName;
     private int testRig;
 
+    public BladeTask(LocalDate startDate, LocalDate endDate, Integer duration, String s, Integer integer, Integer integer1, String s1, BladeProject bladeProject) {
+
+    }
+
     public enum taskState { NOT_STARTED, IN_PROGRESS, COMPLETED }
     private taskState state;
 
