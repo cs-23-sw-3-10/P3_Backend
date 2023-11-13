@@ -29,7 +29,7 @@ type Mutation{
     createBladeProject(name: String, customer: String, projectLeader: String) :BladeProject
     deleteBladeProject(id:ID!):String
 
-    createBladeTask(bladeTask:BladeTaskInput!):BladeTask
+    createBladeTask(bladeTask:BladeTaskInput):BladeTask
 }
 
 type BladeProject {
@@ -139,12 +139,12 @@ input BladeProjectInput {
 input BladeTaskInput {
     startDate: String
     endDate: String
-    duration: Int
-    attachPeriod: Int
-    detachPeriod: Int
+    duration: Int!
+    attachPeriod: Int!
+    detachPeriod: Int!
     testRig: Int
-    bladeProjectId: ID
-    taskName: String
-    testType: String
+    bladeProjectId: ID!
+    taskName: String!
+    testType: String!
 }
 

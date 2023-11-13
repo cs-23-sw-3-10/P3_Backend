@@ -44,9 +44,11 @@ public class BladeTaskLogic {
             //get bladeproject from input and find it in db and save it to bt
             BladeProject bladeProject = bladeProjectRepository.findById((long) input.bladeProjectId()).get();
 
+            LocalDate endDate = null;
             //calculate end date from start date and duration
-            LocalDate endDate = input.startDate().plusDays(input.duration());
-
+            if(input.startDate() != null) {
+                endDate = input.startDate().plusDays(input.duration());
+            }
 
             BladeTask newBladeTask = new BladeTask(input.startDate(), endDate, input.duration(), input.testType(),
                         input.attachPeriod(), input.detachPeriod(), input.taskName(),
