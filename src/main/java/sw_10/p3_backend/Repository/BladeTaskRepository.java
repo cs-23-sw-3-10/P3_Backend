@@ -7,4 +7,5 @@ import sw_10.p3_backend.Model.BladeTask;
 
 @Repository
 public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
+
 }
