@@ -17,11 +17,17 @@ public class DictionaryLogic {
     }
 
     public List<Dictionary> dictionaryAllByCategory(String category) {
-        List<Dictionary> dictionaries = dictionaryRepository.findAllByCategory(category);
-        if (dictionaries.isEmpty()) {
-            throw new NotFoundException("No dictionary found with category: " + category);
+        try {
+            List<Dictionary> dictionaries = dictionaryRepository.findAllByCategory(category);
+            if (dictionaries.isEmpty()) {
+                throw new NotFoundException("No dictionary found with category: " + category);
+            }
+            return dictionaries;
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting dictionaries");
         }
-        return dictionaries;
     }
 
 }

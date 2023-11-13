@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.EngineerLogic;
 import sw_10.p3_backend.Model.Engineer;
 import sw_10.p3_backend.Repository.EngineerRepository;
+import sw_10.p3_backend.exception.InputInvalidException;
 
 import java.util.List;
 
@@ -26,7 +27,16 @@ public class EngineerController {
     }
 
     @QueryMapping
-    public Engineer EngineerById(@Argument Integer id){
-        return engineerLogic.EngineerById(id);
+    public Engineer EngineerById(@Argument Integer id) {
+        try {
+            if (id == null) { // Just in case. Should be caught by GraphQL validation.
+                throw new InputInvalidException("cannot parse null");
+            }
+            return engineerLogic.EngineerById(id);
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

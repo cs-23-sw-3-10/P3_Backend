@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.EquipmentLogic;
 import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Repository.EquipmentRepository;
-import sw_10.p3_backend.exception.IdNotFoundException;
+import sw_10.p3_backend.exception.InputInvalidException;
 
 import java.util.List;
 
@@ -35,6 +35,15 @@ public class EquipmentController {
 
     @QueryMapping
     public Equipment EquipmentById(@Argument Integer id) {
-        return equipmentLogic.EquipmentById(id);
+        try {
+            if (id == null) {
+                throw new InputInvalidException("cannot parse null");
+            }
+            return equipmentLogic.EquipmentById(id);
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

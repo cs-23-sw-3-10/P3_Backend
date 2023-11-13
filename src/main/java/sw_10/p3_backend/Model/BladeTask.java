@@ -6,7 +6,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 @Entity
 @Table(name = "bladeTask")
@@ -16,7 +15,6 @@ public class BladeTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private LocalDate startDate;
     private LocalDate endDate;
   
