@@ -1,6 +1,7 @@
 package sw_10.p3_backend.Logic;
 
 import org.springframework.stereotype.Service;
+import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Model.ResourceOrder;
@@ -18,19 +19,29 @@ public class BookingLogic {
     }
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
-    public void createBookings(List<ResourceOrder> resourceOrders) {
+    public void createBookings(List<ResourceOrder> resourceOrders, BladeTask bladeTask) {
         for (ResourceOrder resourceOrder: resourceOrders) {
 
             List<Equipment> freeEquipment = bookingRepository.findAvailableEquipment(resourceOrder.getStartDate(),
                     resourceOrder.getEndDate(), resourceOrder.getType());
-            //Add logic to check if there are any overlapping bookings
-            System.out.println(freeEquipment);
+
+            //TODO: Update to handle all types of equipment
             if (!freeEquipment.isEmpty()){
                 //If there is available equipment create a booking using the first available equipment
-                Booking newBooking = new Booking(resourceOrder.getStartDate(), resourceOrder.getEndDate(), freeEquipment.get(0));
-                System.out.println(newBooking);
+                Booking newBooking = new Booking(resourceOrder.getStartDate(), resourceOrder.getEndDate(), freeEquipment.get(0), bladeTask);
                 bookingRepository.save(newBooking);
+            }else {
+                //If there is no available equipment create a booking with no equipment and spawn a conflict!
+                Booking newBooking = new Booking(resourceOrder.getStartDate(), resourceOrder.getEndDate(), null, bladeTask);
+                bookingRepository.save(newBooking);
+
+                conflictHandler(newBooking);
+
             }
         }
+    }
+
+    private void conflictHandler(Booking booking){
+        //call conflict logic that will handle the conflict and push it to the database
     }
 }

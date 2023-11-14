@@ -37,9 +37,10 @@ public class Booking {
     @JoinColumn(name = "equipmentId")
     @Getter(AccessLevel.NONE) private Equipment equipment;
 
-    public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment) {
+    public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.equipment = equipment;
+        this.bladeTask = bladeTask;
     }
 }

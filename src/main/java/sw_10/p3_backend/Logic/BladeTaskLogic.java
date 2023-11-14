@@ -72,12 +72,13 @@ public class BladeTaskLogic {
         // Create resource orders for the blade task (if any)
         List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
 
-        // Create bookings for the blade task (if any)
-        if(testRigValue != 0 && resourceOrders != null){
-            bookingLogic.createBookings(resourceOrders);
-        }
         // Save the new BladeTask in the database
         bladeTaskRepository.save(newBladeTask);
+
+        // Create bookings for the blade task (if any)
+        if(testRigValue != 0 && resourceOrders != null){
+            bookingLogic.createBookings(resourceOrders, newBladeTask);
+        }
 
         // Return the new BladeTask
         return newBladeTask;
