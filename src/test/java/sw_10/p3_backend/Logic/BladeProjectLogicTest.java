@@ -1,3 +1,5 @@
+package sw_10.p3_backend.Logic;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

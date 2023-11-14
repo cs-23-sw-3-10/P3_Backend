@@ -67,21 +67,23 @@ public class BladeTaskLogic {
         System.out.println(input);
 
 // Create a new ResourceOrder for each ResourceOrderInput in the input
-        for (ResourceOrderInput resourceOrderInput : input.resourceOrders()) {
-            // Create a new ResourceOrder instance
-            ResourceOrder resourceOrder = new ResourceOrder(
-                    resourceOrderInput.type(),
-                    resourceOrderInput.amount(),
-                    resourceOrderInput.equipmentAssignmentStatus(),
-                    resourceOrderInput.workHours(),
-                    newBladeTask);
+        if(input.resourceOrders() != null) {
+            for (ResourceOrderInput resourceOrderInput : input.resourceOrders()) {
+                // Create a new ResourceOrder instance
+                ResourceOrder resourceOrder = new ResourceOrder(
+                        resourceOrderInput.type(),
+                        resourceOrderInput.amount(),
+                        resourceOrderInput.equipmentAssignmentStatus(),
+                        resourceOrderInput.workHours(),
+                        newBladeTask);
 
+                // Save the new ResourceOrder in the database
+                newBladeTask.addResourceOrder(resourceOrder);
 
-
-            // Save the new ResourceOrder in the database
-            newBladeTask.addResourceOrder(resourceOrder);
-
+            }
         }
+
+
 
         // Save the new BladeTask in the database
         bladeTaskRepository.save(newBladeTask);
@@ -134,6 +136,7 @@ public class BladeTaskLogic {
         }
         return null;
     }
+
 }
 
 
