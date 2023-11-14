@@ -17,12 +17,15 @@ public class BladeTaskLogic {
 
     private final BladeTaskRepository bladeTaskRepository;
     private final BladeProjectRepository bladeProjectRepository;
+    private final BookingLogic bookingLogic;
 
 
     @Autowired
-    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository) {
+    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
+    , BookingLogic bookingLogic) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
+        this.bookingLogic = bookingLogic;
     }
 
 
@@ -64,9 +67,7 @@ public class BladeTaskLogic {
         );
 
 
-        System.out.println(input);
-
-// Create a new ResourceOrder for each ResourceOrderInput in the input
+        // Create a new ResourceOrder for each ResourceOrderInput in the input
         if(input.resourceOrders() != null) {
             for (ResourceOrderInput resourceOrderInput : input.resourceOrders()) {
                 // Create a new ResourceOrder instance
@@ -82,9 +83,10 @@ public class BladeTaskLogic {
 
             }
         }
-
-
-
+        List<ResourceOrder> resourceOrders = newBladeTask.getResourceOrders();
+        if(testRigValue != 0){
+            bookingLogic.createBookings(resourceOrders);
+        }
         // Save the new BladeTask in the database
         bladeTaskRepository.save(newBladeTask);
 
