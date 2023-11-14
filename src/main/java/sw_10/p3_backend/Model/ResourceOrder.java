@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,7 +37,9 @@ public class ResourceOrder {
     @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public ResourceOrder(String type, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
+    public ResourceOrder(LocalDate startDate, LocalDate endDate, String type, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.type = type;
         this.amount = amount;
         this.workHours = integer;

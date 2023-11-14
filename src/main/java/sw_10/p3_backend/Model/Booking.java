@@ -36,4 +36,10 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "equipmentId")
     @Getter(AccessLevel.NONE) private Equipment equipment;
+
+    public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.equipment = equipment;
+    }
 }

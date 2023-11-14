@@ -23,6 +23,8 @@ class BladeTaskLogicTest {
 
     @Mock
     private BladeProjectRepository bladeProjectRepository;
+    @Mock
+    private BookingLogic bookingLogic;
 
     @Mock
     private BladeTaskRepository bladeTaskRepository;

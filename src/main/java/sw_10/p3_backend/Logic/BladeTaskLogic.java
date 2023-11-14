@@ -14,18 +14,21 @@ import java.util.Optional;
 
 @Service
 public class BladeTaskLogic {
-
+    private final int noTestRigAssignedValue = 0;
     private final BladeTaskRepository bladeTaskRepository;
     private final BladeProjectRepository bladeProjectRepository;
     private final BookingLogic bookingLogic;
+    private final ResourceOrderLogic resourceOrderLogic;
 
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
-    , BookingLogic bookingLogic) {
+    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
+        this.resourceOrderLogic = resourceOrderLogic;
+
     }
 
 
@@ -44,14 +47,13 @@ public class BladeTaskLogic {
         validateBladeTaskInput(input);
         
         // Find the blade project in the database
-        BladeProject bladeProject = bladeProjectRepository.findById((long) input.bladeProjectId())
-                .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + input.bladeProjectId()));
+        BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
+        // Calculate the end date of the blade task
         LocalDate endDate = calculateEndDate(input);
-        
-        
+
         //Set testrig to 0 if none is provided
-        int testRigValue = Optional.ofNullable(input.testRig()).orElse(0);
+        int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
@@ -67,24 +69,11 @@ public class BladeTaskLogic {
         );
 
 
-        // Create a new ResourceOrder for each ResourceOrderInput in the input
-        if(input.resourceOrders() != null) {
-            for (ResourceOrderInput resourceOrderInput : input.resourceOrders()) {
-                // Create a new ResourceOrder instance
-                ResourceOrder resourceOrder = new ResourceOrder(
-                        resourceOrderInput.type(),
-                        resourceOrderInput.amount(),
-                        resourceOrderInput.equipmentAssignmentStatus(),
-                        resourceOrderInput.workHours(),
-                        newBladeTask);
+        // Create resource orders for the blade task (if any)
+        List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
 
-                // Save the new ResourceOrder in the database
-                newBladeTask.addResourceOrder(resourceOrder);
-
-            }
-        }
-        List<ResourceOrder> resourceOrders = newBladeTask.getResourceOrders();
-        if(testRigValue != 0){
+        // Create bookings for the blade task (if any)
+        if(testRigValue != 0 && resourceOrders != null){
             bookingLogic.createBookings(resourceOrders);
         }
         // Save the new BladeTask in the database
@@ -92,6 +81,18 @@ public class BladeTaskLogic {
 
         // Return the new BladeTask
         return newBladeTask;
+    }
+
+    private BladeProject getBladeProject(Long bladeProjectId) {
+        return bladeProjectRepository.findById(bladeProjectId)
+                .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + bladeProjectId));
+    }
+
+    private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
+        if(input.resourceOrders() != null) {
+            return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
+        }
+        return null;
     }
 
     public List<BladeTask> findAll(){
