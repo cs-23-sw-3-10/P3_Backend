@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Service
 public class BladeTaskLogic {
-    private final int noTestRigAssignedValue = 0;
     private final BladeTaskRepository bladeTaskRepository;
     private final BladeProjectRepository bladeProjectRepository;
     private final BookingLogic bookingLogic;
@@ -43,6 +42,7 @@ public class BladeTaskLogic {
     }
 
     public BladeTask createBladeTask(BladeTaskInput input) {
+        System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
         
@@ -53,6 +53,7 @@ public class BladeTaskLogic {
         LocalDate endDate = calculateEndDate(input);
 
         //Set testrig to 0 if none is provided
+        int noTestRigAssignedValue = 0;
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
 
         // Create a new BladeTask instance
@@ -75,7 +76,7 @@ public class BladeTaskLogic {
         // Save the new BladeTask in the database
         bladeTaskRepository.save(newBladeTask);
 
-        // Create bookings for the blade task (if any)
+        // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
         if(testRigValue != 0 && resourceOrders != null){
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
@@ -114,6 +115,16 @@ public class BladeTaskLogic {
     }
 
     private void validateBladeTaskInput(BladeTaskInput input){
+
+        if ((input.startDate() == null && input.testRig() != null) || (input.startDate() != null && input.testRig() == null)) {
+            throw new InputInvalidException("Both startDate and testRig must be provided together");
+        }
+        if (input.testRig() != null && input.testRig() < 0) {   
+            throw new InputInvalidException("testRig cannot be negative");
+        }
+        if (input.bladeProjectId() == null) {
+            throw new InputInvalidException("bladeProjectId is mandatory");
+        }
         if (input.duration() == null) {
             throw new InputInvalidException("duration is mandatory");
         }

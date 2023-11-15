@@ -8,6 +8,11 @@ import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter
 import org.springframework.stereotype.Component;
 import org.springframework.graphql.execution.ErrorType;
 
+
+/*Implementation of the DataFetcherExceptionResolverAdapter class this will be used to handle exceptions thrown by the GraphQL API
+because of the component annotation, this class will be automatically instantiated by Spring. When an error is thrown
+during a call using graphql, the resolveToSingleError method will be called. This method will return a GraphQLError object
+that will be sent back to the client. The GraphQLErrorBuilder class is used to create the GraphQLError object. The ErrorType*/
 @Component
 public class CustomExceptionResolver extends DataFetcherExceptionResolverAdapter {
 
