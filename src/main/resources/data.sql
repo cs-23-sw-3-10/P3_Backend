@@ -26,18 +26,6 @@ insert into blade_project (schedule_id, start_date, end_date, customer, project_
 insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (1, '2025-04-07 03:08:02', '2025-10-07 03:08:02', 'General Electric', 'Lindsey Stutte', 'GE-60');
 insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (1, '2025-06-07 03:08:02', '2025-12-07 03:08:02', 'Siemens', 'Jeromy Ebdon', 'Si-96');
 
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2023-12-07 03:08:02', '2024-06-07 03:08:02', 'Goldwind', 'Curran Chanter', 'Gw-53');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2024-02-07 03:08:02', '2024-08-07 03:08:02', 'Suzlon', 'Clyve Birley', 'Su-95');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2024-04-07 03:08:02', '2024-10-07 03:08:02', 'Vestas', 'Dorian Konzel', 'Ve-40');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2024-06-07 03:08:02', '2024-12-07 03:08:02', 'Suzlon', 'Delinda Pittendreigh', 'Su-52');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2024-08-07 03:08:02', '2025-02-07 03:08:02', 'Siemens', 'Dare Vasiltsov', 'Si-32');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2024-10-07 03:08:02', '2025-04-07 03:08:02', 'Goldwind', 'Sonja Craighall', 'Gw-54');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2024-12-07 03:08:02', '2025-06-07 03:08:02', 'General Electric', 'Dew Ivakhno', 'GE-2');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2025-02-07 03:08:02', '2025-08-07 03:08:02', 'Siemens', 'Jammie Liverock', 'Si-32');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2025-04-07 03:08:02', '2025-10-07 03:08:02', 'General Electric', 'Lindsey Stutte', 'GE-60');
-insert into blade_project (schedule_id, start_date, end_date, customer, project_leader, project_name) values (2, '2025-06-07 03:08:02', '2025-12-07 03:08:02', 'Siemens', 'Jeromy Ebdon', 'Si-96');
-
-
 
 --Inserting data for 'blade_task' table with 3 consecutive tasks for each project
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2023-12-07 08:07:32', 20, '2023-12-27', 'flapwise static proof', 4, 2, 'BT-1', 5);
