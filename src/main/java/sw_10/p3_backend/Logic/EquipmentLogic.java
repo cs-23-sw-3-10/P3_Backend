@@ -3,6 +3,7 @@ package sw_10.p3_backend.Logic;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Repository.EquipmentRepository;
+import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -32,6 +33,7 @@ public class EquipmentLogic {
     }
 
     public Equipment CreateEquipment(String name, String type, String calibrationExpirationDate) {
+        validateInput(name, type, calibrationExpirationDate);
         try {
             Equipment equipment = new Equipment();
             equipment.setName(name);
@@ -40,6 +42,24 @@ public class EquipmentLogic {
             return equipmentRepository.save(equipment);
         } catch (Exception e) {
             throw new RuntimeException("Error creating equipment");
+        }
+    }
+
+    private void validateInput(String name, String type, String calibrationExpirationDate) {
+        if (name == null) {
+            throw new InputInvalidException("Name cannot be empty");
+        }
+        if (equipmentRepository.findByName(name) != null) {
+            throw new InputInvalidException("Equipment with that name already exists");
+        }
+        if (type == null) {
+            throw new InputInvalidException("Type cannot be empty");
+        }
+        if (calibrationExpirationDate == null) {
+            throw new InputInvalidException("Calibration expiration date cannot be empty");
+        }
+        if (LocalDate.parse(calibrationExpirationDate).isBefore(LocalDate.now())) {
+            throw new InputInvalidException("Calibration expiration date cannot be in the past");
         }
     }
 }
