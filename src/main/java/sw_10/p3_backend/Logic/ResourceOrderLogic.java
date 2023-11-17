@@ -12,9 +12,7 @@ import java.util.List;
 @Service
 public class ResourceOrderLogic {
     public List<ResourceOrder> createResourceOrders(List<ResourceOrderInput> resourceOrders, BladeTask bladeTask) {
-        //Add logic to get start date and end date from bladeTask based on equipmentAssignmentStatus.
-        System.out.println(bladeTask.getStartDate());
-        System.out.println(bladeTask.getEndDate());
+        //TODO Add logic to get start date and end date from bladeTask based on equipmentAssignmentStatus
         List<ResourceOrder> resourceOrderList = new ArrayList<>();
         for (ResourceOrderInput resourceOrder: resourceOrders) {
             ResourceOrder newResourceOrder = new ResourceOrder(bladeTask.getStartDate(), bladeTask.getEndDate(), resourceOrder.type(), resourceOrder.amount(),
