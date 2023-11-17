@@ -2,6 +2,7 @@ package sw_10.p3_backend.Controller;
 
 
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.EngineerLogic;
@@ -38,5 +39,10 @@ public class EngineerController {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @MutationMapping
+    public Engineer CreateEngineer(@Argument String name, @Argument Integer maxWorkHours){
+        return engineerLogic.CreateEngineer(name, maxWorkHours);
     }
 }

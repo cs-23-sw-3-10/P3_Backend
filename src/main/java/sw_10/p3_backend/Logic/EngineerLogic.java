@@ -30,4 +30,16 @@ public class EngineerLogic {
             throw new RuntimeException("Error getting engineer",e);
         }
     }
+
+    public Engineer CreateEngineer(String name, Integer maxWorkHours) {
+        try {
+            Engineer engineer = new Engineer();
+            engineer.setName(name);
+            engineer.setMaxWorkHours(maxWorkHours);
+            engineer.setWorkHours(0);
+            return engineerRepository.save(engineer);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating engineer",e);
+        }
+    }
 }

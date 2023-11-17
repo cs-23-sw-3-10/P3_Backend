@@ -30,6 +30,12 @@ type Mutation{
     deleteBladeProject(id:ID!):String
 
     createBladeTask(bladeTask:BladeTaskInput):BladeTask
+
+    CreateEngineer(name:String, workHours:Int, maxWorkHours:Int):Engineer
+
+    CreateEquipment(type:String, calibrationExpirationDate:String, name:String):Equipment
+
+    CreateTechnician(type:String, workHours:Int, maxWorkHours:Int, count:Int):Technician
 }
 
 type BladeProject {

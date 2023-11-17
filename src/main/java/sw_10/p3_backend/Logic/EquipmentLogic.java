@@ -5,6 +5,7 @@ import sw_10.p3_backend.Model.Equipment;
 import sw_10.p3_backend.Repository.EquipmentRepository;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -27,6 +28,18 @@ public class EquipmentLogic {
             throw new NotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Error getting equipment");
+        }
+    }
+
+    public Equipment CreateEquipment(String name, String type, String calibrationExpirationDate) {
+        try {
+            Equipment equipment = new Equipment();
+            equipment.setName(name);
+            equipment.setType(type);
+            equipment.setCalibrationExpirationDate(LocalDate.parse(calibrationExpirationDate));
+            return equipmentRepository.save(equipment);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating equipment");
         }
     }
 }

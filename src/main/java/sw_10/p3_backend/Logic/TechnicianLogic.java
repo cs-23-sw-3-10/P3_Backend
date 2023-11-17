@@ -35,4 +35,16 @@ public class TechnicianLogic {
         }
     }
 
+    public Technician CreateTechnician(String type, Integer maxWorkHours, Integer count) {
+        try {
+            Technician technician = new Technician();
+            technician.setType(type);
+            technician.setMaxWorkHours(maxWorkHours);
+            technician.setWorkHours(0);
+            technician.setCount(count);
+            return technicianRepository.save(technician);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating technician");
+        }
+    }
 }

@@ -143,8 +143,8 @@ insert into engineer (name, work_hours, max_work_hours) values ('Sibylla L''oise
 insert into engineer (name, work_hours, max_work_hours) values ('Marie-jeanne Roselli', 104, 97);
 insert into engineer (name, work_hours, max_work_hours) values ('Gabriello Saban', 63, 62);
 
-insert into technician (id, type, work_hours, max_work_hours, count) values (1, 'Smith', 34, 32, 10);
-insert into technician (id, type, work_hours, max_work_hours, count) values (2, 'Electrician', 11, 34, 16);
+insert into technician (type, work_hours, max_work_hours, count) values ('Smith', 34, 32, 10);
+insert into technician (type, work_hours, max_work_hours, count) values ('Electrician', 11, 34, 16);
 
 
 insert into equipment (type, name, calibration_expiration_date) values ('Stabilizer A', 'Sta-1', '2024-05-14 13:47:53');
