@@ -50,4 +50,14 @@ public class TechnicianLogic {
             throw new RuntimeException("Error creating technician");
         }
     }
+
+    public Technician findTechnicians(String resourceName) {
+        return technicianRepository.findByType(resourceName);
+    }
+
+
+    public void updateTechnician(Technician technician, int duration) {
+        technician.setWorkHours(technician.getWorkHours() + duration);
+        technicianRepository.save(technician);
+    }
 }

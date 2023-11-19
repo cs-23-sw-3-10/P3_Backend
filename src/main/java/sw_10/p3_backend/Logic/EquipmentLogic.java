@@ -7,6 +7,7 @@ import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,10 @@ public class EquipmentLogic {
         } catch (Exception e) {
             throw new RuntimeException("Error creating equipment");
         }
+    }
+
+    public List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String ResourceName) {
+        return equipmentRepository.findAvailableEquipment(start, end, ResourceName);
     }
 
     private void validateInput(String name, String type, String calibrationExpirationDate) {

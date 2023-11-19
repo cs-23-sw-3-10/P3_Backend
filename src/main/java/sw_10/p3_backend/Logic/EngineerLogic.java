@@ -45,4 +45,13 @@ public class EngineerLogic {
             throw new RuntimeException("Error creating engineer",e);
         }
     }
+
+    public Engineer findByName(String name) {
+        return engineerRepository.findByName(name);
+    }
+
+    public void updateEngineer(Engineer engineer, int workHours) {
+        engineer.setWorkHours(workHours);
+        engineerRepository.save(engineer);
+    }
 }

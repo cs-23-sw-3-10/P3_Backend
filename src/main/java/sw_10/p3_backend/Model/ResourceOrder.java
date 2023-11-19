@@ -27,7 +27,8 @@ public class ResourceOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String type;
+    private String resourceType;
+    private String resourceName;
     private int workHours;
     private int amount;
 
@@ -39,8 +40,9 @@ public class ResourceOrder {
     @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public ResourceOrder(String type, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
-        this.type = type;
+    public ResourceOrder(String type, String resourceName, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
+        this.resourceType = type;
+        this.resourceName = resourceName;
         this.amount = amount;
         this.workHours = integer;
         this.bladeTask = newBladeTask;

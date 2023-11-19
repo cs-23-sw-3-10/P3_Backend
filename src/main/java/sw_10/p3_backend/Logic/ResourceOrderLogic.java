@@ -13,17 +13,36 @@ import java.util.List;
 public class ResourceOrderLogic {
     public List<ResourceOrder> createResourceOrders(List<ResourceOrderInput> resourceOrders, BladeTask bladeTask) {
 
+
         List<ResourceOrder> resourceOrderList = new ArrayList<>();
         for (ResourceOrderInput resourceOrder: resourceOrders) {
 
+            int workHours = 0;
+            int amount = 0;
+            //Validate resourceOrder have required fields
+            //TODO: Find better solution for this
+            validateResourceOrder(resourceOrder);
+            if(resourceOrder.amount() != null){
+                amount = resourceOrder.amount();
+            }
+            if(resourceOrder.workHours() != null){
+                workHours = resourceOrder.workHours();
+            }
 
-            ResourceOrder newResourceOrder = new ResourceOrder(resourceOrder.type(), resourceOrder.amount(),
-                    resourceOrder.equipmentAssignmentStatus(), resourceOrder.workHours(), bladeTask);
+            //Create new resourceOrder
+            ResourceOrder newResourceOrder = new ResourceOrder(resourceOrder.resourceType(), resourceOrder.resourceName(), amount,
+                    resourceOrder.equipmentAssignmentStatus(), workHours, bladeTask);
             bladeTask.addResourceOrder(newResourceOrder);
 
             resourceOrderList.add(newResourceOrder);
         }
         return resourceOrderList;
+    }
+
+    private void validateResourceOrder(ResourceOrderInput resourceOrder) {
+        if(resourceOrder.resourceType() == null || resourceOrder.resourceName() == null || resourceOrder.equipmentAssignmentStatus() == null){
+            throw new IllegalArgumentException("ResourceOrder is missing required fields");
+        }
     }
 
 }

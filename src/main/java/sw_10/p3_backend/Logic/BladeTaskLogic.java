@@ -41,6 +41,7 @@ public class BladeTaskLogic {
         }
     }
 
+    //TODO: add validation of equipmentAssignmentStatus of resource orders "Must be consecutive" or add logic to handle this e.g. multiple bookings pr resource order
     public BladeTask createBladeTask(BladeTaskInput input) {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)

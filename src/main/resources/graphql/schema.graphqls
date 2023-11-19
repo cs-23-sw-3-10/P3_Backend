@@ -79,7 +79,8 @@ type Schedule {
 
 type ResourceOrder {
     id: ID!
-    type: String
+    resourceName: String
+    resourceType: String
     amount: Int
     workHours: Int
     equipmentAssignmentStatus: [Boolean]
@@ -154,7 +155,8 @@ input BladeTaskInput {
 }
 
 input ResourceOrderInput {
-    type: String
+    resourceType: String
+    resourceName: String
     amount: Int
     workHours: Int
     equipmentAssignmentStatus: [Boolean]

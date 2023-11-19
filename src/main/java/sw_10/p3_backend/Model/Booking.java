@@ -45,4 +45,29 @@ public class Booking {
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
     }
+
+    //constructor for engineer booking
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask) {
+        this.startDate = bookingStartDate;
+        this.endDate = bookingEndDate;
+        this.bladeTask = bladeTask;
+        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+    }
+    //constructor for technician booking
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask) {
+        this.startDate = bookingStartDate;
+        this.endDate = bookingEndDate;
+        this.technician = technician;
+        this.bladeTask = bladeTask;
+        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+    }
+
+    //constructor for engineer booking
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask) {
+        this.startDate = bookingStartDate;
+        this.endDate = bookingEndDate;
+        this.engineer = engineer;
+        this.bladeTask = bladeTask;
+        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+    }
 }

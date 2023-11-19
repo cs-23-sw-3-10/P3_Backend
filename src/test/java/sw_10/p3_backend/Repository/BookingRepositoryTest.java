@@ -61,7 +61,7 @@ class BookingRepositoryTest {
 
         // When
         // Check for overlapping events for same type
-        List<Equipment> overlappingBookings = bookingRepository.findAvailableEquipment(LocalDate.of(2020,10,1),LocalDate.of(2020,10,20),"hammer");
+        List<Equipment> overlappingBookings = equipmentRepository.findAvailableEquipment(LocalDate.of(2020,10,1),LocalDate.of(2020,10,20),"hammer");
         // Then
         // Assert the overlapping bookings are found and non-overlapping are not
         List<Integer> overlappingIds = overlappingBookings.stream()
@@ -71,7 +71,7 @@ class BookingRepositoryTest {
         assertThat(overlappingIds).containsExactlyInAnyOrder(booking1.getId(), booking2.getId());
         assertThat(overlappingIds).doesNotContain(booking3.getId());
 
-        List<Equipment> overlappingBookingsDifferentType = bookingRepository.findAvailableEquipment(LocalDate.of(2020,10,1),LocalDate.of(2020,10,30),"saw");
+        List<Equipment> overlappingBookingsDifferentType = equipmentRepository.findAvailableEquipment(LocalDate.of(2020,10,1),LocalDate.of(2020,10,30),"saw");
         assertThat(overlappingBookingsDifferentType).hasSize(1);
     }
 
