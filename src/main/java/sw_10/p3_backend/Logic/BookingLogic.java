@@ -17,13 +17,15 @@ public class BookingLogic {
     private final EngineerLogic engineerLogic;
     private final EquipmentLogic equipmentLogic;
     private final TechnicianLogic technicianLogic;
+    private final ConflictLogic conflictLogic;
 
     @Autowired
-    public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic) {
+    public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic, ConflictLogic conflictLogic) {
         this.bookingRepository = bookingRepository;
         this.engineerLogic = engineerLogic;
         this.equipmentLogic = equipmentLogic;
         this.technicianLogic = technicianLogic;
+        this.conflictLogic = conflictLogic;
     }
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
@@ -58,6 +60,8 @@ public class BookingLogic {
         }
     }
 
+
+    //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
     private void handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
@@ -66,18 +70,17 @@ public class BookingLogic {
 
         System.out.println("Number of free equipment: " + freeEquipmentList.size());
 
-        //TODO: Update to handle all types of equipment
+
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType());
             bookingRepository.save(newBooking);
         }else {
             //If there is no available equipment create a booking with no equipment and spawn a conflict!
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask);
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType());
             bookingRepository.save(newBooking);
 
-            conflictHandler(newBooking);
-            throw new RuntimeException("No available equipment");
+            conflictHandler(newBooking, bladeTask);
         }
     }
 
@@ -140,8 +143,9 @@ public class BookingLogic {
         }
         return null;
     }
-    private void conflictHandler(Booking booking){
+    private void conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
+        conflictLogic.createConflict(booking, bladeTask);
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {
@@ -151,6 +155,7 @@ public class BookingLogic {
 
     public void removeBookings(BladeTask bladeTaskToUpdate) {
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
+        conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
     }
 }

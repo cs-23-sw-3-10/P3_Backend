@@ -47,10 +47,11 @@ public class Booking {
         this.duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
     }
 
-    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask) {
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, String resourceType) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
         this.bladeTask = bladeTask;
+        this.resourceType = resourceType;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
     }
     //constructor for technician booking

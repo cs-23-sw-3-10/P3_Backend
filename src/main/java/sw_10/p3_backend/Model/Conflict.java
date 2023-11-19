@@ -19,12 +19,19 @@ public class Conflict {
     private int id;
 
     //public enum conflictType { OVERLAP, PERSONNEL, EQUIPMENT }
-    private int type;
+    private String type;
     private String message;
 
 
+    @OneToOne
+    @JoinColumn(name = "bookingId")
+    @Getter(AccessLevel.NONE) Booking booking; //Ensures getter of will not get stuck in endless recursive loop
     @ManyToOne
     @JoinColumn(name = "scheduleId")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
+    public Conflict(Booking booking, BladeTask bladeTask) {
+        setType(booking.getResourceType());
+        setMessage("Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.");
+    }
 }
