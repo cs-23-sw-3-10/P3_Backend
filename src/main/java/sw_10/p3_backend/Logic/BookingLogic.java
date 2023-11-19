@@ -107,7 +107,7 @@ public class BookingLogic {
         bookingRepository.save(newBooking);
 
         //update the engineers workhours
-        //engineerLogic.updateEngineer(engineer, resourceOrder.getWorkHours());
+        engineerLogic.updateEngineer(engineer, resourceOrder.getWorkHours());
     }
 
     //TODO: ultra stupid logic for finding start and end date of booking refactor plox
