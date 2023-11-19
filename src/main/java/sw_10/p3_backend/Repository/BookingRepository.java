@@ -3,6 +3,7 @@ package sw_10.p3_backend.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Equipment;
 
@@ -18,5 +19,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
         List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String type);
 
 
+        List<Booking> findByBladeTask(BladeTask bladeTaskToUpdate);
 
 }

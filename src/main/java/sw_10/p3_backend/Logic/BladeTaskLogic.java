@@ -50,8 +50,10 @@ public class BladeTaskLogic {
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
+        LocalDate startDate = input.startDate();
+        Integer duration = input.duration();
         // Calculate the end date of the blade task
-        LocalDate endDate = calculateEndDate(input);
+        LocalDate endDate = calculateEndDate(startDate, duration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
@@ -148,13 +150,45 @@ public class BladeTaskLogic {
         }
     }
 
-    private LocalDate calculateEndDate(BladeTaskInput input) {
-        if (input.startDate() != null && input.duration() != null) {
-            return input.startDate().plusDays(input.duration());
+    private LocalDate calculateEndDate(LocalDate startDate, Integer duration) {
+        if (startDate != null && duration != null) {
+            return startDate.plusDays(duration);
         }
         return null;
     }
 
+    public BladeTask updateStartAndDurationBladeTask(Long id, String startDate, Integer duration) {
+        // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
+        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
+
+        //parsed startDate to LocalDate
+        LocalDate startDateParsed = LocalDate.parse(startDate);
+
+        bladeTaskToUpdate.setStartDate(startDateParsed);
+        bladeTaskToUpdate.setDuration(duration);
+        // Calculate the end date of the blade task
+        bladeTaskToUpdate.setEndDate(calculateEndDate(startDateParsed, duration));
+
+        //Set testrig to 0 if none is provided
+        int noTestRigAssignedValue = 0;
+        int testRigValue = Optional.of(bladeTaskToUpdate.getTestRig()).orElse(noTestRigAssignedValue);
+        System.out.println(testRigValue);
+
+        //Remove old bookings
+        bookingLogic.removeBookings(bladeTaskToUpdate);
+
+        // Save the new BladeTask in the database
+        bladeTaskRepository.save(bladeTaskToUpdate);
+
+        // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
+        if(testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null){
+            bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
+        }
+
+        // Return the new BladeTask
+        return bladeTaskToUpdate;
+    }
 }
 
 

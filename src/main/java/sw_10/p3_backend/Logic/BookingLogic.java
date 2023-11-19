@@ -148,4 +148,9 @@ public class BookingLogic {
         //Booking newBooking = new Booking(bookingStartDate, bookingEndDate, (Equipment) bookedResource, bladeTask, resourceOrder.getResourceType());
         //bookingRepository.save(newBooking);
     }
+
+    public void removeBookings(BladeTask bladeTaskToUpdate) {
+        List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
+        bookingRepository.deleteAll(bookings);
+    }
 }
