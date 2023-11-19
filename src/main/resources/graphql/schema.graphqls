@@ -23,6 +23,7 @@ type Query {
 
     DeleteBladeProject(id:ID!):BladeProject
 
+    getAllBookings:[Booking]
 }
 
 type Mutation{

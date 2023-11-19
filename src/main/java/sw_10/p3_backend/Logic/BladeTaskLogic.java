@@ -79,6 +79,7 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(newBladeTask);
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
+
         if(testRigValue != 0 && resourceOrders != null){
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }

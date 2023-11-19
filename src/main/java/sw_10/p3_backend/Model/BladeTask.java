@@ -39,7 +39,7 @@ public class BladeTask {
     @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bladeTask")
     private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)

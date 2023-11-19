@@ -30,6 +30,8 @@ public class BookingLogic {
     public void createBookings(List<ResourceOrder> resourceOrders, BladeTask bladeTask) {
         for (ResourceOrder resourceOrder: resourceOrders) {
 
+
+
             //Find start and end date of booking based on equipmentAssignmentStatus
             LocalDate bookingStartDate = bookingStartDate(resourceOrder, bladeTask);
             LocalDate bookingEndDate = bookingEndDate(resourceOrder, bladeTask);
@@ -49,7 +51,7 @@ public class BookingLogic {
                 case "engineer":
                 {
                     handleEngineerBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
-
+                    break;
                 }
 
             }
@@ -61,12 +63,13 @@ public class BookingLogic {
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
         List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, resourceOrder.getResourceName());
-        System.out.println(freeEquipmentList);
+
+        System.out.println("Number of free equipment: " + freeEquipmentList.size());
 
         //TODO: Update to handle all types of equipment
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask);
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType());
             bookingRepository.save(newBooking);
         }else {
             //If there is no available equipment create a booking with no equipment and spawn a conflict!
@@ -74,6 +77,7 @@ public class BookingLogic {
             bookingRepository.save(newBooking);
 
             conflictHandler(newBooking);
+            throw new RuntimeException("No available equipment");
         }
     }
 
@@ -83,7 +87,7 @@ public class BookingLogic {
         Technician technician = technicianLogic.findTechnicians(resourceOrder.getResourceName());
 
         //Create a new booking with the technician
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate,technician , bladeTask);
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate,technician , bladeTask, resourceOrder.getResourceType());
         bookingRepository.save(newBooking);
 
         //update the technicians workhours
@@ -95,13 +99,15 @@ public class BookingLogic {
         Engineer engineer = engineerLogic.findByName(resourceOrder.getResourceName());
 
         //Create a new booking with the engineer
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask);
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType());
+
+        System.out.println(newBooking);
 
         //Save the booking to the database
         bookingRepository.save(newBooking);
 
         //update the engineers workhours
-        engineerLogic.updateEngineer(engineer, resourceOrder.getWorkHours());
+        //engineerLogic.updateEngineer(engineer, resourceOrder.getWorkHours());
     }
 
     //TODO: ultra stupid logic for finding start and end date of booking refactor plox
@@ -139,7 +145,7 @@ public class BookingLogic {
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, (Equipment) bookedResource, bladeTask);
-        bookingRepository.save(newBooking);
+        //Booking newBooking = new Booking(bookingStartDate, bookingEndDate, (Equipment) bookedResource, bladeTask, resourceOrder.getResourceType());
+        //bookingRepository.save(newBooking);
     }
 }

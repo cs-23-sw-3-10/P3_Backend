@@ -38,15 +38,15 @@ public class Booking {
     @JoinColumn(name = "equipmentId")
     @Getter(AccessLevel.NONE) private Equipment equipment;
 
-    public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask) {
+    public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask, String resourceType) {
         this.startDate = startDate;
         this.endDate = endDate;
+        this.resourceType = resourceType;
         this.equipment = equipment;
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
     }
 
-    //constructor for engineer booking
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -54,20 +54,24 @@ public class Booking {
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
     }
     //constructor for technician booking
-    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask) {
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask, String resourceType) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
+        this.resourceType = resourceType;
         this.technician = technician;
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+
     }
 
     //constructor for engineer booking
-    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask) {
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask, String resourceType) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
+        this.resourceType = resourceType;
         this.engineer = engineer;
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+
     }
 }
