@@ -60,5 +60,6 @@ public class BladeTask {
         this.detachPeriod = detachPeriod;
         this.taskName = taskName;
         this.bladeProject = bladeProject;
+        this.testRig = testRig;
     }
 }

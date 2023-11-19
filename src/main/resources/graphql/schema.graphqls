@@ -82,8 +82,6 @@ type ResourceOrder {
     type: String
     amount: Int
     workHours: Int
-    startDate: String
-    endDate: String
     equipmentAssignmentStatus: [Boolean]
 }
 

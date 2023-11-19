@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 
 @NoArgsConstructor
@@ -42,5 +43,6 @@ public class Booking {
         this.endDate = endDate;
         this.equipment = equipment;
         this.bladeTask = bladeTask;
+        this.duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
     }
 }

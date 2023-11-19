@@ -9,6 +9,9 @@ import lombok.Setter;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor
@@ -25,27 +28,25 @@ public class ResourceOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private int duration;
     private int workHours;
     private int amount;
-    private boolean[] equipmentAssignmentStatus = new boolean[3];
+
+    @ElementCollection
+    private List<Boolean> equipmentAssignmentStatus = new ArrayList<>(Arrays.asList(new Boolean[3]));
 
     @ManyToOne
     @JoinColumn(name = "bladeTaskId")
     @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public ResourceOrder(LocalDate startDate, LocalDate endDate, String type, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public ResourceOrder(String type, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
         this.type = type;
         this.amount = amount;
         this.workHours = integer;
         this.bladeTask = newBladeTask;
-        for (int i = 0; i < booleans.size() && i < this.equipmentAssignmentStatus.length; i++) {
-            this.equipmentAssignmentStatus[i] = booleans.get(i);
+        if (booleans.size() < 3) {
+            booleans.addAll(Collections.nCopies(3 - booleans.size(), false));
         }
+        this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 3));
     }
 }

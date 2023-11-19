@@ -55,6 +55,7 @@ public class BladeTaskLogic {
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
+        System.out.println(testRigValue);
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
