@@ -47,6 +47,9 @@ public class EquipmentLogic {
     }
 
     public List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String ResourceName) {
+        System.out.println("ResourceName: " + ResourceName);
+        System.out.println("Start: " + start);
+        System.out.println("End: " + end);
         return equipmentRepository.findAvailableEquipment(start, end, ResourceName);
     }
 

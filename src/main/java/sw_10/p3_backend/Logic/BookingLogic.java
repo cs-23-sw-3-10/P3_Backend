@@ -30,28 +30,24 @@ public class BookingLogic {
     public void createBookings(List<ResourceOrder> resourceOrders, BladeTask bladeTask) {
         for (ResourceOrder resourceOrder: resourceOrders) {
 
-            //TODO: Find start and end date of booking
+            //Find start and end date of booking based on equipmentAssignmentStatus
             LocalDate bookingStartDate = bookingStartDate(resourceOrder, bladeTask);
             LocalDate bookingEndDate = bookingEndDate(resourceOrder, bladeTask);
 
             //Handle all different types of resource orders
-            switch (resourceOrder.getResourceType()){
+            switch (resourceOrder.getResourceType().toLowerCase()){
                 case "equipment":
                 {
                     handleEquipmentBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
-                    System.out.println("Creating equipment booking");
                     break;
                 }
                 case "technician":
                 {
-                    System.out.println("technician");
                     handleTechnicianBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
-
                 }
                 case "engineer":
                 {
-                    System.out.println("engineer");
                     handleEngineerBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
 
                 }
@@ -62,8 +58,10 @@ public class BookingLogic {
 
     private void handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
+        System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
         List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, resourceOrder.getResourceName());
+        System.out.println(freeEquipmentList);
 
         //TODO: Update to handle all types of equipment
         if (!freeEquipmentList.isEmpty()){
@@ -138,5 +136,10 @@ public class BookingLogic {
     }
     private void conflictHandler(Booking booking){
         //call conflict logic that will handle the conflict and push it to the database
+    }
+
+    private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, (Equipment) bookedResource, bladeTask);
+        bookingRepository.save(newBooking);
     }
 }
