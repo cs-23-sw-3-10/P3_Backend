@@ -61,7 +61,6 @@ class BladeProjectControllerIntTest {
         BladeProject bladeProject = this.httpGraphQlTester.document("""
                 mutation CreateBladeProject {
                     createBladeProject(
-                        scheduleId: 1
                         name: "TestBP1"
                         customer: "Bestas"
                         projectLeader: "Henning"

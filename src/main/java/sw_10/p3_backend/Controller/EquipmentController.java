@@ -2,6 +2,7 @@ package sw_10.p3_backend.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -46,5 +47,10 @@ public class EquipmentController {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @MutationMapping
+    public Equipment CreateEquipment(@Argument String name, @Argument String type, @Argument String calibrationExpirationDate) {
+        return equipmentLogic.CreateEquipment(name, type, calibrationExpirationDate);
     }
 }

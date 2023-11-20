@@ -26,6 +26,11 @@ public class BladeTask {
     private String taskName;
     private int testRig;
 
+    public void addResourceOrder(ResourceOrder resourceOrder) {
+        resourceOrders.add(resourceOrder);
+        resourceOrder.setBladeTask(this);
+    }
+
     public enum taskState { NOT_STARTED, IN_PROGRESS, COMPLETED }
     private taskState state;
 
@@ -34,11 +39,11 @@ public class BladeTask {
     @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bladeTask")
     private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
-    private List<ResourceOrder> resourceOrder = new ArrayList<>();
+    private List<ResourceOrder> resourceOrders = new ArrayList<>();
 
     public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);
@@ -54,7 +59,7 @@ public class BladeTask {
         this.attachPeriod = attachPeriod;
         this.detachPeriod = detachPeriod;
         this.taskName = taskName;
-        this.testRig = testRig;
         this.bladeProject = bladeProject;
+        this.testRig = testRig;
     }
 }

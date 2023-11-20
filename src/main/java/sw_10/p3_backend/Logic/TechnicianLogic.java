@@ -3,6 +3,7 @@ package sw_10.p3_backend.Logic;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.Technician;
 import sw_10.p3_backend.Repository.TechnicianRepository;
+import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
 import java.util.Optional;
@@ -35,4 +36,28 @@ public class TechnicianLogic {
         }
     }
 
+    public Technician CreateTechnician(String type, Integer maxWorkHours, Integer count) {
+        if(technicianRepository.findByType(type) != null)
+            throw new InputInvalidException("Technician with type: " + type + " already exists");
+        try {
+            Technician technician = new Technician();
+            technician.setType(type);
+            technician.setMaxWorkHours(maxWorkHours);
+            technician.setWorkHours(0);
+            technician.setCount(count);
+            return technicianRepository.save(technician);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating technician");
+        }
+    }
+
+    public Technician findTechnicians(String resourceName) {
+        return technicianRepository.findByType(resourceName);
+    }
+
+
+    public void updateTechnician(Technician technician, int duration) {
+        technician.setWorkHours(technician.getWorkHours() + duration);
+        technicianRepository.save(technician);
+    }
 }

@@ -35,10 +35,10 @@ public class BladeProject {
 
 
     public BladeProject(Schedule schedule, String projectName,String customer, String projectLeader) {
+        setSchedule(schedule);
         setProjectName(projectName);
         setProjectLeader(projectLeader);
         setCustomer(customer);
-        setSchedule(schedule);
     }
 
     public BladeProject(String projectName){

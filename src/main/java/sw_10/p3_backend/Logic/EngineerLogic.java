@@ -3,6 +3,7 @@ package sw_10.p3_backend.Logic;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.Engineer;
 import sw_10.p3_backend.Repository.EngineerRepository;
+import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
 import java.util.Optional;
@@ -29,5 +30,28 @@ public class EngineerLogic {
         } catch (Exception e) {
             throw new RuntimeException("Error getting engineer",e);
         }
+    }
+
+    public Engineer CreateEngineer(String name, Integer maxWorkHours) {
+        if (engineerRepository.findByName(name) != null)
+            throw new InputInvalidException("Engineer with name: " + name + " already exists");
+        try {
+            Engineer engineer = new Engineer();
+            engineer.setName(name);
+            engineer.setMaxWorkHours(maxWorkHours);
+            engineer.setWorkHours(0);
+            return engineerRepository.save(engineer);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating engineer",e);
+        }
+    }
+
+    public Engineer findByName(String name) {
+        return engineerRepository.findByName(name);
+    }
+
+    public void updateEngineer(Engineer engineer, int workHours) {
+        engineer.setWorkHours(workHours);
+        engineerRepository.save(engineer);
     }
 }

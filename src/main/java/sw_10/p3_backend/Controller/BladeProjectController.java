@@ -4,27 +4,34 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-import sw_10.p3_backend.Logic.ProjectLogic;
+import sw_10.p3_backend.Logic.BladeProjectLogic;
 import sw_10.p3_backend.Model.BladeProject;
+import sw_10.p3_backend.Model.BladeTask;
+
 import java.util.List;
 
 
 @Controller
 public class BladeProjectController {
 
-    private final ProjectLogic projectLogic;
+    private final BladeProjectLogic bladeProjectLogic;
 
-    public BladeProjectController(ProjectLogic projectLogic) {
-        this.projectLogic = projectLogic;
+    public BladeProjectController(BladeProjectLogic bladeProjectLogic) {
+        this.bladeProjectLogic = bladeProjectLogic;
     }
 
     @QueryMapping
     public List<BladeProject> AllBladeProjects() {
-        return projectLogic.findAll();
+        return bladeProjectLogic.findAll();
     }
 
     @MutationMapping
-    public BladeProject createBladeProject(@Argument Integer scheduleId, @Argument String name, @Argument String customer, @Argument String projectLeader) {
-        return projectLogic.createProject(scheduleId, name, customer, projectLeader);
+    public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader) {
+        return bladeProjectLogic.createProject(name, customer, projectLeader);
+    }
+
+    @MutationMapping
+    public String deleteBladeProject(@Argument Long id) {
+        return bladeProjectLogic.deleteProject(id);
     }
 }

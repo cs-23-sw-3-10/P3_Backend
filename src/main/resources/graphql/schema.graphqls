@@ -23,11 +23,21 @@ type Query {
 
     DeleteBladeProject(id:ID!):BladeProject
 
+    getAllBookings:[Booking]
 }
 
 type Mutation{
-    createBladeProject(scheduleId: Int, name: String, customer: String, projectLeader: String) :BladeProject
-    createBladeTask(bladeTask:BladeTaskInput!):BladeTask
+    createBladeProject(name: String, customer: String, projectLeader: String) :BladeProject
+    deleteBladeProject(id:ID!):String
+
+    createBladeTask(bladeTask:BladeTaskInput):BladeTask
+    updateStartAndDurationBladeTask(id:ID!, startDate:String, duration:Int):BladeTask
+
+    CreateEngineer(name:String!, maxWorkHours:Int!):Engineer
+
+    CreateEquipment(type:String!, calibrationExpirationDate:String!, name:String!):Equipment
+
+    CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
 }
 
 type BladeProject {
@@ -59,7 +69,7 @@ type BladeTask {
     taskName: String
     testRig: Int
     bookings: [Booking]
-    resourceOrder: [ResourceOrder]
+    resourceOrders: [ResourceOrder]
 }
 
 type Schedule {
@@ -71,12 +81,11 @@ type Schedule {
 
 type ResourceOrder {
     id: ID!
-    duration: Int
-    startDate: String
-    endDate: String
-    type: String
+    resourceName: String
+    resourceType: String
+    amount: Int
     workHours: Int
-    task: BladeTask
+    equipmentAssignmentStatus: [Boolean]
 }
 
 type Booking {
@@ -137,12 +146,22 @@ input BladeProjectInput {
 input BladeTaskInput {
     startDate: String
     endDate: String
-    duration: Int
-    attachPeriod: Int
-    detachPeriod: Int
+    duration: Int!
+    attachPeriod: Int!
+    detachPeriod: Int!
     testRig: Int
-    bladeProjectId: ID
-    taskName: String
-    testType: String
+    bladeProjectId: ID!
+    taskName: String!
+    testType: String!
+    resourceOrders: [ResourceOrderInput]
 }
 
+
+
+input ResourceOrderInput {
+    resourceType: String
+    resourceName: String
+    amount: Int
+    workHours: Int
+    equipmentAssignmentStatus: [Boolean]
+}

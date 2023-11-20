@@ -50,4 +50,9 @@ public class BladeTaskController {
     public BladeTask createBladeTask(@Argument BladeTaskInput bladeTask){
         return bladeTaskLogic.createBladeTask(bladeTask);
     }
+
+    @MutationMapping
+    public BladeTask updateStartAndDurationBladeTask(@Argument Long id, @Argument String startDate, @Argument Integer duration){
+        return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration);
+    }
 }

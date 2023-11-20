@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TechnicianRepository extends JpaRepository<Technician,Long>{
     Technician findByType(String type);
+
 }
