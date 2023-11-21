@@ -3,6 +3,7 @@ type Query {
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
+    BladeTasksInRange(startDate:String, endDate:String)
 
     AllConflicts: [Conflict]
 

@@ -189,6 +189,10 @@ public class BladeTaskLogic {
         // Return the new BladeTask
         return bladeTaskToUpdate;
     }
+
+    public List<BladeTask> bladeTasksInRange(String startMonth, String endMonth) {
+        return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startMonth), LocalDate.parse(endMonth));
+    }
 }
 
 
