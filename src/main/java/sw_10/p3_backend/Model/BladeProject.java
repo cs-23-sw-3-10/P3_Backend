@@ -25,6 +25,7 @@ public class BladeProject {
     private String customer;
     private String projectLeader;
     private String projectName;
+    private String color;
 
     @OneToMany(mappedBy = "bladeProject", cascade = CascadeType.ALL)
     private List<BladeTask> bladeTasks = new ArrayList<>();

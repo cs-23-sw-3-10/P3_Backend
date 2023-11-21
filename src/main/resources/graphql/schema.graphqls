@@ -48,6 +48,7 @@ type BladeProject {
     customer: String
     projectLeader: String
     projectName: String
+    color: String
     bladeTasks: [BladeTask]
     resourceOrder: [ResourceOrder]
 }
