@@ -23,6 +23,11 @@ public class BladeTaskController {
     }
 
     @QueryMapping
+    public List<BladeTask> AllBladeTasksInRange(@Argument String startDate, @Argument String endDate){
+        return bladeTaskLogic.bladeTasksInRange(startDate, endDate);
+    }
+
+    @QueryMapping
     public List<BladeTask> AllBladeTasks(){
         return bladeTaskLogic.findAll();
     }
