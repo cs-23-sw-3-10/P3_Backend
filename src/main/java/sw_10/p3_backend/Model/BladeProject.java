@@ -25,6 +25,7 @@ public class BladeProject {
     private String customer;
     private String projectLeader;
     private String projectName;
+    private String color;
 
     @OneToMany(mappedBy = "bladeProject", cascade = CascadeType.ALL)
     private List<BladeTask> bladeTasks = new ArrayList<>();
@@ -34,11 +35,12 @@ public class BladeProject {
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public BladeProject(Schedule schedule, String projectName,String customer, String projectLeader) {
+    public BladeProject(Schedule schedule, String projectName,String customer, String projectLeader, String color) {
         setSchedule(schedule);
         setProjectName(projectName);
         setProjectLeader(projectLeader);
         setCustomer(customer);
+        setColor(color);
     }
 
     public BladeProject(String projectName){
