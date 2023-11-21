@@ -190,8 +190,10 @@ public class BladeTaskLogic {
         return bladeTaskToUpdate;
     }
 
-    public List<BladeTask> bladeTasksInRange(String startMonth, String endMonth) {
-        return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startMonth), LocalDate.parse(endMonth));
+    public List<BladeTask> bladeTasksInRange(String startDate, String endDate) {
+        List<BladeTask> hej = bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate));
+        System.out.println(hej);
+        return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
 }
 
