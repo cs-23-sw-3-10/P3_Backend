@@ -42,9 +42,10 @@ public class BladeProjectLogicTest {
         String customer = "Test Customer";
         String projectLeader = "Test Leader";
         Schedule mockSchedule = new Schedule(); // Assuming Schedule is a valid class
+        String color = "#FFFFFF";
         when(scheduleRepository.findScheduleByIsActive(false)).thenReturn(mockSchedule);
 
-        BladeProject expectedProject = new BladeProject(mockSchedule, name, customer, projectLeader);
+        BladeProject expectedProject = new BladeProject(mockSchedule, name, customer, projectLeader, color);
 
         // Act
         BladeProject result = bladeProjectLogic.createProject(name, customer, projectLeader);

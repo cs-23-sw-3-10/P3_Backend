@@ -24,7 +24,7 @@ insert into blade_project (schedule_id,color, start_date, end_date, customer, pr
 insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (1, '#ACB277' ,'2024-01-07', '2024-03-20', 'Suzlon', 'Clyve Birley', 'Su-95');
 insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (1, '#B28C77' ,'2024-01-01', '2024-02-19', 'Goldwind', 'Curran Chanter', 'Gw-53');
 
-insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-01-01', 10, '2024-01-10', 'flapwise static proof', 4, 2, 'BT-1', 1);
+insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-01-01', 9, '2024-01-09', 'flapwise static proof', 4, 2, 'BT-1', 1);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-01-10', 10, '2024-01-20', 'edgewise static proof', 4, 2, 'BT-2', 1);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-01-20', 10, '2024-01-30', 'post fatigue static', 4, 2, 'BT-3', 1);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (1, '2024-01-30', 10, '2024-02-09', 'flapwise fatigue', 4, 2, 'BT-4', 1);
@@ -36,7 +36,7 @@ insert into blade_task (blade_project_id, start_date, duration, end_date, test_t
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (2, '2024-02-16', 20, '2024-03-08', 'flapwise fatigue', 5, 3, 'BT-3', 3);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (2, '2024-03-08', 20, '2024-03-28', 'edgewise fatigue', 5, 3, 'BT-4', 3);
 
-insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-01-01', 10, '2024-01-10', 'flapwise static proof', 4, 2, 'BT-1', 4);
+insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-01-01', 9, '2024-01-10', 'flapwise static proof', 4, 2, 'BT-1', 4);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-01-10', 10, '2024-01-20', 'edgewise static proof', 4, 2, 'BT-2', 4);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-01-20', 10, '2024-01-30', 'post fatigue static', 4, 2, 'BT-3', 4);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-01-30', 10, '2024-02-09', 'flapwise fatigue', 4, 2, 'BT-4', 4);
