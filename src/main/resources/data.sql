@@ -42,6 +42,10 @@ insert into blade_task (blade_project_id, start_date, duration, end_date, test_t
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-01-30', 10, '2024-02-09', 'flapwise fatigue', 4, 2, 'BT-4', 4);
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2024-02-09', 10, '2024-02-19', 'edgewise fatigue', 4, 2, 'BT-5', 4);
 
+
+
+
+
 insert into engineer (name, work_hours, max_work_hours) values ('Rodney Serle', 39, 96);
 insert into engineer (name, work_hours, max_work_hours) values ('Garvey Hush', 66, 120);
 insert into engineer (name, work_hours, max_work_hours) values ('Hart Giocannoni', 137, 53);
@@ -257,3 +261,15 @@ insert into equipment (type, name, calibration_expiration_date) values ('Dual Ax
 insert into equipment (type, name, calibration_expiration_date) values ('Adapter B', 'Ada-198', '2023-07-14 02:35:34');
 insert into equipment (type, name, calibration_expiration_date) values ('Adapter B', 'Ada-199', '2028-01-06 20:03:03');
 insert into equipment (type, name, calibration_expiration_date) values ('Dual Axis Exciter B', 'Exc-200', '2026-04-02 05:29:08');
+
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Equipment', 1, null, null, 1, 0);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Technician', 1, null, 1, null, 10);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Technician', 1, null, 2, null, 10);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Engineer', 1, 1, null, null, 20);
+
+
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-10', '10', '2024-01-20', 'Equipment', 2, null, null, 2, 0);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-20', '10', '2024-01-30', 'Equipment', 3, null, null, 3, 0);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-30', '10', '2024-02-09', 'Equipment', 4, null, null, 4, 0);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-02-09', '10', '2024-02-19', 'Equipment', 5, null, null, 5, 0);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-02-19', '10', '2024-03-01', 'Equipment', 6, null, null, 6, 0);
