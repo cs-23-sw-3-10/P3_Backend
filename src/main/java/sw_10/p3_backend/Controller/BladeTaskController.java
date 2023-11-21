@@ -23,8 +23,8 @@ public class BladeTaskController {
     }
 
     @QueryMapping
-    public List<BladeTask> BladeTasksInRange(@Argument String startMonth, @Argument String endMonth){
-        return bladeTaskLogic.bladeTasksInRange(startMonth, endMonth);
+    public List<BladeTask> BladeTasksInRange(@Argument String startDate, @Argument String endDate){
+        return bladeTaskLogic.bladeTasksInRange(startDate, endDate);
     }
 
     @QueryMapping
