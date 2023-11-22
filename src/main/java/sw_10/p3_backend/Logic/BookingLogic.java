@@ -119,11 +119,11 @@ public class BookingLogic {
         if(resourceOrder.getEquipmentAssignmentStatus().get(0)){
             return bladeTask.getStartDate();
         //startDate if [false,true,...]
-        } else if (!resourceOrder.getEquipmentAssignmentStatus().get(0) && resourceOrder.getEquipmentAssignmentStatus().get(1)){
+        } else if (resourceOrder.getEquipmentAssignmentStatus().get(1)){
             return bladeTask.getStartDate().plusDays(bladeTask.getAttachPeriod());
         }
         //startDate if [false,false,true]
-        else if (!resourceOrder.getEquipmentAssignmentStatus().get(0) && !resourceOrder.getEquipmentAssignmentStatus().get(1) && resourceOrder.getEquipmentAssignmentStatus().get(2)){
+        else if (resourceOrder.getEquipmentAssignmentStatus().get(2)){
             return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
         }
         return null;
@@ -134,11 +134,11 @@ public class BookingLogic {
             return bladeTask.getEndDate();
         }
         //endDate if [...,true,false]
-        else if (!resourceOrder.getEquipmentAssignmentStatus().get(2) && resourceOrder.getEquipmentAssignmentStatus().get(1)){
+        else if (resourceOrder.getEquipmentAssignmentStatus().get(1)){
             return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
         }
         //endDate if [true,false,false]
-        else if (resourceOrder.getEquipmentAssignmentStatus().get(0) && !resourceOrder.getEquipmentAssignmentStatus().get(1) && !resourceOrder.getEquipmentAssignmentStatus().get(2)){
+        else if (resourceOrder.getEquipmentAssignmentStatus().get(0)){
             return bladeTask.getStartDate().plusDays(bladeTask.getAttachPeriod());
         }
         return null;

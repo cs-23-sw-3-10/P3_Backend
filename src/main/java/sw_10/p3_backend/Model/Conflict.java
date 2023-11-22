@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +32,16 @@ public class Conflict {
     @JoinColumn(name = "scheduleId")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
+    @JoinTable(
+            name = "conflict_relations",
+            joinColumns = @JoinColumn(name = "conflict_id"),
+            inverseJoinColumns = @JoinColumn(name = "blade_task_id"))
+    @ManyToMany
+    Set<BladeTask> relatedBladeTasks;
+
     public Conflict(Booking booking, BladeTask bladeTask) {
         setType(booking.getResourceType());
+
         setMessage("Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.");
     }
 }

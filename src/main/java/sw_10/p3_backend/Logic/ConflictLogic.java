@@ -24,6 +24,7 @@ public class ConflictLogic {
 
     public void createConflict(Booking booking, BladeTask bladeTask){
 
+
         Conflict conflict = new Conflict(booking, bladeTask);
         conflictRepository.save(conflict);
     }

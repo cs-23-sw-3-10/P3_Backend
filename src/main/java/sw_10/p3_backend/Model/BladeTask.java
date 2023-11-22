@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "bladeTask")
@@ -44,6 +45,9 @@ public class BladeTask {
 
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<ResourceOrder> resourceOrders = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "relatedBladeTasks")
+    Set<Conflict> relatedConflicts;
 
     public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);
