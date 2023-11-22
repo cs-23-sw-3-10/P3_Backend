@@ -146,6 +146,7 @@ public class BookingLogic {
     private void conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
         conflictLogic.createConflict(booking, bladeTask);
+        bladeTask.setInConflict(true);
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {

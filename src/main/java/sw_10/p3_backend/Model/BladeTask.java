@@ -25,6 +25,7 @@ public class BladeTask {
     private int detachPeriod;
     private String taskName;
     private int testRig;
+    private boolean inConflict = false;
 
     public void addResourceOrder(ResourceOrder resourceOrder) {
         resourceOrders.add(resourceOrder);
