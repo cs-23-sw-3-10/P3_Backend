@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Conflict;
+import sw_10.p3_backend.Model.ResourceOrder;
+import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.Repository.ConflictRepository;
+import sw_10.p3_backend.Repository.EquipmentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,18 +17,22 @@ public class ConflictLogic {
 
     private final ConflictRepository conflictRepository;
 
-    public ConflictLogic(ConflictRepository conflictRepository){
+    private final BladeTaskLogic bladeTaskLogic;
+
+    public ConflictLogic(ConflictRepository conflictRepository, BladeTaskLogic bladeTaskLogic){
+
         this.conflictRepository = conflictRepository;
+        this.bladeTaskLogic = bladeTaskLogic;
     }
 
     public List<Conflict> allConflicts(){
         return conflictRepository.findAll();
     }
 
-    public void createConflict(Booking booking, BladeTask bladeTask){
+    public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
 
-
-        Conflict conflict = new Conflict(booking, bladeTask);
+        List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(resourceOrder, booking.getStartDate(), booking.getEndDate());
+        Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
         conflictRepository.save(conflict);
     }
 

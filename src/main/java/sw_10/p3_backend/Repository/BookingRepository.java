@@ -21,4 +21,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
 
         List<Booking> findByBladeTask(BladeTask bladeTaskToUpdate);
 
+        List<Booking> findBookedEquipmentByTypeAndPeriod(Equipment equipment, LocalDate startDate, LocalDate endDate);
+
 }

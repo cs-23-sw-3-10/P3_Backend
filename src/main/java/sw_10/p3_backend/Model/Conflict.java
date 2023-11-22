@@ -1,5 +1,6 @@
 package sw_10.p3_backend.Model;
 
+import graphql.com.google.common.collect.Sets;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -39,9 +41,9 @@ public class Conflict {
     @ManyToMany
     Set<BladeTask> relatedBladeTasks;
 
-    public Conflict(Booking booking, BladeTask bladeTask) {
+    public Conflict(Booking booking, BladeTask bladeTask, List<BladeTask> relatedBladeTasks) {
         setType(booking.getResourceType());
-
         setMessage("Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.");
+        setRelatedBladeTasks(Sets.newHashSet(relatedBladeTasks));
     }
 }

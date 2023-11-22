@@ -80,7 +80,7 @@ public class BookingLogic {
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType());
             bookingRepository.save(newBooking);
 
-            conflictHandler(newBooking, bladeTask);
+            conflictHandler(newBooking, bladeTask, resourceOrder);
         }
     }
 
@@ -143,9 +143,9 @@ public class BookingLogic {
         }
         return null;
     }
-    private void conflictHandler(Booking booking, BladeTask bladeTask){
+    private void conflictHandler(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
         //call conflict logic that will handle the conflict and push it to the database
-        conflictLogic.createConflict(booking, bladeTask);
+        conflictLogic.createConflict(booking, bladeTask, resourceOrder);
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {

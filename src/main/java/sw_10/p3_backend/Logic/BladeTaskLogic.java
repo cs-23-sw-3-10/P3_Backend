@@ -1,10 +1,13 @@
 package sw_10.p3_backend.Logic;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
+import sw_10.p3_backend.Repository.BookingRepository;
+import sw_10.p3_backend.Repository.EquipmentRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
@@ -19,14 +22,20 @@ public class BladeTaskLogic {
     private final BookingLogic bookingLogic;
     private final ResourceOrderLogic resourceOrderLogic;
 
+    private final EquipmentRepository equipmentRepository;
+
+    private final BookingRepository bookingRepository;
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
-    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic) {
+    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, EquipmentRepository equipmentRepository,
+                          BookingRepository bookingRepository) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
+        this.equipmentRepository = equipmentRepository;
+        this.bookingRepository = bookingRepository;
 
     }
 
@@ -192,6 +201,38 @@ public class BladeTaskLogic {
 
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate));
+    }
+
+    public List<BladeTask> getRelatedBladeTasksByEquipmentType(ResourceOrder resourceOrder, LocalDate startDate, LocalDate endDate){
+        List<Equipment> equipment = equipmentRepository.findEquipmentByType(resourceOrder.getResourceName()); //Implement
+        System.out.println("Equipment:");
+        System.out.println(equipment);
+
+        List<Booking> bookings = null;
+        for (Equipment equipmentPiece: equipment){
+            List<Booking> tempBookingList = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentPiece, startDate, endDate); //Implement
+            if(tempBookingList != null){
+                bookings.addAll(tempBookingList);
+            }
+        }
+        System.out.println("Bookings:");
+        System.out.println(bookings);
+
+        List<BladeTask> bladeTasks = null;
+        int count = 1; //Need to be removed, when I know how to get BT id
+        for (Booking booking: bookings){
+
+            BladeTask tempBladeTask = bladeTaskRepository.findByBladeTaskId(count); //HOW GET BT ID!?! //Implement
+
+            bladeTasks.add(tempBladeTask);
+            count++; //Need to be removed, when I know how to get BT id
+        }
+        System.out.println("BladeTasks:");
+        System.out.println(bladeTasks);
+
+        //TODO: Ensure uniqueness of list items and make sure they are only from 1 of the 2 schedules
+
+        return bladeTasks;
     }
 }
 
