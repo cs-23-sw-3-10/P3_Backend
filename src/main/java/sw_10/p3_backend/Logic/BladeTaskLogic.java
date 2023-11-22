@@ -203,6 +203,7 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
 
+    //TODO: Find a better way to do this?
     public List<BladeTask> getRelatedBladeTasksByEquipmentType(ResourceOrder resourceOrder, LocalDate startDate, LocalDate endDate){
         List<Equipment> equipment = equipmentRepository.findEquipmentByType(resourceOrder.getResourceName()); //Implement
         System.out.println("Equipment:");

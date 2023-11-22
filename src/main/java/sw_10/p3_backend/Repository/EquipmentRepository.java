@@ -19,6 +19,8 @@ public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
             "(SELECT b.equipment FROM Booking b WHERE b.equipment IS NOT NULL AND b.startDate < :end AND b.endDate > :start)")
     List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String type);
 
+    //TODO: Needs to return a list of specific pieces of equipment of a certain type
+    @Query
     List<Equipment> findEquipmentByType(String type);
 
 }
