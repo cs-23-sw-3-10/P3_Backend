@@ -157,7 +157,7 @@ public class BladeTaskLogic {
         return null;
     }
 
-    public BladeTask updateStartAndDurationBladeTask(Long id, String startDate, Integer duration) {
+    public BladeTask updateStartAndDurationBladeTask(Long id, String startDate, Integer duration, Integer testRig) {
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
@@ -169,6 +169,7 @@ public class BladeTaskLogic {
         bladeTaskToUpdate.setDuration(duration);
         // Calculate the end date of the blade task
         bladeTaskToUpdate.setEndDate(calculateEndDate(startDateParsed, duration));
+        bladeTaskToUpdate.setTestRig(testRig);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
@@ -179,12 +180,14 @@ public class BladeTaskLogic {
         bookingLogic.removeBookings(bladeTaskToUpdate);
 
         // Save the new BladeTask in the database
-        bladeTaskRepository.save(bladeTaskToUpdate);
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
         if(testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null){
+            System.out.println("Creating bookings");
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
+
+        bladeTaskRepository.save(bladeTaskToUpdate);
 
         // Return the new BladeTask
         return bladeTaskToUpdate;
