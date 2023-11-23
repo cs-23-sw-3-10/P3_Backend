@@ -20,7 +20,7 @@ public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
     List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String type);
 
     //TODO: Needs to return a list of specific pieces of equipment of a certain type
-    @Query
+    @Query("SELECT e FROM Equipment e WHERE e.type = :type")
     List<Equipment> findEquipmentByType(String type);
 
 }

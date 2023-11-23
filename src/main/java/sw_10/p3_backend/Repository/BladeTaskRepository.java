@@ -20,6 +20,7 @@ public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
 
 
     //TODO: Needs to return a specific BT from an ID gained from a booking
+    @Query("SELECT bt FROM BladeTask bt where bt = :id")
     BladeTask findByBladeTaskId(int id);
 
 }
