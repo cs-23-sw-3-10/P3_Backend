@@ -26,6 +26,8 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+
+    trysub:[BladeProject]
 }
 
 type Mutation{
@@ -43,9 +45,11 @@ type Mutation{
 }
 
 type Subscription {
-    bladeTaskAdded: [BladeTask]
-    bladeTaskUpdated: BladeTask
-    bladeTaskDeleted: BladeTask
+    SpeedReading: [BladeProject]
+}
+
+type greetings{
+    greetings: String
 }
 
 type BladeProject {

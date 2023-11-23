@@ -29,7 +29,10 @@ public class BladeProjectLogic {
     public BladeProject createProject(String name, String customer, String projectLeader) {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false);//Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
+
             BladeProjectRepository.save(project);
+            List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
+            BladeProject.setBladeProjectList(bladeProjects);
             return project;
     }
 
@@ -82,14 +85,8 @@ public class BladeProjectLogic {
         BladeProjectRepository.save(bladeProject);
     }
 
-    public void lookUpBladeData() {
-        BladeProject.getBladeProjectList().forEach(bladeProject -> {
-            System.out.println(bladeProject.getProjectName());
-            bladeProject.getBladeTasks().forEach(bladeTask -> {
-                System.out.println(bladeTask.getStartDate());
-                System.out.println(bladeTask.getEndDate());
-            });
-        });
+    public List<BladeProject> lookUpBladeData() {
+        return BladeProjectRepository.findAll();
     }
 }
 

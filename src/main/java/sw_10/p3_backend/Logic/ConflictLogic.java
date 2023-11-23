@@ -6,8 +6,13 @@ import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Conflict;
 import sw_10.p3_backend.Repository.ConflictRepository;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 
 @Service
 public class ConflictLogic {
@@ -37,4 +42,8 @@ public class ConflictLogic {
             conflictRepository.deleteAll(conflicts);
         }
     }
-}
+
+    public Flux<String> getGreetingsStream() {
+        return Mono.delay(Duration.ofMillis(5000))
+                .flatMapMany(aLong -> Flux.just("Hi!", "Bonjour!", "Hola!", "Ciao!", "Zdravo!"));
+    }}

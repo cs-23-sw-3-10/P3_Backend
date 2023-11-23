@@ -3,12 +3,19 @@ package sw_10.p3_backend.Controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
+import reactor.core.publisher.Sinks;
 import sw_10.p3_backend.Logic.BladeProjectLogic;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
+import sw_10.p3_backend.Repository.BladeProjectRepository;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 
 @Controller
@@ -16,19 +23,37 @@ public class BladeProjectController {
 
     private final BladeProjectLogic bladeProjectLogic;
 
-    public BladeProjectController(BladeProjectLogic bladeProjectLogic) {
+    private final BladeProjectRepository bladeProjectRepository;
+   
+
+
+    public BladeProjectController(BladeProjectLogic bladeProjectLogic, BladeProjectRepository bladeProjectRepository) {
         this.bladeProjectLogic = bladeProjectLogic;
+        this.bladeProjectRepository = bladeProjectRepository;
+        
     }
+    
+
 
     @QueryMapping
     public List<BladeProject> AllBladeProjects() {
         return bladeProjectLogic.findAll();
     }
 
-    @QueryMapping
-    public void SpeedReading() {
-        System.out.println("Speed reading");
-        bladeProjectLogic.lookUpBladeData();
+    @SubscriptionMapping
+    public Publisher<List<BladeProject>> SpeedReading() {
+        return Flux.interval(Duration.ofSeconds(5)) // Polling every 5 seconds
+                .map(tick -> {
+                    System.out.println("tick");
+                    List<BladeProject> currentState = BladeProject.getBladeProjectList();
+                    List<BladeProject> lastKnownState = null;
+                    if (!currentState.equals(lastKnownState)) {
+                        lastKnownState = currentState;
+                        return currentState;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull);
     }
 
     @MutationMapping
