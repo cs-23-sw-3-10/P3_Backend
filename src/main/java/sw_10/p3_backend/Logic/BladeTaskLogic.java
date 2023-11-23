@@ -18,15 +18,17 @@ public class BladeTaskLogic {
     private final BladeProjectRepository bladeProjectRepository;
     private final BookingLogic bookingLogic;
     private final ResourceOrderLogic resourceOrderLogic;
+    private final BladeProjectLogic bladeProjectLogic;
 
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
-    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic) {
+    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
+        this.bladeProjectLogic = bladeProjectLogic;
 
     }
 
@@ -85,7 +87,7 @@ public class BladeTaskLogic {
         if(testRigValue != 0 && resourceOrders != null){
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
-
+        bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
         return newBladeTask;
     }
@@ -187,7 +189,10 @@ public class BladeTaskLogic {
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
 
+
+        bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
+
 
         // Return the new BladeTask
         return bladeTaskToUpdate;
