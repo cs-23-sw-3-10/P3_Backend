@@ -63,4 +63,8 @@ public class BladeTask {
         this.bladeProject = bladeProject;
         this.testRig = testRig;
     }
+
+    public BladeProject getBladeProjectId() {
+        return bladeProject;
+    }
 }
