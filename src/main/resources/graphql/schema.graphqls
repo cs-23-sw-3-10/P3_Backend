@@ -1,5 +1,6 @@
 type Query {
     AllBladeProjects: [BladeProject],
+    SpeedReading: [BladeProject],
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
@@ -39,6 +40,12 @@ type Mutation{
     CreateEquipment(type:String!, calibrationExpirationDate:String!, name:String!):Equipment
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
+}
+
+type Subscription {
+    bladeTaskAdded: [BladeTask]
+    bladeTaskUpdated: BladeTask
+    bladeTaskDeleted: BladeTask
 }
 
 type BladeProject {

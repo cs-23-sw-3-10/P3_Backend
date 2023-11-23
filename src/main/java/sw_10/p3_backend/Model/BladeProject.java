@@ -16,7 +16,8 @@ import java.util.List;
 public class BladeProject {
     private static String[] customerList;
     private static String[] projectLeaderList;
-    private static BladeProject[] bladeProjectList;
+    @Getter
+    private static List<BladeProject> bladeProjectList = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -46,4 +47,9 @@ public class BladeProject {
     public BladeProject(String projectName){
         setProjectName(projectName);
     }
+
+    public static void setBladeProjectList(List<BladeProject> bladeProjectList) {
+        BladeProject.bladeProjectList = bladeProjectList;
+    }
+
 }

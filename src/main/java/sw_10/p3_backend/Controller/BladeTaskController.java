@@ -4,7 +4,9 @@ package sw_10.p3_backend.Controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
+import reactor.core.publisher.Flux;
 import sw_10.p3_backend.Logic.BladeTaskLogic;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.BladeTaskInput;
@@ -29,6 +31,12 @@ public class BladeTaskController {
 
     @QueryMapping
     public List<BladeTask> AllBladeTasks(){
+        return bladeTaskLogic.findAll();
+    }
+
+    @SubscriptionMapping
+    public List<BladeTask> bladeTasksAdded(){
+        System.out.println("bladeTasksAdded");
         return bladeTaskLogic.findAll();
     }
 

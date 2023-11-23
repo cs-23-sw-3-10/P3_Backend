@@ -45,6 +45,14 @@ public class BladeProjectLogic {
     }
 
     public List<BladeProject> findAll(){
+        List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
+        BladeProject.setBladeProjectList(bladeProjects);
+        for (BladeProject bladeProject : bladeProjects) {
+            System.out.println(bladeProject.getBladeTasks().size());
+
+        }
+
+
         return BladeProjectRepository.findAll();
     }
 
@@ -72,6 +80,16 @@ public class BladeProjectLogic {
         });
 
         BladeProjectRepository.save(bladeProject);
+    }
+
+    public void lookUpBladeData() {
+        BladeProject.getBladeProjectList().forEach(bladeProject -> {
+            System.out.println(bladeProject.getProjectName());
+            bladeProject.getBladeTasks().forEach(bladeTask -> {
+                System.out.println(bladeTask.getStartDate());
+                System.out.println(bladeTask.getEndDate());
+            });
+        });
     }
 }
 

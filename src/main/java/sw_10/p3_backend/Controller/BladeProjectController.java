@@ -25,6 +25,12 @@ public class BladeProjectController {
         return bladeProjectLogic.findAll();
     }
 
+    @QueryMapping
+    public void SpeedReading() {
+        System.out.println("Speed reading");
+        bladeProjectLogic.lookUpBladeData();
+    }
+
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader) {
         return bladeProjectLogic.createProject(name, customer, projectLeader);
@@ -34,4 +40,6 @@ public class BladeProjectController {
     public String deleteBladeProject(@Argument Long id) {
         return bladeProjectLogic.deleteProject(id);
     }
+
+
 }
