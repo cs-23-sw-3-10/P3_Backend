@@ -278,7 +278,7 @@ insert into booking (start_date, duration, end_date, resource_type, blade_task_i
 
 
 --Blade Project 2--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (1, '#ACB277' ,'2024-01-07', '2024-03-20', 'Suzlon', 'Clyve Birley', 'Su-95');
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (1, '#ACB277' ,'2024-01-07', '2024-03-28', 'Suzlon', 'Clyve Birley', 'Su-95');
 
 --blade task 7--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (2, '2024-01-07', 20, '2024-01-27', 'edgewise static proof', 5, 3, 'Su-95_BT-1', 2);
@@ -308,7 +308,7 @@ insert into booking (start_date, duration, end_date, resource_type, blade_task_i
 
 
 --Blade Project 3--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (1, '#B28C77' ,'2023-12-15', '2024-02-19', ' ', 'Ringo Fernando', 'Gw-102');
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (1, '#B28C77' ,'2023-12-15', '2024-02-19', 'Goldwind', 'Ringo Fernando', 'Gw-102');
 
 --blade task 11--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig) values (3, '2023-12-15', 19, '2024-01-03', 'flapwise static proof', 4, 2, 'Gw-102_BT-1', 4);

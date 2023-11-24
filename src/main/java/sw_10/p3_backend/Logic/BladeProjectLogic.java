@@ -59,5 +59,19 @@ public class BladeProjectLogic {
         // Convert to hexadecimal
         return String.format("#%02X%02X%02X", red, green, blue);
     }
+
+    public void updateBladeProject(BladeProject bladeProject) {
+        //set bladeProject start and end date to the earliest and latest bladeTask start and end date
+        bladeProject.getBladeTasks().forEach(bladeTask -> {
+            if(bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
+                bladeProject.setStartDate(bladeTask.getStartDate());
+            }
+            if(bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
+                bladeProject.setEndDate(bladeTask.getEndDate());
+            }
+        });
+
+        BladeProjectRepository.save(bladeProject);
+    }
 }
 
