@@ -246,6 +246,8 @@ insert into booking (start_date, duration, end_date, resource_type, blade_task_i
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Technician', 1, null, 1, null, 10);
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Technician', 1, null, 2, null, 10);
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values ('2024-01-01', '9', '2024-01-09', 'Engineer', 1, 1, null, null, 20);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values (null, '9', null, 'Engineer', 1, 1, null, null, 20);
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours) values (null, '9', null, 'Engineer', 1, 1, null, null, 20);
 
 --blade task 2--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, '2024-01-10', 11, '2024-01-20', 'edgewise static proof', 4, 2, 'Gw-53_BT-2', 1,false);
