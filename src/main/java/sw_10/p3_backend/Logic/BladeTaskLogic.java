@@ -201,6 +201,10 @@ public class BladeTaskLogic {
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
+
+    public List<BladeTask> bladeTasksPending(){
+        return bladeTaskRepository.bladeTasksPending();
+    }
 }
 
 
