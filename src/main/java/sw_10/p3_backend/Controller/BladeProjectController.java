@@ -41,19 +41,9 @@ public class BladeProjectController {
     }
 
     @SubscriptionMapping
-    public Publisher<List<BladeProject>> SpeedReading() {
-        return Flux.interval(Duration.ofSeconds(5)) // Polling every 5 seconds
-                .map(tick -> {
-                    System.out.println("tick");
-                    List<BladeProject> currentState = BladeProject.getBladeProjectList();
-                    List<BladeProject> lastKnownState = null;
-                    if (!currentState.equals(lastKnownState)) {
-                        lastKnownState = currentState;
-                        return currentState;
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull);
+    public Flux<List<BladeProject>> SpeedReading() {
+        System.out.println("SpeedReading");
+        return bladeProjectLogic.speedReading();
     }
 
     @MutationMapping
