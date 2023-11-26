@@ -28,10 +28,9 @@ public class BladeTaskLogic {
     private final BookingRepository bookingRepository;
 
     @Autowired
-    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
-    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
-    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, EquipmentRepository equipmentRepository,
-                          BookingRepository bookingRepository) {
+    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository,
+                          BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic,
+                          EquipmentRepository equipmentRepository, BookingRepository bookingRepository) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
@@ -43,12 +42,11 @@ public class BladeTaskLogic {
     }
 
 
-    public String deleteTask(Integer id){
+    public String deleteTask(Integer id) {
         try {
             bladeTaskRepository.deleteById(id.longValue());
             return "BT deleted";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "Error deleting BT" + e;
         }
     }
@@ -58,7 +56,7 @@ public class BladeTaskLogic {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
-        
+
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
@@ -94,7 +92,7 @@ public class BladeTaskLogic {
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
 
-        if(testRigValue != 0 && resourceOrders != null){
+        if (testRigValue != 0 && resourceOrders != null) {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
         bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
@@ -108,13 +106,13 @@ public class BladeTaskLogic {
     }
 
     private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
-        if(input.resourceOrders() != null) {
+        if (input.resourceOrders() != null) {
             return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
         }
         return null;
     }
 
-    public List<BladeTask> findAll(){
+    public List<BladeTask> findAll() {
         return bladeTaskRepository.findAll();
     }
 
@@ -131,12 +129,12 @@ public class BladeTaskLogic {
         }
     }
 
-    private void validateBladeTaskInput(BladeTaskInput input){
+    private void validateBladeTaskInput(BladeTaskInput input) {
 
         if ((input.startDate() == null && input.testRig() != null) || (input.startDate() != null && input.testRig() == null)) {
             throw new InputInvalidException("Both startDate and testRig must be provided together");
         }
-        if (input.testRig() != null && input.testRig() < 0) {   
+        if (input.testRig() != null && input.testRig() < 0) {
             throw new InputInvalidException("testRig cannot be negative");
         }
         if (input.bladeProjectId() == null) {
@@ -157,7 +155,7 @@ public class BladeTaskLogic {
         if (input.taskName() == null) {
             throw new InputInvalidException("taskName is mandatory");
         }
-        if(input.startDate()!= null && LocalDate.now().isAfter(input.startDate())){
+        if (input.startDate() != null && LocalDate.now().isAfter(input.startDate())) {
             throw new InputInvalidException("startDate cannot be in the past");
         }
     }
@@ -195,7 +193,7 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(bladeTaskToUpdate);
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
-        if(testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null){
+        if (testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null) {
             System.out.println("Creating bookings");
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
@@ -214,15 +212,15 @@ public class BladeTaskLogic {
     }
 
     //TODO: Find a better way to do this?
-    public List<BladeTask> getRelatedBladeTasksByEquipmentType(ResourceOrder resourceOrder, LocalDate startDate, LocalDate endDate){
+    public List<BladeTask> getRelatedBladeTasksByEquipmentType(ResourceOrder resourceOrder, LocalDate startDate, LocalDate endDate) {
         List<Equipment> equipment = equipmentRepository.findEquipmentByType(resourceOrder.getResourceName()); //Implement
         System.out.println("Equipment:");
         System.out.println(equipment);
 
         List<Booking> bookings = null;
-        for (Equipment equipmentPiece: equipment){
+        for (Equipment equipmentPiece : equipment) {
             List<Booking> tempBookingList = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentPiece, startDate, endDate); //Implement
-            if(tempBookingList != null){
+            if (tempBookingList != null) {
                 bookings.addAll(tempBookingList);
             }
         }
@@ -231,7 +229,7 @@ public class BladeTaskLogic {
 
         List<BladeTask> bladeTasks = null;
         int count = 1; //Need to be removed, when I know how to get BT id
-        for (Booking booking: bookings){
+        for (Booking booking : bookings) {
 
             BladeTask tempBladeTask = bladeTaskRepository.findByBladeTaskId(count); //HOW GET BT ID!?! //Implement
 

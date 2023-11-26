@@ -19,30 +19,27 @@ public class ConflictLogic {
 
     private final BladeTaskLogic bladeTaskLogic;
 
-    public ConflictLogic(ConflictRepository conflictRepository, BladeTaskLogic bladeTaskLogic){
+    public ConflictLogic(ConflictRepository conflictRepository, BladeTaskLogic bladeTaskLogic) {
 
         this.conflictRepository = conflictRepository;
         this.bladeTaskLogic = bladeTaskLogic;
     }
 
-    public List<Conflict> allConflicts(){
+    public List<Conflict> allConflicts() {
         return conflictRepository.findAll();
     }
 
 
-
-    public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
-            //TODO: Add associated bladeTask to conflict
-            Conflict conflict = new Conflict(booking, bladeTask);
-
-            List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(resourceOrder, booking.getStartDate(), booking.getEndDate());
+    public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder) {
+        //TODO: Add associated bladeTask to conflict
+        List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(resourceOrder, booking.getStartDate(), booking.getEndDate());
         Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
         conflictRepository.save(conflict);
     }
 
     //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)
     public void removeConflicts(List<Booking> bookings) {
-        for (Booking booking: bookings) {
+        for (Booking booking : bookings) {
             List<Conflict> conflicts = conflictRepository.findAllByBooking(booking);
             conflictRepository.deleteAll(conflicts);
         }
