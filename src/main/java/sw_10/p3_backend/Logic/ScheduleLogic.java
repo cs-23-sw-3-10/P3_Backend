@@ -42,15 +42,22 @@ public class ScheduleLogic {
 
     public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
 
-        System.out.println("cloneSchedule");
-        Schedule schedule = scheduleRepository.findScheduleByIsActive(true);
-        Schedule newSchedule = (Schedule) schedule.clone();
-        newSchedule.setActive(true);
-        System.out.println(newSchedule.getId());
-        scheduleRepository.save(newSchedule);
-        scheduleRepository.delete(schedule);
+        //Find editable schedule (active)
+        Schedule CurrentEditschedule = scheduleRepository.findScheduleByIsActive(true);
+        Schedule CurrentViewSchedule = scheduleRepository.findScheduleByIsActive(false);
 
-        return schedule;
+        //clone active schedule
+        Schedule newViewSchedule = (Schedule) CurrentEditschedule.clone();
+
+        //set the new schedule to viewable (not active)
+        newViewSchedule.setActive(false);
+
+        //save the new schedule (will be the new view only schedule) and delete the old one.
+        scheduleRepository.save(newViewSchedule);
+
+        scheduleRepository.delete(CurrentViewSchedule);
+
+        return newViewSchedule;
 
     }
 

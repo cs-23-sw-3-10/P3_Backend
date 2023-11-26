@@ -56,6 +56,11 @@ public class ResourceOrder implements Cloneable {
     public ResourceOrder clone() throws CloneNotSupportedException {
         ResourceOrder cloned = (ResourceOrder) super.clone();
         cloned.id = 0;
+        cloned.equipmentAssignmentStatus = new ArrayList<>(equipmentAssignmentStatus);
+        for (int i = 0; i < equipmentAssignmentStatus.size(); i++) {
+            cloned.equipmentAssignmentStatus.set(i, equipmentAssignmentStatus.get(i));
+        }
+
         return cloned;
     }
 }

@@ -24,6 +24,11 @@ public class BladeProjectController {
     public List<BladeProject> AllBladeProjects() {return bladeProjectLogic.findAll();
     }
 
+    @QueryMapping
+    public List<BladeProject> AllBladeProjectsBySchedule(@Argument boolean isActive) {
+        return bladeProjectLogic.findAllBySchedule(isActive);
+    }
+
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader) {
         return bladeProjectLogic.createProject(name, customer, projectLeader);
