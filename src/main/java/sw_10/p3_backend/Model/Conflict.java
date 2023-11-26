@@ -41,8 +41,9 @@ public class Conflict {
     @ManyToMany
     Set<BladeTask> relatedBladeTasks;
 
+    //TODO: Need to be updated to fill out all fields in conflict db table and give proper error message with all the related bladetasks
     public Conflict(Booking booking, BladeTask bladeTask, List<BladeTask> relatedBladeTasks) {
-        setType(booking.getResourceType());
+        setType(booking.getResourceType()); //What is this used for?
         setMessage("Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.");
         setRelatedBladeTasks(Sets.newHashSet(relatedBladeTasks));
     }

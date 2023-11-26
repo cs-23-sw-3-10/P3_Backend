@@ -158,6 +158,7 @@ public class BookingLogic {
     }
     private void conflictHandler(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
         //call conflict logic that will handle the conflict and push it to the database
+        System.out.println("Creating Conflict");
         conflictLogic.createConflict(booking, bladeTask, resourceOrder);
         bladeTask.setInConflict(true);
     }

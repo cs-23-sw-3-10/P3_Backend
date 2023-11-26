@@ -5,9 +5,7 @@ import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Conflict;
 import sw_10.p3_backend.Model.ResourceOrder;
-import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.Repository.ConflictRepository;
-import sw_10.p3_backend.Repository.EquipmentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +33,7 @@ public class ConflictLogic {
 
     public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder) {
         //TODO: Add associated bladeTask to conflict
+        System.out.println("Getting related bladetasks");
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
         Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
         conflictRepository.save(conflict);

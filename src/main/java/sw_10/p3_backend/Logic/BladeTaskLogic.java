@@ -1,18 +1,17 @@
 package sw_10.p3_backend.Logic;
 
 import jakarta.annotation.PostConstruct;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.Repository.BookingRepository;
-import sw_10.p3_backend.Repository.EquipmentRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -217,15 +216,17 @@ public class BladeTaskLogic {
 
     //TODO: Find a better way to do this?
     public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
+        System.out.println("Getting relevant bookings");
         List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate); //Implement
 
         System.out.println("Bookings:");
         System.out.println(bookings);
 
-        List<BladeTask> bladeTasks = null;
+        List<BladeTask> bladeTasks = new ArrayList<>();
         for (Booking booking : bookings) {
-
+            System.out.println(booking);
             BladeTask tempBladeTask = booking.fetchBladeTask();
+            System.out.println(tempBladeTask);
             bladeTasks.add(tempBladeTask);
         }
         System.out.println("BladeTasks:");
