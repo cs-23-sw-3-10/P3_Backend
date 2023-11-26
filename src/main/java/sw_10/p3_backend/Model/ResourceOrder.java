@@ -19,7 +19,7 @@ import java.util.List;
 @Getter @Setter
 @Entity
 @Table(name = "resourceOrder")
-public class ResourceOrder {
+public class ResourceOrder implements Cloneable {
     private static final int ATTACHMENT_PERIOD = 0;
     private static final int TEST_PERIOD = 1;
     private static final int DETACH_PERIOD = 2;
@@ -50,5 +50,12 @@ public class ResourceOrder {
             booleans.addAll(Collections.nCopies(3 - booleans.size(), false));
         }
         this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 3));
+    }
+
+    @Override
+    public ResourceOrder clone() throws CloneNotSupportedException {
+        ResourceOrder cloned = (ResourceOrder) super.clone();
+        cloned.id = 0;
+        return cloned;
     }
 }

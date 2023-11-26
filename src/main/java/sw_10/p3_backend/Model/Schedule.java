@@ -29,11 +29,20 @@ public class Schedule implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Schedule clonedSchedule = (Schedule) super.clone();
+        System.out.println("clone" + clonedSchedule.getId());
+        clonedSchedule.id = 0;
+        // Deep clone bladeProjects
+        clonedSchedule.bladeProject = new ArrayList<>();
+        for (BladeProject bp : this.bladeProject) {
+            clonedSchedule.bladeProject.add(bp.cloneWithSchedule(clonedSchedule)); // Recursive call
+        }
+        // Deep clone conflicts
+        clonedSchedule.conflicts = new ArrayList<>();
+        for (Conflict c : this.conflicts) {
+            clonedSchedule.conflicts.add(c.clone()); // Recursive call
+        }
 
-        clonedSchedule.setId(0);
-        clonedSchedule.setBladeProject(new ArrayList<>());
-        clonedSchedule.setConflicts(new ArrayList<>());
-        clonedSchedule.setActive(false);
+
         System.out.println("clone" + clonedSchedule.getId());
         return clonedSchedule;
     }

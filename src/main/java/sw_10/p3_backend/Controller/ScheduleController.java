@@ -20,11 +20,20 @@ public class ScheduleController {
         this.scheduleLogic = scheduleLogic;
     }
 
+
+    @QueryMapping
+    public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
+        return scheduleLogic.cloneScheduleAndReplace();
+    }
+
     @QueryMapping
     public List<Schedule> AllSchedules() throws CloneNotSupportedException {
-
-        scheduleLogic.cloneSchedule();
         return scheduleLogic.findAll();
+    }
+
+    @QueryMapping
+    public Schedule DeleteSchedule(@Argument Integer id){
+        return scheduleLogic.deleteSchedule(id);
     }
 
     @QueryMapping

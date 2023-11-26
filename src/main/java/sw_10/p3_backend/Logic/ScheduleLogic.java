@@ -40,13 +40,24 @@ public class ScheduleLogic {
         return scheduleRepository.findAll();
     }
 
-    public Schedule cloneSchedule() throws CloneNotSupportedException {
+    public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
+
         System.out.println("cloneSchedule");
         Schedule schedule = scheduleRepository.findScheduleByIsActive(true);
         Schedule newSchedule = (Schedule) schedule.clone();
+        newSchedule.setActive(true);
         System.out.println(newSchedule.getId());
         scheduleRepository.save(newSchedule);
+        scheduleRepository.delete(schedule);
+
         return schedule;
 
+    }
+
+    public Schedule deleteSchedule(Integer id) {
+        Schedule schedule = scheduleRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NotFoundException("Schedule with id " + id + " not found"));
+        System.out.println("deleteSchedule");
+        scheduleRepository.deleteById(Long.valueOf(id));
+        return schedule;
     }
 }

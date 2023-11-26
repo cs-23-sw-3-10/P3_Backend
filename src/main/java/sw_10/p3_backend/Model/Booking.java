@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 @Getter @Setter
 @Entity
 @Table(name = "booking")
-public class Booking {
+public class Booking implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -79,5 +79,17 @@ public class Booking {
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
 
+    }
+
+    @Override
+    public Booking clone() throws CloneNotSupportedException {
+        Booking cloned = (Booking) super.clone();
+
+        cloned.id = 0;
+        System.out.println("clone bladeTask in bookings" + cloned.getId());
+        // Deep clone bladeTasks
+        //cloned.bladeTask = this.bladeTask.clone();
+
+        return cloned;
     }
 }

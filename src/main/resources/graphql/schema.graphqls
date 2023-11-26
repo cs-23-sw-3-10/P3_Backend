@@ -9,6 +9,8 @@ type Query {
 
     AllSchedules: [Schedule]
     ScheduleById(id:ID!):Schedule
+    DeleteSchedule(id:ID!):Schedule
+    cloneScheduleAndReplace:Schedule
 
     AllEngineers: [Engineer]
     EngineerById(id:ID!):Engineer

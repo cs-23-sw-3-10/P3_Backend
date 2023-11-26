@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "bladeTask")
 @NoArgsConstructor
 @Setter @Getter
-public class BladeTask {
+public class BladeTask implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -40,7 +40,7 @@ public class BladeTask {
     @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    @OneToMany(mappedBy = "bladeTask")
+    @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "bladeTask", cascade = CascadeType.ALL)
@@ -66,5 +66,33 @@ public class BladeTask {
 
     public BladeProject getBladeProjectId() {
         return bladeProject;
+    }
+
+    @Override
+    public BladeTask clone() throws CloneNotSupportedException {
+        BladeTask cloned = (BladeTask) super.clone();
+
+        cloned.id = 0;
+
+        System.out.println("clone bookings " + cloned.getId());
+        // Deep clone bookings
+        cloned.bookings = new ArrayList<>();
+        for (Booking booking : this.bookings) {
+            Booking clonedBooking = booking.clone();
+            clonedBooking.setBladeTask(cloned);
+            cloned.bookings.add(clonedBooking); // Recursive call
+        }
+
+        System.out.println("clone resourceOrders " + cloned.getId());
+        // Deep clone resourceOrders
+        cloned.resourceOrders = new ArrayList<>();
+        for (ResourceOrder resourceOrder : this.resourceOrders) {
+
+            ResourceOrder clonedResourceOrder = resourceOrder.clone();
+            clonedResourceOrder.setBladeTask(cloned);
+            cloned.resourceOrders.add(clonedResourceOrder); // Recursive call
+        }
+
+        return cloned;
     }
 }
