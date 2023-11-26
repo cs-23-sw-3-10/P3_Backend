@@ -21,7 +21,9 @@ public class ScheduleController {
     }
 
     @QueryMapping
-    public List<Schedule> AllSchedules(){
+    public List<Schedule> AllSchedules() throws CloneNotSupportedException {
+
+        scheduleLogic.cloneSchedule();
         return scheduleLogic.findAll();
     }
 

@@ -1,7 +1,7 @@
 --Inserting data for 'schedule' table
-INSERT INTO schedule (id, is_active)
-VALUES (1, TRUE),
-       (2, FALSE);
+INSERT INTO schedule (is_active)
+VALUES (TRUE),
+       (FALSE);
 
 INSERT INTO dictionary (category, label)
 VALUES ('testType', 'Flapwise Static Proof'),

@@ -14,7 +14,7 @@ import java.util.List;
 @Getter @Setter
 @Entity
 @Table(name = "schedule")
-public class Schedule {
+public class Schedule implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -26,4 +26,15 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<Conflict> conflicts = new ArrayList<>();
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Schedule clonedSchedule = (Schedule) super.clone();
+
+        clonedSchedule.setId(0);
+        clonedSchedule.setBladeProject(new ArrayList<>());
+        clonedSchedule.setConflicts(new ArrayList<>());
+        clonedSchedule.setActive(false);
+        System.out.println("clone" + clonedSchedule.getId());
+        return clonedSchedule;
+    }
 }

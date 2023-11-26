@@ -21,8 +21,7 @@ public class BladeProjectController {
     }
 
     @QueryMapping
-    public List<BladeProject> AllBladeProjects() {
-        return bladeProjectLogic.findAll();
+    public List<BladeProject> AllBladeProjects() {return bladeProjectLogic.findAll();
     }
 
     @MutationMapping

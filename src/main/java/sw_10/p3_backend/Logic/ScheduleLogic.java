@@ -40,4 +40,13 @@ public class ScheduleLogic {
         return scheduleRepository.findAll();
     }
 
+    public Schedule cloneSchedule() throws CloneNotSupportedException {
+        System.out.println("cloneSchedule");
+        Schedule schedule = scheduleRepository.findScheduleByIsActive(true);
+        Schedule newSchedule = (Schedule) schedule.clone();
+        System.out.println(newSchedule.getId());
+        scheduleRepository.save(newSchedule);
+        return schedule;
+
+    }
 }
