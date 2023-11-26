@@ -32,7 +32,7 @@ public class ConflictLogic {
 
     public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder) {
         //TODO: Add associated bladeTask to conflict
-        List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(resourceOrder, booking.getStartDate(), booking.getEndDate());
+        List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
         Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
         conflictRepository.save(conflict);
     }

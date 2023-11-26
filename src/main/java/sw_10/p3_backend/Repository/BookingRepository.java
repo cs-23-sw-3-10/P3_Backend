@@ -22,7 +22,7 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
         List<Booking> findByBladeTask(BladeTask bladeTaskToUpdate);
 
         //TODO: For conflict creation. Needs to return the bookings in a certain periode on a specific piece of equipment
-        @Query("SELECT b.equipment FROM Booking b WHERE b.startDate < :end AND b.endDate > :start")
-        List<Booking> findBookedEquipmentByTypeAndPeriod(Equipment equipment, LocalDate start, LocalDate end);
+        @Query("SELECT e FROM Booking e WHERE e.resourceName = :equipmentName AND e.startDate < :end AND e.endDate > :start")
+        List<Booking> findBookedEquipmentByTypeAndPeriod(String equipmentName, LocalDate start, LocalDate end);
 
 }

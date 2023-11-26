@@ -212,18 +212,9 @@ public class BladeTaskLogic {
     }
 
     //TODO: Find a better way to do this?
-    public List<BladeTask> getRelatedBladeTasksByEquipmentType(ResourceOrder resourceOrder, LocalDate startDate, LocalDate endDate) {
-        List<Equipment> equipment = equipmentRepository.findEquipmentByType(resourceOrder.getResourceName()); //Implement
-        System.out.println("Equipment:");
-        System.out.println(equipment);
+    public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
+        List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate); //Implement
 
-        List<Booking> bookings = null;
-        for (Equipment equipmentPiece : equipment) {
-            List<Booking> tempBookingList = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentPiece, startDate, endDate); //Implement
-            if (tempBookingList != null) {
-                bookings.addAll(tempBookingList);
-            }
-        }
         System.out.println("Bookings:");
         System.out.println(bookings);
 
