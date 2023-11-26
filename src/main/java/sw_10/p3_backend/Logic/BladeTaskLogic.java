@@ -1,5 +1,6 @@
 package sw_10.p3_backend.Logic;
 
+import jakarta.annotation.PostConstruct;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,25 +23,28 @@ public class BladeTaskLogic {
     private final BookingLogic bookingLogic;
     private final ResourceOrderLogic resourceOrderLogic;
     private final BladeProjectLogic bladeProjectLogic;
-
-    private final EquipmentRepository equipmentRepository;
-
     private final BookingRepository bookingRepository;
+
+    @Autowired
+    private ConflictLogic conflictLogic;
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository,
                           BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic,
-                          EquipmentRepository equipmentRepository, BookingRepository bookingRepository) {
+                          BookingRepository bookingRepository) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
-        this.equipmentRepository = equipmentRepository;
         this.bookingRepository = bookingRepository;
         this.bladeProjectLogic = bladeProjectLogic;
 
     }
 
+    @PostConstruct
+    public void init() {
+        conflictLogic.setBladeTaskLogic(this);
+    }
 
     public String deleteTask(Integer id) {
         try {
@@ -219,13 +223,10 @@ public class BladeTaskLogic {
         System.out.println(bookings);
 
         List<BladeTask> bladeTasks = null;
-        int count = 1; //Need to be removed, when I know how to get BT id
         for (Booking booking : bookings) {
 
-            BladeTask tempBladeTask = bladeTaskRepository.findByBladeTaskId(count); //HOW GET BT ID!?! //Implement
-
+            BladeTask tempBladeTask = booking.fetchBladeTask();
             bladeTasks.add(tempBladeTask);
-            count++; //Need to be removed, when I know how to get BT id
         }
         System.out.println("BladeTasks:");
         System.out.println(bladeTasks);

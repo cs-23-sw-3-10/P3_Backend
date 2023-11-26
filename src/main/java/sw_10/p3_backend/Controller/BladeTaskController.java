@@ -1,6 +1,7 @@
 package sw_10.p3_backend.Controller;
 
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

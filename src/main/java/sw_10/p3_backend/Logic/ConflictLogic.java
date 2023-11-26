@@ -17,11 +17,14 @@ public class ConflictLogic {
 
     private final ConflictRepository conflictRepository;
 
-    private final BladeTaskLogic bladeTaskLogic;
+    private BladeTaskLogic bladeTaskLogic;
 
-    public ConflictLogic(ConflictRepository conflictRepository, BladeTaskLogic bladeTaskLogic) {
+    public ConflictLogic(ConflictRepository conflictRepository) {
 
         this.conflictRepository = conflictRepository;
+    }
+
+    public void setBladeTaskLogic(BladeTaskLogic bladeTaskLogic){
         this.bladeTaskLogic = bladeTaskLogic;
     }
 

@@ -66,7 +66,6 @@ public class Booking {
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
-
     }
 
     //constructor for engineer booking
@@ -78,6 +77,9 @@ public class Booking {
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
+    }
 
+    public BladeTask fetchBladeTask(){
+        return bladeTask;
     }
 }
