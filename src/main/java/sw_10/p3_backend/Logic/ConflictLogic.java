@@ -29,9 +29,13 @@ public class ConflictLogic {
         return conflictRepository.findAll();
     }
 
-    public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
 
-        List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(resourceOrder, booking.getStartDate(), booking.getEndDate());
+
+    public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
+            //TODO: Add associated bladeTask to conflict
+            Conflict conflict = new Conflict(booking, bladeTask);
+
+            List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(resourceOrder, booking.getStartDate(), booking.getEndDate());
         Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
         conflictRepository.save(conflict);
     }

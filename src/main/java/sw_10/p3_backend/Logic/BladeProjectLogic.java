@@ -10,6 +10,7 @@ import sw_10.p3_backend.exception.InputInvalidException;
 
 
 import java.util.List;
+import java.util.Random;
 
 
 @Service
@@ -27,7 +28,7 @@ public class BladeProjectLogic {
 
     public BladeProject createProject(String name, String customer, String projectLeader) {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false);//Makes sure all new assigned projects are assigned to the draft schedule
-            BladeProject project = new BladeProject(schedule, name, customer, projectLeader);
+            BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
             BladeProjectRepository.save(project);
             return project;
     }
@@ -45,6 +46,32 @@ public class BladeProjectLogic {
 
     public List<BladeProject> findAll(){
         return BladeProjectRepository.findAll();
+    }
+
+    private static String generateRandomColorHexCode() {
+        Random random = new Random();
+
+        // Generate random RGB values
+        int red = random.nextInt(256);   // 0-255
+        int green = random.nextInt(256); // 0-255
+        int blue = random.nextInt(256);  // 0-255
+
+        // Convert to hexadecimal
+        return String.format("#%02X%02X%02X", red, green, blue);
+    }
+
+    public void updateBladeProject(BladeProject bladeProject) {
+        //set bladeProject start and end date to the earliest and latest bladeTask start and end date
+        bladeProject.getBladeTasks().forEach(bladeTask -> {
+            if(bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
+                bladeProject.setStartDate(bladeTask.getStartDate());
+            }
+            if(bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
+                bladeProject.setEndDate(bladeTask.getEndDate());
+            }
+        });
+
+        BladeProjectRepository.save(bladeProject);
     }
 }
 

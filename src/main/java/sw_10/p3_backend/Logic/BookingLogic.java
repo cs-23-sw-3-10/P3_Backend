@@ -30,7 +30,10 @@ public class BookingLogic {
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
     public void createBookings(List<ResourceOrder> resourceOrders, BladeTask bladeTask) {
+        System.out.println("Creating bookings for bladeTask: " + bladeTask.getTaskName() + " with resourceOrders: " + resourceOrders);
+        int tempconflictcheck = 0;
         for (ResourceOrder resourceOrder: resourceOrders) {
+            System.out.println("Creating bookings for" + resourceOrder);
 
 
 
@@ -38,31 +41,39 @@ public class BookingLogic {
             LocalDate bookingStartDate = bookingStartDate(resourceOrder, bladeTask);
             LocalDate bookingEndDate = bookingEndDate(resourceOrder, bladeTask);
 
+
             //Handle all different types of resource orders
             switch (resourceOrder.getResourceType().toLowerCase()){
                 case "equipment":
                 {
-                    handleEquipmentBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
+                    System.out.println("Equipment booking");
+                    tempconflictcheck += handleEquipmentBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
                 }
                 case "technician":
                 {
+                    System.out.println("Technician booking");
                     handleTechnicianBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
                 }
                 case "engineer":
                 {
+                    System.out.println("Engineer booking");
                     handleEngineerBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
                 }
 
             }
+
+        }
+        if(tempconflictcheck == 0){
+            bladeTask.setInConflict(false);
         }
     }
 
 
     //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
-    private void handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
+    private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
@@ -73,14 +84,16 @@ public class BookingLogic {
 
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
+            return 0;
         }else {
             //If there is no available equipment create a booking with no equipment and spawn a conflict!
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
 
             conflictHandler(newBooking, bladeTask, resourceOrder);
+            return 1;
         }
     }
 
@@ -90,7 +103,7 @@ public class BookingLogic {
         Technician technician = technicianLogic.findTechnicians(resourceOrder.getResourceName());
 
         //Create a new booking with the technician
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate,technician , bladeTask, resourceOrder.getResourceType());
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate,technician , bladeTask, resourceOrder.getResourceType(), resourceOrder.getResourceName());
         bookingRepository.save(newBooking);
 
         //update the technicians workhours
@@ -102,7 +115,7 @@ public class BookingLogic {
         Engineer engineer = engineerLogic.findByName(resourceOrder.getResourceName());
 
         //Create a new booking with the engineer
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType());
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType(), resourceOrder.getResourceName());
 
         System.out.println(newBooking);
 
@@ -146,6 +159,7 @@ public class BookingLogic {
     private void conflictHandler(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder){
         //call conflict logic that will handle the conflict and push it to the database
         conflictLogic.createConflict(booking, bladeTask, resourceOrder);
+        bladeTask.setInConflict(true);
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {
@@ -155,6 +169,7 @@ public class BookingLogic {
 
     public void removeBookings(BladeTask bladeTaskToUpdate) {
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
+        System.out.println(bookings);
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
     }
