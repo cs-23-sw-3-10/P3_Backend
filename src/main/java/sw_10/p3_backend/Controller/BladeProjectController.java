@@ -21,8 +21,12 @@ public class BladeProjectController {
     }
 
     @QueryMapping
-    public List<BladeProject> AllBladeProjects() {
-        return bladeProjectLogic.findAll();
+    public List<BladeProject> AllBladeProjects() {return bladeProjectLogic.findAll();
+    }
+
+    @QueryMapping
+    public List<BladeProject> AllBladeProjectsBySchedule(@Argument boolean isActive) {
+        return bladeProjectLogic.findAllBySchedule(isActive);
     }
 
     @MutationMapping

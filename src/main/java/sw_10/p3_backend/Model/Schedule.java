@@ -14,13 +14,34 @@ import java.util.List;
 @Getter @Setter
 @Entity
 @Table(name = "schedule")
-public class Schedule {
+public class Schedule implements Cloneable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private boolean isActive;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<BladeProject> bladeProject = new ArrayList<>();
 
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    private List<Conflict> conflicts = new ArrayList<>();
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Schedule clonedSchedule = (Schedule) super.clone();
+
+        clonedSchedule.id = 1;
+        // Deep clone bladeProjects
+        clonedSchedule.bladeProject = new ArrayList<>();
+        for (BladeProject bp : this.bladeProject) {
+            clonedSchedule.bladeProject.add(bp.cloneWithSchedule(clonedSchedule)); // Recursive call
+        }
+        // Deep clone conflicts
+        clonedSchedule.conflicts = new ArrayList<>();
+        for (Conflict c : this.conflicts) {
+            clonedSchedule.conflicts.add(c.clone()); // Recursive call
+        }
+
+        return clonedSchedule;
+    }
 }
