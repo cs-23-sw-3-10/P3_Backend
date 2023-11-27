@@ -164,8 +164,13 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
-        //parsed startDate to LocalDate
-        LocalDate startDateParsed = LocalDate.parse(startDate);
+        LocalDate startDateParsed;
+        if(startDate.equals("undefined")){
+            startDateParsed = null;
+        }else {
+            //parsed startDate to LocalDate
+            startDateParsed = LocalDate.parse(startDate);
+        }
 
         bladeTaskToUpdate.setStartDate(startDateParsed);
         bladeTaskToUpdate.setDuration(duration);
