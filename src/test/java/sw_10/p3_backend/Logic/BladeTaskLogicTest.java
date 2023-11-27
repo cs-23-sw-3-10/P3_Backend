@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 class BladeTaskLogicTest {
 
     @Mock
+    private BladeProjectLogic bladeProjectLogic;
+    @Mock
     private BladeProjectRepository bladeProjectRepository;
     @Mock
     private BookingLogic bookingLogic;
@@ -40,7 +42,7 @@ class BladeTaskLogicTest {
     @Test
     void TestDateBeforeTodayWhenCreatingBladeTask() {
         //Arrange
-        BladeTaskInput input = new BladeTaskInput(1L,LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), 1, 1, 1, 1, 1, "TestName", "TestType", null);
+        BladeTaskInput input = new BladeTaskInput(1L,LocalDate.of(2021, 1, 1), 1, 1, 1, 1, 1, "TestName", "TestType", null);
         //Act
 
         //Assert
@@ -53,11 +55,29 @@ class BladeTaskLogicTest {
         //Arrange
         BladeProject mockProject = new BladeProject();
         when(bladeProjectRepository.findById(1L)).thenReturn(Optional.of(mockProject));
-        BladeTaskInput input = new BladeTaskInput(1L, LocalDate.of(2024, 1, 1), LocalDate.of(2022, 1, 2), 1, 1, 1, 1, 1, "TestName", "TestType", null);
+        BladeTaskInput input = new BladeTaskInput(1L, LocalDate.of(2024, 1, 1), 1, 1, 1, 1, 1, "TestName", "TestType", null);
         //Act
         BladeTask result = bladeTaskLogic.createBladeTask(input);
         //Assert
         assertNotNull(result);
         assertEquals(LocalDate.of(2024, 1, 1), result.getStartDate());
     }
+
+    @Test
+    void TestStartDateIsShiftedByAttachPeriod(){
+        //Arrange
+
+    }
+
+    @Test
+    void TestEndDateIsShiftedByDetachPeriod(){
+
+    }
+
+    @Test
+    void TestDurationIsSumOfAttachAndDetachPeriod(){
+
+    }
+
+
 }

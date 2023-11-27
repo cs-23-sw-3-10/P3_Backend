@@ -33,7 +33,7 @@ public class ResourceOrder {
     private int amount;
 
     @ElementCollection
-    private List<Boolean> equipmentAssignmentStatus = new ArrayList<>(Arrays.asList(new Boolean[3]));
+    private List<Boolean> equipmentAssignmentStatus = new ArrayList<>(Arrays.asList(new Boolean[2]));
 
     @ManyToOne
     @JoinColumn(name = "bladeTaskId")
@@ -46,9 +46,10 @@ public class ResourceOrder {
         this.amount = amount;
         this.workHours = integer;
         this.bladeTask = newBladeTask;
-        if (booleans.size() < 3) {
-            booleans.addAll(Collections.nCopies(3 - booleans.size(), false));
+        //Fills up remaining list with false, if booleans.size() < 2(The expected size)
+        if (booleans.size() < 2) {
+            booleans.addAll(Collections.nCopies(2 - booleans.size(), false));
         }
-        this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 3));
+        this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 2));
     }
 }
