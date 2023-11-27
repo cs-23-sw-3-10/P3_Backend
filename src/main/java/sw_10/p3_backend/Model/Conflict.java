@@ -49,17 +49,18 @@ public class Conflict {
                                 "Booking of equipment: " + booking.getResourceName() + " in period " + booking.getStartDate() + " - " + booking.getEndDate() + " for " + bladeTask.getTaskName() + " was not possible due to lack of resources.\n" +
                                 "Bladetasks: ";
         boolean first = true;
-        for (BladeTask relatedBladeTask : relatedBladeTasks) {
+        Set<BladeTask> hashedBladeTasks = Sets.newHashSet(relatedBladeTasks);
+        for (BladeTask hashedBladeTask : hashedBladeTasks) {
             if(!first){
                 errorMessage += ", ";
             }
-            errorMessage += relatedBladeTask.getTaskName();
+            errorMessage += hashedBladeTask.getTaskName();
             first = false;
         }
         errorMessage += " has bookings of this equipment in this period.";
 
         System.out.println(errorMessage);
         setMessage(errorMessage);
-        setRelatedBladeTasks(Sets.newHashSet(relatedBladeTasks));
+        setRelatedBladeTasks(hashedBladeTasks);
     }
 }
