@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BookingRepository;
+import sw_10.p3_backend.Repository.ConflictRepository;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -18,14 +19,16 @@ public class BookingLogic {
     private final EquipmentLogic equipmentLogic;
     private final TechnicianLogic technicianLogic;
     private final ConflictLogic conflictLogic;
+    private final ConflictRepository conflictRepository;
 
     @Autowired
-    public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic, ConflictLogic conflictLogic) {
+    public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic, ConflictLogic conflictLogic, ConflictRepository conflictRepository) {
         this.bookingRepository = bookingRepository;
         this.engineerLogic = engineerLogic;
         this.equipmentLogic = equipmentLogic;
         this.technicianLogic = technicianLogic;
         this.conflictLogic = conflictLogic;
+        this.conflictRepository = conflictRepository;
     }
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
@@ -173,5 +176,6 @@ public class BookingLogic {
         System.out.println(bookings);
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
+        //List<Conflict> conflicts = conflictRepository.findConflictsByBladeTask(bladeTaskToUpdate.getId());
     }
 }

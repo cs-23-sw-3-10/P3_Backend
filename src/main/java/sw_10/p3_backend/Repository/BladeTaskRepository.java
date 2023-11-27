@@ -17,4 +17,6 @@ public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
             "AND ((bt.startDate > :start AND bt.startDate < :end) " +
             "OR (bt.endDate > :start AND bt.endDate < :end))")
     List<BladeTask> bladeTasksInRange(LocalDate start, LocalDate end, boolean isActive);
+
+    BladeTask getBladeTaskById(int id);
 }
