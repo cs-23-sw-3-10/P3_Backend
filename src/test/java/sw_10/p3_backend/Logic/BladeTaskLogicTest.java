@@ -27,6 +27,9 @@ class BladeTaskLogicTest {
     private BookingLogic bookingLogic;
 
     @Mock
+    private BladeProjectLogic bladeProjectLogic;
+
+    @Mock
     private BladeTaskRepository bladeTaskRepository;
 
     @InjectMocks
@@ -53,8 +56,11 @@ class BladeTaskLogicTest {
         //Arrange
         BladeProject mockProject = new BladeProject();
         when(bladeProjectRepository.findById(1L)).thenReturn(Optional.of(mockProject));
+
         BladeTaskInput input = new BladeTaskInput(1L, LocalDate.of(2024, 1, 1), LocalDate.of(2022, 1, 2), 1, 1, 1, 1, 1, "TestName", "TestType", null);
         //Act
+
+        
         BladeTask result = bladeTaskLogic.createBladeTask(input);
         //Assert
         assertNotNull(result);
