@@ -72,6 +72,7 @@ public class BladeTask implements Cloneable {
     public BladeTask clone() throws CloneNotSupportedException {
         BladeTask cloned = (BladeTask) super.clone();
 
+        // Reset the ID to indicate a new entity
         cloned.id = 0;
 
         System.out.println("clone bookings " + cloned.getId());

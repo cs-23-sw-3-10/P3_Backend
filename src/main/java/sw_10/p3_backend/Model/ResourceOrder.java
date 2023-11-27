@@ -56,6 +56,8 @@ public class ResourceOrder implements Cloneable {
     @Override
     public ResourceOrder clone() throws CloneNotSupportedException {
         ResourceOrder cloned = (ResourceOrder) super.clone();
+
+        // Reset the ID to indicate a new entity
         cloned.id = 0;
         cloned.equipmentAssignmentStatus = new ArrayList<>(equipmentAssignmentStatus);
         for (int i = 0; i < equipmentAssignmentStatus.size(); i++) {

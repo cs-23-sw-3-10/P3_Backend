@@ -38,6 +38,8 @@ public class Conflict implements Cloneable{
     @Override
     public Conflict clone() throws CloneNotSupportedException {
         Conflict cloned = (Conflict) super.clone();
+
+        // Reset the ID to indicate a new entity
         cloned.id = 0;
         return cloned;
     }

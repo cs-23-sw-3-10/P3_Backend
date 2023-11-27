@@ -85,6 +85,7 @@ public class Booking implements Cloneable {
     public Booking clone() throws CloneNotSupportedException {
         Booking cloned = (Booking) super.clone();
 
+        // Reset the ID to indicate a new entity
         cloned.id = 0;
         System.out.println("clone bladeTask in bookings" + cloned.getId());
         // Deep clone bladeTasks

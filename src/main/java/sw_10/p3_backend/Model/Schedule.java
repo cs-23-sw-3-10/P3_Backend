@@ -29,7 +29,7 @@ public class Schedule implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Schedule clonedSchedule = (Schedule) super.clone();
-        // Reset the ID to indicate a new entity
+
         clonedSchedule.id = 1;
         // Deep clone bladeProjects
         clonedSchedule.bladeProject = new ArrayList<>();
