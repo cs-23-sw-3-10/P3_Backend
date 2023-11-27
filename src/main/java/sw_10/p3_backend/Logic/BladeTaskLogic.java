@@ -2,12 +2,16 @@ package sw_10.p3_backend.Logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
+import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -20,25 +24,28 @@ public class BladeTaskLogic {
     private final ResourceOrderLogic resourceOrderLogic;
     private final BladeProjectLogic bladeProjectLogic;
 
+    private final UpdateTrigger updateTrigger;
+
+
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
-    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
+            , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
         this.bladeProjectLogic = bladeProjectLogic;
+        this.updateTrigger = new UpdateTrigger();
 
     }
 
 
-    public String deleteTask(Integer id){
+    public String deleteTask(Integer id) {
         try {
             bladeTaskRepository.deleteById(id.longValue());
             return "BT deleted";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "Error deleting BT" + e;
         }
     }
@@ -48,7 +55,7 @@ public class BladeTaskLogic {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
-        
+
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
@@ -84,7 +91,7 @@ public class BladeTaskLogic {
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
 
-        if(testRigValue != 0 && resourceOrders != null){
+        if (testRigValue != 0 && resourceOrders != null) {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
         bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
@@ -98,13 +105,13 @@ public class BladeTaskLogic {
     }
 
     private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
-        if(input.resourceOrders() != null) {
+        if (input.resourceOrders() != null) {
             return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
         }
         return null;
     }
 
-    public List<BladeTask> findAll(){
+    public List<BladeTask> findAll() {
         return bladeTaskRepository.findAll();
     }
 
@@ -121,12 +128,12 @@ public class BladeTaskLogic {
         }
     }
 
-    private void validateBladeTaskInput(BladeTaskInput input){
+    private void validateBladeTaskInput(BladeTaskInput input) {
 
         if ((input.startDate() == null && input.testRig() != null) || (input.startDate() != null && input.testRig() == null)) {
             throw new InputInvalidException("Both startDate and testRig must be provided together");
         }
-        if (input.testRig() != null && input.testRig() < 0) {   
+        if (input.testRig() != null && input.testRig() < 0) {
             throw new InputInvalidException("testRig cannot be negative");
         }
         if (input.bladeProjectId() == null) {
@@ -147,7 +154,7 @@ public class BladeTaskLogic {
         if (input.taskName() == null) {
             throw new InputInvalidException("taskName is mandatory");
         }
-        if(input.startDate()!= null && LocalDate.now().isAfter(input.startDate())){
+        if (input.startDate() != null && LocalDate.now().isAfter(input.startDate())) {
             throw new InputInvalidException("startDate cannot be in the past");
         }
     }
@@ -184,7 +191,7 @@ public class BladeTaskLogic {
         // Save the new BladeTask in the database
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
-        if(testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null){
+        if (testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null) {
             System.out.println("Creating bookings");
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
@@ -200,6 +207,21 @@ public class BladeTaskLogic {
 
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate, boolean isActive) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
+    }
+
+    public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
+        System.out.println("bladeTasksInRangeSub");
+
+        // Initial data load for new subscribers makes sure that the subscriber get some data when subscribing
+        Flux<List<BladeTask>> initialData = Flux.just(
+                bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
+
+        Flux<List<BladeTask>> updates = updateTrigger.getUpdateSignal()
+                .map(ignored -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
+
+
+        return Flux.concat(initialData, updates)
+                .publishOn(Schedulers.boundedElastic());
     }
 }
 

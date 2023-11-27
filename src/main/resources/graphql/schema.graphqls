@@ -52,6 +52,7 @@ type Mutation{
 
 type Subscription {
     SpeedReading: [BladeProject]
+    AllBladeTasksInRangeSub(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
 }
 
 type greetings{

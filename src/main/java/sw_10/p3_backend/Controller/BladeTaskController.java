@@ -71,9 +71,9 @@ public class BladeTaskController {
     }
 
     @SubscriptionMapping
-    public Flux<List<BladeProject>> AllBladeTasksInRangeSub(@Argument String startDate, @Argument String endDate, @Argument boolean isActive) {
+    public Flux<List<BladeTask>> AllBladeTasksInRangeSub(@Argument String startDate, @Argument String endDate, @Argument boolean isActive) {
         System.out.println("SpeedReading");
-        return null;
+        return bladeTaskLogic.bladeTasksInRangeSub(startDate, endDate, isActive);
     }
 
 }
