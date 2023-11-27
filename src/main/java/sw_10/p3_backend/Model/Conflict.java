@@ -24,6 +24,8 @@ public class Conflict {
 
     //public enum conflictType { OVERLAP, PERSONNEL, EQUIPMENT }
     private String type;
+
+    @Column(length = 2000)
     private String message;
 
 
@@ -42,7 +44,21 @@ public class Conflict {
     public Conflict(Booking booking, BladeTask bladeTask, List<BladeTask> relatedBladeTasks) {
         setType(booking.getResourceType());
         setBooking(booking);
-        String errorMessage = "Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.";
+
+        String errorMessage = "Conflict! \n" +
+                                "Booking of equipment: " + booking.getResourceName() + " in period " + booking.getStartDate() + " - " + booking.getEndDate() + " for " + bladeTask.getTaskName() + " was not possible due to lack of resources.\n" +
+                                "Bladetasks: ";
+        boolean first = true;
+        for (BladeTask relatedBladeTask : relatedBladeTasks) {
+            if(!first){
+                errorMessage += ", ";
+            }
+            errorMessage += relatedBladeTask.getTaskName();
+            first = false;
+        }
+        errorMessage += " has bookings of this equipment in this period.";
+
+        System.out.println(errorMessage);
         setMessage(errorMessage);
         setRelatedBladeTasks(Sets.newHashSet(relatedBladeTasks));
     }
