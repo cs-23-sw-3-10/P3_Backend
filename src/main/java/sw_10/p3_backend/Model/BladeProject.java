@@ -63,7 +63,7 @@ public class BladeProject implements Cloneable {
             cloned.bladeTasks = new ArrayList<>();
             for (BladeTask task : this.bladeTasks) {
                 // Clone the task and associate it with the cloned BladeProject
-                BladeTask clonedTask = task.clone(); // Make sure BladeTask has a proper clone method
+                BladeTask clonedTask = task.clone();
                 clonedTask.setBladeProject(cloned);
                 cloned.bladeTasks.add(clonedTask);
             }

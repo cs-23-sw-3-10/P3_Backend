@@ -46,6 +46,7 @@ public class ResourceOrder implements Cloneable {
         this.amount = amount;
         this.workHours = integer;
         this.bladeTask = newBladeTask;
+        // Add false to equipmentAssignmentStatus if it is not already there
         if (booleans.size() < 3) {
             booleans.addAll(Collections.nCopies(3 - booleans.size(), false));
         }

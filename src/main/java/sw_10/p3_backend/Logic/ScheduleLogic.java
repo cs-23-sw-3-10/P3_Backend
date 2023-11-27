@@ -46,16 +46,18 @@ public class ScheduleLogic {
         Schedule CurrentEditschedule = scheduleRepository.findScheduleByIsActive(true);
         Schedule CurrentViewSchedule = scheduleRepository.findScheduleByIsActive(false);
 
+
+
         //clone active schedule
         Schedule newViewSchedule = (Schedule) CurrentEditschedule.clone();
 
         //set the new schedule to viewable (not active)
         newViewSchedule.setActive(false);
 
+        //TODO: Not secure. If something goes wrong is the old schedule lost and the new one is not saved.
         //save the new schedule (will be the new view only schedule) and delete the old one.
-        scheduleRepository.save(newViewSchedule);
-
         scheduleRepository.delete(CurrentViewSchedule);
+        scheduleRepository.save(newViewSchedule);
 
         return newViewSchedule;
 

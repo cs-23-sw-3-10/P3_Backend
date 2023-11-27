@@ -16,7 +16,7 @@ import java.util.List;
 @Table(name = "schedule")
 public class Schedule implements Cloneable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private boolean isActive;
 
@@ -29,8 +29,8 @@ public class Schedule implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Schedule clonedSchedule = (Schedule) super.clone();
-        System.out.println("clone" + clonedSchedule.getId());
-        clonedSchedule.id = 0;
+        // Reset the ID to indicate a new entity
+        clonedSchedule.id = 1;
         // Deep clone bladeProjects
         clonedSchedule.bladeProject = new ArrayList<>();
         for (BladeProject bp : this.bladeProject) {
@@ -42,8 +42,6 @@ public class Schedule implements Cloneable {
             clonedSchedule.conflicts.add(c.clone()); // Recursive call
         }
 
-
-        System.out.println("clone" + clonedSchedule.getId());
         return clonedSchedule;
     }
 }
