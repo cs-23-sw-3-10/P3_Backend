@@ -8,6 +8,7 @@ import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import sw_10.p3_backend.Logic.BladeTaskLogic;
+import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.BladeTaskInput;
 import sw_10.p3_backend.exception.InputInvalidException;
@@ -68,4 +69,11 @@ public class BladeTaskController {
     public BladeTask updateStartAndDurationBladeTask(@Argument Long id, @Argument String startDate, @Argument Integer duration, @Argument Integer testRig){
         return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration, testRig);
     }
+
+    @SubscriptionMapping
+    public Flux<List<BladeProject>> AllBladeTasksInRangeSub(@Argument String startDate, @Argument String endDate, @Argument boolean isActive) {
+        System.out.println("SpeedReading");
+        return null;
+    }
+
 }

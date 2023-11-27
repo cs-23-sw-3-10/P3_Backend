@@ -100,6 +100,14 @@ public class BladeProjectLogic {
     }
 
     public void onDatabaseUpdate(List<BladeProject> updatedProjects) {
+        System.out.println("onDatabaseUpdate in logic" + updatedProjects.size());
+
+        for (BladeProject updatedProject : updatedProjects) {
+            updatedProject.getBladeTasks().forEach(bladeTask -> {
+                System.out.println(bladeTask.getTaskName());
+            });
+
+        }
         if (!updatedProjects.equals(lastKnownState)) {
             lastKnownState = updatedProjects;
             processor.tryEmitNext(updatedProjects);
