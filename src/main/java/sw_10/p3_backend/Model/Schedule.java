@@ -23,7 +23,4 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<BladeProject> bladeProject = new ArrayList<>();
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
-    private List<Conflict> conflicts = new ArrayList<>();
-
 }

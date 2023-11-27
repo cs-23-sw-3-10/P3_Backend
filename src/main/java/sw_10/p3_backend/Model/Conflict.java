@@ -30,9 +30,6 @@ public class Conflict {
     @OneToOne
     @JoinColumn(name = "bookingId")
     @Getter(AccessLevel.NONE) Booking booking; //Ensures getter of will not get stuck in endless recursive loop
-    @ManyToOne
-    @JoinColumn(name = "scheduleId")
-    @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
     @JoinTable(
             name = "conflict_relations",
@@ -43,8 +40,10 @@ public class Conflict {
 
     //TODO: Need to be updated to fill out all fields in conflict db table and give proper error message with all the related bladetasks
     public Conflict(Booking booking, BladeTask bladeTask, List<BladeTask> relatedBladeTasks) {
-        setType(booking.getResourceType()); //What is this used for?
-        setMessage("Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.");
+        setType(booking.getResourceType());
+        setBooking(booking);
+        String errorMessage = "Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.";
+        setMessage(errorMessage);
         setRelatedBladeTasks(Sets.newHashSet(relatedBladeTasks));
     }
 }
