@@ -24,7 +24,9 @@ public class BladeTaskLogic {
     private final ResourceOrderLogic resourceOrderLogic;
     private final BladeProjectLogic bladeProjectLogic;
 
-    private final UpdateTrigger updateTrigger;
+
+    private final Sinks.Many<List<BladeTask>> processor = Sinks.many().replay().all();
+
 
 
 
@@ -36,7 +38,6 @@ public class BladeTaskLogic {
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
         this.bladeProjectLogic = bladeProjectLogic;
-        this.updateTrigger = new UpdateTrigger();
 
     }
 
@@ -96,6 +97,8 @@ public class BladeTaskLogic {
         }
         bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
+
+        onDatabaseUpdate();
         return newBladeTask;
     }
 
@@ -200,7 +203,7 @@ public class BladeTaskLogic {
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
 
-
+        onDatabaseUpdate();
         // Return the new BladeTask
         return bladeTaskToUpdate;
     }
@@ -216,12 +219,19 @@ public class BladeTaskLogic {
         Flux<List<BladeTask>> initialData = Flux.just(
                 bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
 
-        Flux<List<BladeTask>> updates = updateTrigger.getUpdateSignal()
+        //Update data for subscribers that are already subscribed to the stream of data
+        processor.tryEmitNext(bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
+        Flux<List<BladeTask>> updates = processor.asFlux()
+                .publishOn(Schedulers.boundedElastic())
                 .map(ignored -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
 
 
         return Flux.concat(initialData, updates)
                 .publishOn(Schedulers.boundedElastic());
+    }
+
+    public void onDatabaseUpdate() {
+        processor.tryEmitNext(bladeTaskRepository.findAll());
     }
 }
 
