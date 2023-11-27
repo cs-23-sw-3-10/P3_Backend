@@ -47,9 +47,9 @@ class BookingRepositoryTest {
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
 
-        Booking booking1 = new Booking(1,LocalDate.of(2020,10,1), LocalDate.of(2020,10,10),10, "hammer", 0, null,null,null,e1);
-        Booking booking2 = new Booking(2,LocalDate.of(2020,10,11),LocalDate.of(2020,10,20),10, "hammer", 0, null,null,null,e1);
-        Booking booking3 = new Booking(3,LocalDate.of(2020,10,22), LocalDate.of(2020,10,30),10, "hammer", 0, null,null,null,e2);
+        Booking booking1 = new Booking(1,LocalDate.of(2020,10,1), LocalDate.of(2020,10,10),10, "hammer", e1.getName(), 0, null,null,null,e1);
+        Booking booking2 = new Booking(2,LocalDate.of(2020,10,11),LocalDate.of(2020,10,20),10, "hammer",e1.getName(), 0, null,null,null,e1);
+        Booking booking3 = new Booking(3,LocalDate.of(2020,10,22), LocalDate.of(2020,10,30),10, "hammer", e1.getName(), 0, null,null,null,e2);
 
         LocalDate test = LocalDate.now();
         System.out.println(test);

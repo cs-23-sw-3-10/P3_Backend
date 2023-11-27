@@ -84,12 +84,12 @@ public class BookingLogic {
 
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
             return 0;
         }else {
             //If there is no available equipment create a booking with no equipment and spawn a conflict!
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
 
             conflictHandler(newBooking, bladeTask);
@@ -103,7 +103,7 @@ public class BookingLogic {
         Technician technician = technicianLogic.findTechnicians(resourceOrder.getResourceName());
 
         //Create a new booking with the technician
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate,technician , bladeTask, resourceOrder.getResourceType());
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate,technician , bladeTask, resourceOrder.getResourceType(), resourceOrder.getResourceName());
         bookingRepository.save(newBooking);
 
         //update the technicians workhours
@@ -115,7 +115,7 @@ public class BookingLogic {
         Engineer engineer = engineerLogic.findByName(resourceOrder.getResourceName());
 
         //Create a new booking with the engineer
-        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType());
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType(), resourceOrder.getResourceName());
 
         System.out.println(newBooking);
 

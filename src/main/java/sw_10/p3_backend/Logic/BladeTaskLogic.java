@@ -198,8 +198,8 @@ public class BladeTaskLogic {
         return bladeTaskToUpdate;
     }
 
-    public List<BladeTask> bladeTasksInRange(String startDate, String endDate) {
-        return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate));
+    public List<BladeTask> bladeTasksInRange(String startDate, String endDate, boolean isActive) {
+        return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
 }
 

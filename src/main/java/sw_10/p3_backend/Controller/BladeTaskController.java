@@ -25,8 +25,8 @@ public class BladeTaskController {
     }
 
     @QueryMapping
-    public List<BladeTask> AllBladeTasksInRange(@Argument String startDate, @Argument String endDate){
-        return bladeTaskLogic.bladeTasksInRange(startDate, endDate);
+    public List<BladeTask> AllBladeTasksInRange(@Argument String startDate, @Argument String endDate, @Argument boolean isActive){
+        return bladeTaskLogic.bladeTasksInRange(startDate, endDate, isActive);
     }
 
     @QueryMapping

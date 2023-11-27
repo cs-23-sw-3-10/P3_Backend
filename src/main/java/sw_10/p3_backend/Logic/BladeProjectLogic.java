@@ -65,6 +65,10 @@ public class BladeProjectLogic {
         return BladeProjectRepository.findAll();
     }
 
+    public List<BladeProject> findAllBySchedule(boolean isActive){
+        return BladeProjectRepository.findAllBySchedule(isActive);
+    }
+
     private static String generateRandomColorHexCode() {
         Random random = new Random();
 

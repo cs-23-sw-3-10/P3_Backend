@@ -1,15 +1,21 @@
 type Query {
-    AllBladeProjects: [BladeProject],
+
+
     SpeedReading: [BladeProject],
+    AllBladeProjects: [BladeProject]
+    AllBladeProjectsBySchedule(isActive: Boolean): [BladeProject]
+
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
-    AllBladeTasksInRange(startDate:String!, endDate:String!):[BladeTask]
+    AllBladeTasksInRange(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
 
     AllConflicts: [Conflict]
 
     AllSchedules: [Schedule]
     ScheduleById(id:ID!):Schedule
+    DeleteSchedule(id:ID!):Schedule
+    cloneScheduleAndReplace:Schedule
 
     AllEngineers: [Engineer]
     EngineerById(id:ID!):Engineer
