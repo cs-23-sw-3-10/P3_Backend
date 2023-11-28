@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "bladeTask")
@@ -33,6 +31,10 @@ public class BladeTask implements Cloneable {
         resourceOrder.setBladeTask(this);
     }
 
+    public void addRelatedConflict(Conflict conflict) {
+        relatedConflicts.add(conflict);
+    }
+
     public enum taskState { NOT_STARTED, IN_PROGRESS, COMPLETED }
     private taskState state;
 
@@ -48,7 +50,7 @@ public class BladeTask implements Cloneable {
     private List<ResourceOrder> resourceOrders = new ArrayList<>();
 
     @ManyToMany(mappedBy = "relatedBladeTasks")
-    Set<Conflict> relatedConflicts;
+    Set<Conflict> relatedConflicts = new HashSet<>();
 
     public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject){
         setStartDate(startDate);

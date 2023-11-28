@@ -76,13 +76,13 @@ type BladeTask {
     inConflict: Boolean
     bookings: [Booking]
     resourceOrders: [ResourceOrder]
+    relatedConflicts: [Conflict]
 }
 
 type Schedule {
     id: ID!
     isActive: Boolean
     bladeProject: [BladeProject]
-    conflicts: [Conflict]
 }
 
 type ResourceOrder {
@@ -137,7 +137,7 @@ type Conflict {
     id: ID!
     type: String
     message: String
-    schedule: Schedule
+    relatedBladeTasks: [BladeTask]
 }
 
 input BladeProjectInput {

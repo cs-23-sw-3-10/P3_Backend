@@ -1,5 +1,6 @@
 package sw_10.p3_backend.Logic;
 
+import graphql.com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Booking;
@@ -9,6 +10,7 @@ import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.Repository.ConflictRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ConflictLogic {
@@ -37,9 +39,15 @@ public class ConflictLogic {
     public void createConflict(Booking booking, BladeTask bladeTask, ResourceOrder resourceOrder) {
         //TODO: Add associated bladeTask to conflict
         System.out.println("Getting related bladetasks");
+
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
-        Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
+        Set<BladeTask> hashedBladeTasks = Sets.newHashSet(relatedBladeTasks);
+
+        Conflict conflict = new Conflict(booking, bladeTask, hashedBladeTasks);
         conflictRepository.save(conflict);
+        for (BladeTask hashedBladeTask : hashedBladeTasks) {
+            bladeTaskLogic.addRelatedConflict(hashedBladeTask, conflict);
+        }
     }
 
     //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)

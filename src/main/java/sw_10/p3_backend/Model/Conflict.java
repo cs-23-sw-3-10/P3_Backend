@@ -40,7 +40,7 @@ public class Conflict implements Cloneable{
     @ManyToMany
     Set<BladeTask> relatedBladeTasks;
 
-    public Conflict(Booking booking, BladeTask bladeTask, List<BladeTask> relatedBladeTasks) {
+    public Conflict(Booking booking, BladeTask bladeTask, Set<BladeTask> hashedBladeTasks) {
         setType(booking.getResourceType());
         setBooking(booking);
 
@@ -48,7 +48,6 @@ public class Conflict implements Cloneable{
                                 "Booking of equipment: " + booking.getResourceName() + " in period " + booking.getStartDate() + " - " + booking.getEndDate() + " for " + bladeTask.getTaskName() + " was not possible due to lack of resources.\n" +
                                 "Bladetasks: ";
         boolean first = true;
-        Set<BladeTask> hashedBladeTasks = Sets.newHashSet(relatedBladeTasks);
         for (BladeTask hashedBladeTask : hashedBladeTasks) {
             if(!first){
                 errorMessage += ", ";

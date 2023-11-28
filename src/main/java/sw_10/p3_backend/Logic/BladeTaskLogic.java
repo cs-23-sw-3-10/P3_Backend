@@ -236,6 +236,11 @@ public class BladeTaskLogic {
 
         return bladeTasks;
     }
+
+    public void addRelatedConflict(BladeTask bladeTask, Conflict conflict) {
+        bladeTask.addRelatedConflict(conflict);
+        bladeTaskRepository.save(bladeTask);
+    }
 }
 
 
