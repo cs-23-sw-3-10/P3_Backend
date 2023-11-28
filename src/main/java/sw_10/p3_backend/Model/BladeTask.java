@@ -23,7 +23,7 @@ public class BladeTask implements Cloneable {
     private int attachPeriod;
     private int detachPeriod;
     private String taskName;
-    private int testRig;
+    private Integer testRig;
     private boolean inConflict = false;
 
     public void addResourceOrder(ResourceOrder resourceOrder) {

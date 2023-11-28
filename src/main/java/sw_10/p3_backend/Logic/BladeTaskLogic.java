@@ -65,9 +65,9 @@ public class BladeTaskLogic {
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
         LocalDate startDate = input.startDate();
-        Integer duration = input.duration();
+        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
         // Calculate the end date of the blade task
-        LocalDate endDate = calculateEndDate(startDate, duration);
+        LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
@@ -78,7 +78,7 @@ public class BladeTaskLogic {
         BladeTask newBladeTask = new BladeTask(
                 input.startDate(),
                 endDate,
-                input.duration(),
+                totalDuration,
                 input.testType(),
                 input.attachPeriod(),
                 input.detachPeriod(),
@@ -176,8 +176,13 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
-        //parsed startDate to LocalDate
-        LocalDate startDateParsed = LocalDate.parse(startDate);
+        LocalDate startDateParsed;
+        if(startDate.equals("undefined")){
+            startDateParsed = null;
+        }else {
+            //parsed startDate to LocalDate
+            startDateParsed = LocalDate.parse(startDate);
+        }
 
         bladeTaskToUpdate.setStartDate(startDateParsed);
         bladeTaskToUpdate.setDuration(duration);
@@ -214,6 +219,10 @@ public class BladeTaskLogic {
 
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate, boolean isActive) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
+    }
+
+    public List<BladeTask> bladeTasksPending(){
+        return bladeTaskRepository.bladeTasksPending();
     }
 
     //TODO: Find a better way to do this?

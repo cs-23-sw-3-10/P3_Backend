@@ -1,10 +1,10 @@
 type Query {
-    AllBladeProjects: [BladeProject]
-    AllBladeProjectsBySchedule(isActive: Boolean): [BladeProject]
+    AllBladeProjects: [BladeProject],
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
     AllBladeTasksInRange(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
+    AllBladeTasksPending:[BladeTask]
 
     AllConflicts: [Conflict]
 
