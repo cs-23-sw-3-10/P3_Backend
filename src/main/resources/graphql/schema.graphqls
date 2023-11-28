@@ -3,13 +3,15 @@ type Query {
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
-    AllBladeTasksInRange(startDate:String, endDate:String):[BladeTask]
+    AllBladeTasksInRange(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
     AllBladeTasksPending:[BladeTask]
 
     AllConflicts: [Conflict]
 
     AllSchedules: [Schedule]
     ScheduleById(id:ID!):Schedule
+    DeleteSchedule(id:ID!):Schedule
+    cloneScheduleAndReplace:Schedule
 
     AllEngineers: [Engineer]
     EngineerById(id:ID!):Engineer
