@@ -40,9 +40,6 @@ public class ConflictLogic {
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
         Conflict conflict = new Conflict(booking, bladeTask, relatedBladeTasks);
         conflictRepository.save(conflict);
-
-        BladeTask testBladeTask = bladeTaskRepository.getBladeTaskById(bladeTask.getId());
-        System.out.println(testBladeTask);
     }
 
     //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)
