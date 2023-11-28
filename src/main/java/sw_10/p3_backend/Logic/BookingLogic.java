@@ -35,12 +35,9 @@ public class BookingLogic {
         for (ResourceOrder resourceOrder: resourceOrders) {
             System.out.println("Creating bookings for" + resourceOrder);
 
-
-
             //Find start and end date of booking based on equipmentAssignmentStatus
             LocalDate bookingStartDate = bookingStartDate(resourceOrder, bladeTask);
             LocalDate bookingEndDate = bookingEndDate(resourceOrder, bladeTask);
-
 
             //Handle all different types of resource orders
             switch (resourceOrder.getResourceType().toLowerCase()){
@@ -70,7 +67,6 @@ public class BookingLogic {
             bladeTask.setInConflict(false);
         }
     }
-
 
     //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
@@ -128,33 +124,23 @@ public class BookingLogic {
 
     //TODO: ultra stupid logic for finding start and end date of booking refactor plox
     private LocalDate bookingStartDate(ResourceOrder resourceOrder, BladeTask bladeTask){
-        //startDate if [ture,...,...]
+        //startDate if [true,...]
         if(resourceOrder.getEquipmentAssignmentStatus().get(0)){
             return bladeTask.getStartDate();
-        //startDate if [false,true,...]
-        } else if (!resourceOrder.getEquipmentAssignmentStatus().get(0) && resourceOrder.getEquipmentAssignmentStatus().get(1)){
+        //startDate if [false,...]
+        }else{
             return bladeTask.getStartDate().plusDays(bladeTask.getAttachPeriod());
         }
-        //startDate if [false,false,true]
-        else if (!resourceOrder.getEquipmentAssignmentStatus().get(0) && !resourceOrder.getEquipmentAssignmentStatus().get(1) && resourceOrder.getEquipmentAssignmentStatus().get(2)){
-            return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
-        }
-        return null;
     }
     private LocalDate bookingEndDate(ResourceOrder resourceOrder, BladeTask bladeTask){
-        //endDate if [...,...,true]
-        if(resourceOrder.getEquipmentAssignmentStatus().get(2)){
+        //endDate if [...,true]
+        if(resourceOrder.getEquipmentAssignmentStatus().get(1)){
             return bladeTask.getEndDate();
         }
-        //endDate if [...,true,false]
-        else if (!resourceOrder.getEquipmentAssignmentStatus().get(2) && resourceOrder.getEquipmentAssignmentStatus().get(1)){
+        //endDate if [...,false]
+        else {
             return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
         }
-        //endDate if [true,false,false]
-        else if (resourceOrder.getEquipmentAssignmentStatus().get(0) && !resourceOrder.getEquipmentAssignmentStatus().get(1) && !resourceOrder.getEquipmentAssignmentStatus().get(2)){
-            return bladeTask.getStartDate().plusDays(bladeTask.getAttachPeriod());
-        }
-        return null;
     }
     private void conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database

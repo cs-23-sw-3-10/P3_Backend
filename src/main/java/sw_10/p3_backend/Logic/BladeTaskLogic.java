@@ -53,9 +53,9 @@ public class BladeTaskLogic {
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
         LocalDate startDate = input.startDate();
-        Integer duration = input.duration();
+        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
         // Calculate the end date of the blade task
-        LocalDate endDate = calculateEndDate(startDate, duration);
+        LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
@@ -66,7 +66,7 @@ public class BladeTaskLogic {
         BladeTask newBladeTask = new BladeTask(
                 input.startDate(),
                 endDate,
-                input.duration(),
+                totalDuration,
                 input.testType(),
                 input.attachPeriod(),
                 input.detachPeriod(),
