@@ -201,6 +201,20 @@ public class BladeTaskLogic {
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate, boolean isActive) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
+
+    public BladeTask updateBTInfo(BladeTaskInput updates) {
+        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(updates.id())
+                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + updates.id()));
+
+        if (bladeTaskToUpdate.getStartDate() != updates.startDate()){
+            bladeTaskToUpdate.setStartDate(updates.startDate());
+        }
+        if (bladeTaskToUpdate.getDuration() != updates.duration()){
+            bladeTaskToUpdate.setDuration(updates.duration());
+        }
+
+
+    }
 }
 
 
