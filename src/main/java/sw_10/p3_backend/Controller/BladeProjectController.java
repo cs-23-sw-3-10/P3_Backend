@@ -24,7 +24,7 @@ public class BladeProjectController {
     private final BladeProjectLogic bladeProjectLogic;
 
     private final BladeProjectRepository bladeProjectRepository;
-   
+
 
 
     public BladeProjectController(BladeProjectLogic bladeProjectLogic, BladeProjectRepository bladeProjectRepository) {
@@ -34,7 +34,6 @@ public class BladeProjectController {
     }
     
 
-
     @QueryMapping
     public List<BladeProject> AllBladeProjects() {return bladeProjectLogic.findAll();
     }
@@ -42,12 +41,6 @@ public class BladeProjectController {
     @QueryMapping
     public List<BladeProject> AllBladeProjectsBySchedule(@Argument boolean isActive) {
         return bladeProjectLogic.findAllBySchedule(isActive);
-    }
-
-    @SubscriptionMapping
-    public Flux<List<BladeProject>> SpeedReading() {
-        System.out.println("SpeedReading");
-        return bladeProjectLogic.speedReading();
     }
 
     @MutationMapping

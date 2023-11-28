@@ -221,7 +221,6 @@ public class BladeTaskLogic {
     }
 
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
-        System.out.println("bladeTasksInRangeSub");
 
         // Initial data load for new subscribers makes sure that the subscriber get the data
         // currently in the database when subscribing
