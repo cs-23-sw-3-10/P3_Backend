@@ -38,6 +38,8 @@ public class BladeTaskLogic {
 
 
 
+
+
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
             , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
@@ -231,14 +233,14 @@ public class BladeTaskLogic {
         // currently in the database when subscribing
         Flux<List<BladeTask>> initialData = Flux.just(
                 bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
-                bladeTaskRepository.bladeTasksPending();
+
 
 
         //Update data for subscribers that are already subscribed to the stream of data
         Flux<List<BladeTask>> updates = processor.asFlux()
                 .publishOn(Schedulers.boundedElastic())// Make sure that the updates are handled on a separate thread
                 .map(ignored -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
-        bladeTaskRepository.bladeTasksPending();
+
                 //Updates are ignored and the query is run again to get the updated data directly from the database
 
         // Combine the initial data and the updates into one stream of data that is returned to the subscriber
