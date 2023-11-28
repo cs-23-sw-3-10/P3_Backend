@@ -81,4 +81,10 @@ public class BladeTaskController {
         return bladeTaskLogic.bladeTasksInRangeSub(startDate, endDate, isActive);
     }
 
+    @SubscriptionMapping
+    public Flux<List<BladeTask>> AllBladeTasksPendingSub() {
+        System.out.println("bladeTasksPendingSub");
+        return bladeTaskLogic.bladeTasksPendingSub();
+    }
+
 }

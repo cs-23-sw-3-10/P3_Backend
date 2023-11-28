@@ -11,6 +11,8 @@ import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.util.function.Supplier;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,11 +36,6 @@ public class BladeTaskLogic {
      * than the producers, with our amount of subscriber buffer overload should not be a problem.
      */
     private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
-
-
-
-
-
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
@@ -185,9 +182,9 @@ public class BladeTaskLogic {
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
         LocalDate startDateParsed;
-        if(startDate.equals("undefined")){
+        if (startDate.equals("undefined")) {
             startDateParsed = null;
-        }else {
+        } else {
             //parsed startDate to LocalDate
             startDateParsed = LocalDate.parse(startDate);
         }
@@ -217,6 +214,7 @@ public class BladeTaskLogic {
 
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
+        System.out.println(testRigValue);
 
         onDatabaseUpdate();
         // Return the new BladeTask
@@ -228,33 +226,39 @@ public class BladeTaskLogic {
     }
 
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
-
-        // Initial data load for new subscribers makes sure that the subscriber get the data
-        // currently in the database when subscribing
-        Flux<List<BladeTask>> initialData = Flux.just(
-                bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
-
-
-
-        //Update data for subscribers that are already subscribed to the stream of data
-        Flux<List<BladeTask>> updates = processor.asFlux()
-                .publishOn(Schedulers.boundedElastic())// Make sure that the updates are handled on a separate thread
-                .map(ignored -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
-
-                //Updates are ignored and the query is run again to get the updated data directly from the database
-
-        // Combine the initial data and the updates into one stream of data that is returned to the subscriber
-        // every time the data in the database is updated the subscriber will get the updated data.
-        return Flux.concat(initialData, updates)
-                .publishOn(Schedulers.boundedElastic());
+        // Create a Flux stream to emit the list of blade tasks in a given range when to subscribers whenever an update occurs.
+        return createFlux(() -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
+        //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
     }
 
-    //Use when updates to bladeTask is made to ensure that the subscribers get the updated data
+    public Flux<List<BladeTask>> bladeTasksPendingSub() {
+        // Create a Flux stream to emit the list of blade tasks pending when to subscribers whenever an update occurs.
+        return createFlux(bladeTaskRepository::bladeTasksPending);
+    }
+
+    private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
+        // Generalization of the creation of the Flux stream based on a supplier.
+        // The supplier provides the actual data (list of BladeTasks) to be emitted by the Flux.
+
+        return Flux.defer(() -> Flux.just(supplier.get()))
+                // Flux.defer ensures that each subscriber receives its own version of the Flux sequence.
+                // It delays the creation of the Flux until a subscriber subscribes. Flux.just takes the data provided
+                // by the database calls and wraps them in a Flux.
+
+                .concatWith(Flux.defer(() -> processor.asFlux() // The concatWith operation appends another Flux to the initial one.
+                        .publishOn(Schedulers.boundedElastic()) // Make sure that the updates are handled on a separate thread
+                        .map(ignored -> supplier.get()))); // The map operation ignores the signal from the processor and runs the query again to get the updated data directly from the database
+
+
+    }
+
     public void onDatabaseUpdate() {
         //Updates the processor with a new object to trigger a signal emission to subscribers that will run the query again
         processor.tryEmitNext(new Object());
     }
-    public List<BladeTask> bladeTasksPending(){
+
+
+    public List<BladeTask> bladeTasksPending() {
         return bladeTaskRepository.bladeTasksPending();
 
     }

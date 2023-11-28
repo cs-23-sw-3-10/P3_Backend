@@ -51,6 +51,7 @@ type Mutation{
 
 type Subscription {
     AllBladeTasksInRangeSub(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
+    AllBladeTasksPendingSub:[BladeTask]
 }
 
 type greetings{
