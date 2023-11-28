@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class BladeTaskLogic {
@@ -191,6 +192,7 @@ public class BladeTaskLogic {
 
         //Remove old bookings
         bookingLogic.removeBookings(bladeTaskToUpdate);
+
 
         // Save the new BladeTask in the database
         bladeTaskRepository.save(bladeTaskToUpdate);
