@@ -35,12 +35,9 @@ public class BookingLogic {
         for (ResourceOrder resourceOrder: resourceOrders) {
             System.out.println("Creating bookings for" + resourceOrder);
 
-
-
             //Find start and end date of booking based on equipmentAssignmentStatus
             LocalDate bookingStartDate = bookingStartDate(resourceOrder, bladeTask);
             LocalDate bookingEndDate = bookingEndDate(resourceOrder, bladeTask);
-
 
             //Handle all different types of resource orders
             switch (resourceOrder.getResourceType().toLowerCase()){
@@ -70,7 +67,6 @@ public class BookingLogic {
             bladeTask.setInConflict(false);
         }
     }
-
 
     //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
