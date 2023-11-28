@@ -66,7 +66,7 @@ public class BladeTaskLogic {
         BladeTask newBladeTask = new BladeTask(
                 input.startDate(),
                 endDate,
-                input.duration(),
+                totalDuration,
                 input.testType(),
                 input.attachPeriod(),
                 input.detachPeriod(),
