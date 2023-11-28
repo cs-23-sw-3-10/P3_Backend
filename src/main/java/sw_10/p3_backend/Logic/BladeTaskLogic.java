@@ -241,6 +241,11 @@ public class BladeTaskLogic {
         bladeTask.addRelatedConflict(conflict);
         bladeTaskRepository.save(bladeTask);
     }
+
+    public void removeRelatedConflict(BladeTask bladeTask, Conflict conflict) {
+        bladeTask.removeRelatedConflict(conflict);
+        bladeTaskRepository.save(bladeTask);
+    }
 }
 
 

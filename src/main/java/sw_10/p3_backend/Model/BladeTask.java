@@ -35,6 +35,10 @@ public class BladeTask implements Cloneable {
         relatedConflicts.add(conflict);
     }
 
+    public void removeRelatedConflict(Conflict conflict) {
+        relatedConflicts.remove(conflict);
+    }
+
     public enum taskState { NOT_STARTED, IN_PROGRESS, COMPLETED }
     private taskState state;
 
