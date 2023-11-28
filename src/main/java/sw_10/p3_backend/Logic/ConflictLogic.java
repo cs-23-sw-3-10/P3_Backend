@@ -54,12 +54,12 @@ public class ConflictLogic {
     public void removeConflicts(List<Booking> bookings) {
         for (Booking booking : bookings) {
             List<Conflict> conflicts = conflictRepository.findAllByBooking(booking);
-            for (Conflict conflict: conflicts) {
+            /*for (Conflict conflict: conflicts) {
                 Set<BladeTask> relatedBladeTasks = conflict.getRelatedBladeTasks();
                 for (BladeTask relatedBladeTask: relatedBladeTasks) {
                     bladeTaskLogic.removeRelatedConflict(relatedBladeTask, conflict);
                 }
-            }
+            }*/
 
             conflictRepository.deleteAll(conflicts);
         }
