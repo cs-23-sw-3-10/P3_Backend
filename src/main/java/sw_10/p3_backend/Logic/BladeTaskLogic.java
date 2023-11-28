@@ -25,7 +25,8 @@ public class BladeTaskLogic {
     private final BladeProjectLogic bladeProjectLogic;
 
 
-    private final Sinks.Many<List<BladeTask>> processor = Sinks.many().replay().all();
+    // The processor is used to emit events to subscribers when the data in the database is updated
+    private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
 
 
 
@@ -215,23 +216,27 @@ public class BladeTaskLogic {
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
         System.out.println("bladeTasksInRangeSub");
 
-        // Initial data load for new subscribers makes sure that the subscriber get some data when subscribing
+        // Initial data load for new subscribers makes sure that the subscriber get the data
+        // currently in the database when subscribing
         Flux<List<BladeTask>> initialData = Flux.just(
                 bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
 
         //Update data for subscribers that are already subscribed to the stream of data
-        processor.tryEmitNext(bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
         Flux<List<BladeTask>> updates = processor.asFlux()
-                .publishOn(Schedulers.boundedElastic())
+                .publishOn(Schedulers.boundedElastic())// Make sure that the updates are handled on a separate thread
                 .map(ignored -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
 
 
+        // Combine the initial data and the updates into one stream of data that is returned to the subscriber
+        // every time the data in the database is updated the subscriber will get the updated data.
         return Flux.concat(initialData, updates)
                 .publishOn(Schedulers.boundedElastic());
     }
 
+    //Use when updates to bladeTask is made to insure that the subscribers get the updated data
     public void onDatabaseUpdate() {
-        processor.tryEmitNext(bladeTaskRepository.findAll());
+        //Updates the processor with a new object to trigger a signal emission to subscribers that will run the query again
+        processor.tryEmitNext(new Object());
     }
 }
 
