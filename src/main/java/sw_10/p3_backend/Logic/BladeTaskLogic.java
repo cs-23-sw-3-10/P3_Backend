@@ -202,18 +202,50 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
 
-    public BladeTask updateBTInfo(BladeTaskInput updates) {
-        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(updates.id())
-                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + updates.id()));
+    public BladeTask updateBTInfo(BladeTaskInput updates, Long btId) {
+        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
+                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + btId));
 
-        if (bladeTaskToUpdate.getStartDate() != updates.startDate()){
+        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), updates.endDate(), false);
+
+        if (bladeTaskToUpdate.getStartDate() != updates.startDate()
+                || bladeTaskToUpdate.getEndDate() != updates.endDate())
+        {
+            for (BladeTask bladeTask : bladeTasksInRange) {
+                if (bladeTask.getTestRig() == updates.testRig()) {
+                    throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
+                }
+            }
             bladeTaskToUpdate.setStartDate(updates.startDate());
+            bladeTaskToUpdate.setEndDate(updates.endDate());
         }
+
         if (bladeTaskToUpdate.getDuration() != updates.duration()){
             bladeTaskToUpdate.setDuration(updates.duration());
         }
+        if (bladeTaskToUpdate.getTestRig() != updates.testRig()){
+            bladeTaskToUpdate.setTestRig(updates.testRig());
+        }
+        if (bladeTaskToUpdate.getAttachPeriod() != updates.attachPeriod()){
+            bladeTaskToUpdate.setAttachPeriod(updates.attachPeriod());
+        }
+        if (bladeTaskToUpdate.getDetachPeriod() != updates.detachPeriod()){
+            bladeTaskToUpdate.setDetachPeriod(updates.detachPeriod());
+        }
+        if (bladeTaskToUpdate.getTaskName().equals(updates.taskName())){
+            bladeTaskToUpdate.setTaskName(updates.taskName());
+        }
+        if (bladeTaskToUpdate.getTestType().equals(updates.testType())){
+            bladeTaskToUpdate.setTestType(updates.testType());
+        }
+        // der skal tilføjes en metode til at opdatere resourceOrders men der er problemer med dem fordi de skal opdateres eller noget
+        /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
+            bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
+        }*/
+        bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
+        bladeTaskRepository.save(bladeTaskToUpdate);
 
-
+        return bladeTaskToUpdate;
     }
 }
 
