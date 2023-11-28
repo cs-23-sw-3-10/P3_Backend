@@ -77,7 +77,7 @@ public class BookingLogic {
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
         List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, resourceOrder.getResourceName());
-
+        System.out.println(freeEquipmentList);
         System.out.println("Number of free equipment: " + freeEquipmentList.size());
 
 
