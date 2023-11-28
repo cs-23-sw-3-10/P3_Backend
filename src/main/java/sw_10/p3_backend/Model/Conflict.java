@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter @Setter
 @Entity
 @Table(name = "conflict")
-public class Conflict {
+public class Conflict implements Cloneable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -34,4 +34,14 @@ public class Conflict {
         setType(booking.getResourceType());
         setMessage("Conflict!: " + booking.getStartDate() + " - " + booking.getEndDate() + " " + booking.getResourceType() + " booking for " + bladeTask.getTaskName() + " is booked with no available resources.");
     }
+
+    @Override
+    public Conflict clone() throws CloneNotSupportedException {
+        Conflict cloned = (Conflict) super.clone();
+
+        // Reset the ID to indicate a new entity
+        cloned.id = 0;
+        return cloned;
+    }
+
 }
