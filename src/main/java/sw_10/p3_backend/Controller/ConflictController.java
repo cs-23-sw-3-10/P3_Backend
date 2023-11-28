@@ -26,10 +26,5 @@ public class ConflictController {
     public List<Conflict> AllConflicts(){
         return conflictRepository.findAll();
     } //Consider adding logic and error handling
-
-
-    @SubscriptionMapping
-    public Flux<String> greetings() {
-        return this.conflictlogic.getGreetingsStream();
-    }
+    
 }
