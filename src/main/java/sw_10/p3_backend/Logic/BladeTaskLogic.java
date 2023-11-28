@@ -25,7 +25,14 @@ public class BladeTaskLogic {
     private final BladeProjectLogic bladeProjectLogic;
 
 
-    // The processor is used to emit events to subscribers when the data in the database is updated
+    /**
+     * Defines a processor that acts as a sink for multiple publishers and a source for one or more subscribers.
+     * It is configured as a 'multicast' sink, meaning it can handle multiple publishers and will dispatch
+     * the emitted items to all subscribers. The 'onBackpressureBuffer' handles backpressure,
+     * if subscribers cannot keep up with the rate of items being emitted, the items are buffered until
+     * they can be processed. This buffer ensures that no data is lost if the downstream subscribers are slower
+     * than the producers, with our amount of subscriber buffer overload should not be a problem.
+     */
     private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
 
 
@@ -225,7 +232,7 @@ public class BladeTaskLogic {
         Flux<List<BladeTask>> updates = processor.asFlux()
                 .publishOn(Schedulers.boundedElastic())// Make sure that the updates are handled on a separate thread
                 .map(ignored -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
-
+                //Updates are ignored and the query is run again to get the updated data directly from the database
 
         // Combine the initial data and the updates into one stream of data that is returned to the subscriber
         // every time the data in the database is updated the subscriber will get the updated data.
@@ -233,7 +240,7 @@ public class BladeTaskLogic {
                 .publishOn(Schedulers.boundedElastic());
     }
 
-    //Use when updates to bladeTask is made to insure that the subscribers get the updated data
+    //Use when updates to bladeTask is made to ensure that the subscribers get the updated data
     public void onDatabaseUpdate() {
         //Updates the processor with a new object to trigger a signal emission to subscribers that will run the query again
         processor.tryEmitNext(new Object());
