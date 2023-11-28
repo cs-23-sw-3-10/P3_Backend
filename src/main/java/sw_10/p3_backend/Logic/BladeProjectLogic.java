@@ -84,11 +84,13 @@ public class BladeProjectLogic {
     public void updateBladeProject(BladeProject bladeProject) {
         //set bladeProject start and end date to the earliest and latest bladeTask start and end date
         bladeProject.getBladeTasks().forEach(bladeTask -> {
-            if(bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
-                bladeProject.setStartDate(bladeTask.getStartDate());
-            }
-            if(bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
-                bladeProject.setEndDate(bladeTask.getEndDate());
+            if(bladeTask.getStartDate()!=null && bladeTask.getEndDate()!=null) {// Pending blade tasks does not contribute to project start- and end date
+                if (bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
+                    bladeProject.setStartDate(bladeTask.getStartDate());
+                }
+                if (bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
+                    bladeProject.setEndDate(bladeTask.getEndDate());
+                }
             }
         });
 

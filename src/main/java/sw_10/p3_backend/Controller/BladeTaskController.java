@@ -31,6 +31,11 @@ public class BladeTaskController {
     }
 
     @QueryMapping
+    public List<BladeTask> AllBladeTasksPending(){
+        return bladeTaskLogic.bladeTasksPending();
+    }
+
+    @QueryMapping
     public List<BladeTask> AllBladeTasks(){
         return bladeTaskLogic.findAll();
     }
