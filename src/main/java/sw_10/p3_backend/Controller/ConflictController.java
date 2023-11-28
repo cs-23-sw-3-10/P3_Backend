@@ -26,5 +26,5 @@ public class ConflictController {
     public List<Conflict> AllConflicts(){
         return conflictRepository.findAll();
     } //Consider adding logic and error handling
-    
+
 }

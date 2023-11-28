@@ -2,8 +2,6 @@ package sw_10.p3_backend.Logic;
 
 
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
@@ -22,8 +20,7 @@ public class BladeProjectLogic {
     private final BladeProjectRepository BladeProjectRepository;
     private final ScheduleRepository scheduleRepository;
 
-    private List<BladeProject> lastKnownState = null;
-    private final Sinks.Many<List<BladeProject>> processor = Sinks.many().replay().all();
+
 
 
     public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ScheduleRepository scheduleRepository){
@@ -38,7 +35,6 @@ public class BladeProjectLogic {
             BladeProjectRepository.save(project);
             List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
             BladeProject.setBladeProjectList(bladeProjects);
-            onDatabaseUpdate(bladeProjects);
             return project;
     }
 
@@ -100,27 +96,6 @@ public class BladeProjectLogic {
     public List<BladeProject> lookUpBladeData() {
         return BladeProjectRepository.findAll();
     }
-
-    public void onDatabaseUpdate(List<BladeProject> updatedProjects) {
-        System.out.println("onDatabaseUpdate in logic" + updatedProjects.size());
-
-        for (BladeProject updatedProject : updatedProjects) {
-            updatedProject.getBladeTasks().forEach(bladeTask -> {
-                System.out.println(bladeTask.getTaskName());
-            });
-
-        }
-        if (!updatedProjects.equals(lastKnownState)) {
-            lastKnownState = updatedProjects;
-            processor.tryEmitNext(updatedProjects);
-        }
-    }
-
-    public Flux<List<BladeProject>> speedReading() {
-        System.out.println("speedReading in logic");
-        return processor.asFlux();
-    }
-
 }
 
 
