@@ -28,7 +28,7 @@ public class EquipmentController {
     }
 
 
-    @Secured("ROLE_USER")
+    @Secured("ROLE_ADMIN")
     @QueryMapping
     public List<Equipment> AllEquipment(Principal principal) {
         System.out.println(principal.getName());
