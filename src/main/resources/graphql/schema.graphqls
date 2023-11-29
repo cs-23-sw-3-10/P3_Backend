@@ -25,6 +25,8 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+
+    authenticate(username: String!, password: String!): String
 }
 
 type Mutation{
@@ -39,6 +41,14 @@ type Mutation{
     CreateEquipment(type:String!, calibrationExpirationDate:String!, name:String!):Equipment
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
+
+
+
+}
+
+type AuthData {
+    token: String!
+    userId: String!
 }
 
 type BladeProject {

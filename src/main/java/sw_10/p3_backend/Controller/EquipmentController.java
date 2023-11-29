@@ -5,6 +5,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import sw_10.p3_backend.Logic.EquipmentLogic;
@@ -28,11 +29,9 @@ public class EquipmentController {
     }
 
 
-    @Secured("ROLE_ADMIN")
-    @QueryMapping
-    public List<Equipment> AllEquipment(Principal principal) {
-        System.out.println(principal.getName());
 
+    @QueryMapping
+    public List<Equipment> AllEquipment() {
         return equipmentRepository.findAll();
     }
 
@@ -57,6 +56,7 @@ public class EquipmentController {
     }
 
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Equipment CreateEquipment(@Argument String name, @Argument String type, @Argument String calibrationExpirationDate) {
         return equipmentLogic.CreateEquipment(name, type, calibrationExpirationDate);

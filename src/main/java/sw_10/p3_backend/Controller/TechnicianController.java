@@ -4,6 +4,8 @@ package sw_10.p3_backend.Controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.TechnicianLogic;
 import sw_10.p3_backend.Model.Technician;
@@ -20,6 +22,7 @@ public class TechnicianController {
         this.technicianLogic=technicianLogic;
         this.technicianRepository = technicianRepository;
     }
+
 
 
     @QueryMapping
@@ -42,6 +45,7 @@ public class TechnicianController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Technician CreateTechnician(@Argument String type, @Argument Integer maxWorkHours, @Argument Integer count){
         return technicianLogic.CreateTechnician(type, maxWorkHours, count);

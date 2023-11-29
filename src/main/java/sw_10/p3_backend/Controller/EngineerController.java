@@ -4,6 +4,7 @@ package sw_10.p3_backend.Controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.EngineerLogic;
 import sw_10.p3_backend.Model.Engineer;
@@ -13,7 +14,7 @@ import sw_10.p3_backend.exception.InputInvalidException;
 import java.util.List;
 
 @Controller
-public class EngineerController {
+public class    EngineerController {
     private final EngineerRepository engineerRepository;
     private final EngineerLogic engineerLogic;
 
@@ -41,6 +42,7 @@ public class EngineerController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Engineer CreateEngineer(@Argument String name, @Argument Integer maxWorkHours){
         return engineerLogic.CreateEngineer(name, maxWorkHours);
