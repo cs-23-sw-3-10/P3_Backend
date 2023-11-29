@@ -2,12 +2,18 @@ package sw_10.p3_backend.Logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
+import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.util.function.Supplier;
+
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +27,19 @@ public class BladeTaskLogic {
     private final BladeProjectLogic bladeProjectLogic;
 
 
+    /**
+     * Defines a processor that acts as a sink for multiple publishers and a source for one or more subscribers.
+     * It is configured as a 'multicast' sink, meaning it can handle multiple publishers and will dispatch
+     * the emitted items to all subscribers. The 'onBackpressureBuffer' handles backpressure,
+     * if subscribers cannot keep up with the rate of items being emitted, the items are buffered until
+     * they can be processed. This buffer ensures that no data is lost if the downstream subscribers are slower
+     * than the producers, with our amount of subscriber buffer overload should not be a problem.
+     */
+    private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
+
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository
-    , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
+            , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
@@ -33,12 +49,11 @@ public class BladeTaskLogic {
     }
 
 
-    public String deleteTask(Integer id){
+    public String deleteTask(Integer id) {
         try {
             bladeTaskRepository.deleteById(id.longValue());
             return "BT deleted";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "Error deleting BT" + e;
         }
     }
@@ -48,14 +63,14 @@ public class BladeTaskLogic {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
-        
+
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
 
         LocalDate startDate = input.startDate();
-        Integer duration = input.duration();
+        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
         // Calculate the end date of the blade task
-        LocalDate endDate = calculateEndDate(startDate, duration);
+        LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
@@ -66,7 +81,7 @@ public class BladeTaskLogic {
         BladeTask newBladeTask = new BladeTask(
                 input.startDate(),
                 endDate,
-                input.duration(),
+                totalDuration,
                 input.testType(),
                 input.attachPeriod(),
                 input.detachPeriod(),
@@ -84,11 +99,13 @@ public class BladeTaskLogic {
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
 
-        if(testRigValue != 0 && resourceOrders != null){
+        if (testRigValue != 0 && resourceOrders != null) {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
         bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
+
+        onDatabaseUpdate();
         return newBladeTask;
     }
 
@@ -98,13 +115,13 @@ public class BladeTaskLogic {
     }
 
     private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
-        if(input.resourceOrders() != null) {
+        if (input.resourceOrders() != null) {
             return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
         }
         return null;
     }
 
-    public List<BladeTask> findAll(){
+    public List<BladeTask> findAll() {
         return bladeTaskRepository.findAll();
     }
 
@@ -121,12 +138,12 @@ public class BladeTaskLogic {
         }
     }
 
-    private void validateBladeTaskInput(BladeTaskInput input){
+    private void validateBladeTaskInput(BladeTaskInput input) {
 
         if ((input.startDate() == null && input.testRig() != null) || (input.startDate() != null && input.testRig() == null)) {
             throw new InputInvalidException("Both startDate and testRig must be provided together");
         }
-        if (input.testRig() != null && input.testRig() < 0) {   
+        if (input.testRig() != null && input.testRig() < 0) {
             throw new InputInvalidException("testRig cannot be negative");
         }
         if (input.bladeProjectId() == null) {
@@ -147,7 +164,7 @@ public class BladeTaskLogic {
         if (input.taskName() == null) {
             throw new InputInvalidException("taskName is mandatory");
         }
-        if(input.startDate()!= null && LocalDate.now().isAfter(input.startDate())){
+        if (input.startDate() != null && LocalDate.now().isAfter(input.startDate())) {
             throw new InputInvalidException("startDate cannot be in the past");
         }
     }
@@ -164,8 +181,13 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
-        //parsed startDate to LocalDate
-        LocalDate startDateParsed = LocalDate.parse(startDate);
+        LocalDate startDateParsed;
+        if (startDate.equals("undefined")) {
+            startDateParsed = null;
+        } else {
+            //parsed startDate to LocalDate
+            startDateParsed = LocalDate.parse(startDate);
+        }
 
         bladeTaskToUpdate.setStartDate(startDateParsed);
         bladeTaskToUpdate.setDuration(duration);
@@ -184,7 +206,7 @@ public class BladeTaskLogic {
         // Save the new BladeTask in the database
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
-        if(testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null){
+        if (testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null) {
             System.out.println("Creating bookings");
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
@@ -192,8 +214,9 @@ public class BladeTaskLogic {
 
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
+        System.out.println(testRigValue);
 
-
+        onDatabaseUpdate();
         // Return the new BladeTask
         return bladeTaskToUpdate;
     }
@@ -201,6 +224,7 @@ public class BladeTaskLogic {
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate, boolean isActive) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
+
 
     public BladeTask updateBTInfo(BladeTaskInput updates, Long btId) {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
@@ -255,6 +279,44 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(bladeTaskToUpdate);
 
         return bladeTaskToUpdate;
+    }
+
+    public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
+        // Create a Flux stream to emit the list of blade tasks in a given range when to subscribers whenever an update occurs.
+        return createFlux(() -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
+        //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
+    }
+
+    public Flux<List<BladeTask>> bladeTasksPendingSub() {
+        // Create a Flux stream to emit the list of blade tasks pending when to subscribers whenever an update occurs.
+        return createFlux(bladeTaskRepository::bladeTasksPending);
+    }
+
+    private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
+        // Generalization of the creation of the Flux stream based on a supplier.
+        // The supplier provides the actual data (list of BladeTasks) to be emitted by the Flux.
+
+        return Flux.defer(() -> Flux.just(supplier.get()))
+                // Flux.defer ensures that each subscriber receives its own version of the Flux sequence.
+                // It delays the creation of the Flux until a subscriber subscribes. Flux.just takes the data provided
+                // by the database calls and wraps them in a Flux.
+
+                .concatWith(Flux.defer(() -> processor.asFlux() // The concatWith operation appends another Flux to the initial one.
+                        .publishOn(Schedulers.boundedElastic()) // Make sure that the updates are handled on a separate thread
+                        .map(ignored -> supplier.get()))); // The map operation ignores the signal from the processor and runs the query again to get the updated data directly from the database
+
+
+    }
+
+    public void onDatabaseUpdate() {
+        //Updates the processor with a new object to trigger a signal emission to subscribers that will run the query again
+        processor.tryEmitNext(new Object());
+    }
+
+
+    public List<BladeTask> bladeTasksPending() {
+        return bladeTaskRepository.bladeTasksPending();
+
     }
 }
 

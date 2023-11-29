@@ -275,7 +275,8 @@ insert into blade_task (blade_project_id, start_date, duration, end_date, test_t
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-02-20', '10', '2024-03-01', 'Equipment', 6, null, null, 6, 0, 'Single Axis Exciter B');
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-02-20', '10', '2024-03-01', 'Technician', 6, null, 1, null, 10, 'Smith');
 
-
+--blade task 7 (not scheduled)--
+insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, null, 10, null, 'flapwise static proof', 4, 2, 'Gw-53_BT-6', null,false);
 
 --Blade Project 2--
 insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (2, '#ACB277' ,'2024-01-07', '2024-03-28', 'Suzlon', 'Clyve Birley', 'Su-95');
