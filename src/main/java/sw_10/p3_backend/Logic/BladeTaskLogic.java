@@ -11,10 +11,7 @@ import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class BladeTaskLogic {
@@ -178,9 +175,21 @@ public class BladeTaskLogic {
 
         //Remove old bookings
         bookingLogic.removeBookings(bladeTaskToUpdate);
-
         System.out.println("Bookings deleted");
-        bookingLogic.updateConflictBookings(bladeTaskToUpdate);
+
+        Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
+        Set<BladeTask> relatedBladeTasks = new HashSet<>();
+        System.out.println("Lists created");
+        for (Conflict relatedConflict : relatedConflicts) {
+            Booking tempBooking = relatedConflict.fetchBooking();
+            relatedBladeTasks.add(tempBooking.fetchBladeTask());
+        }
+
+        for (BladeTask relatedBladeTask : relatedBladeTasks) {
+            BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
+            bladeTaskRepository.save(tempBladeTask);
+        }
+        //bookingLogic.updateConflictBookings(bladeTaskToUpdate);
 
         LocalDate startDateParsed;
         if(startDate.equals("undefined")){
@@ -254,10 +263,10 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(bladeTask);
     }
 
-    public void removeRelatedConflict(BladeTask bladeTask, Conflict conflict) {
-        bladeTask.removeRelatedConflict(conflict);
+    public void saveBladeTask(BladeTask bladeTask){
         bladeTaskRepository.save(bladeTask);
     }
+
 }
 
 

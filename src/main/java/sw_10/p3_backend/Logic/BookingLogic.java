@@ -18,16 +18,15 @@ public class BookingLogic {
     private final EquipmentLogic equipmentLogic;
     private final TechnicianLogic technicianLogic;
     private final ConflictLogic conflictLogic;
-    private final ConflictRepository conflictRepository;
+
 
     @Autowired
-    public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic, ConflictLogic conflictLogic, ConflictRepository conflictRepository) {
+    public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic, ConflictLogic conflictLogic) {
         this.bookingRepository = bookingRepository;
         this.engineerLogic = engineerLogic;
         this.equipmentLogic = equipmentLogic;
         this.technicianLogic = technicianLogic;
         this.conflictLogic = conflictLogic;
-        this.conflictRepository = conflictRepository;
     }
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
@@ -177,15 +176,13 @@ public class BookingLogic {
         System.out.println("For each loop finished");
         deleteListOfBookings(relatedBookings);
 
+        System.out.println(relatedConflicts);
+
         System.out.println("Creating new bookings");
         for (Booking relatedBooking : relatedBookings) {
             createEquipmentBookingFromBooking(relatedBooking);
         }
         System.out.println("Booking for each loop finished");
-
-
-
-
 
 
     }
@@ -216,5 +213,11 @@ public class BookingLogic {
             conflictHandler(newBooking, newBooking.fetchBladeTask());
         }
 
+    }
+
+    public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
+        removeBookings(bladeTask);
+        createBookings(bladeTask.getResourceOrders(), bladeTask);
+        return bladeTask;
     }
 }
