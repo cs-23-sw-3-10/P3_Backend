@@ -296,16 +296,23 @@ public class BladeTaskLogic {
         // Generalization of the creation of the Flux stream based on a supplier.
         // The supplier provides the actual data (list of BladeTasks) to be emitted by the Flux.
 
-        return Flux.defer(() -> Flux.just(supplier.get()))
-                // Flux.defer ensures that each subscriber receives its own version of the Flux sequence.
-                // It delays the creation of the Flux until a subscriber subscribes. Flux.just takes the data provided
-                // by the database calls and wraps them in a Flux.
+        return Flux.<List<BladeTask>>create(sink -> {
+                    // Emit the current state immediately to new subscribers
+                    sink.next(supplier.get());
 
-                .concatWith(Flux.defer(() -> processor.asFlux() // The concatWith operation appends another Flux to the initial one.
-                        .publishOn(Schedulers.boundedElastic()) // Make sure that the updates are handled on a separate thread
-                        .map(ignored -> supplier.get()))); // The map operation ignores the signal from the processor and runs the query again to get the updated data directly from the database
-
-
+                    // Handle updates from the processor
+                    processor.asFlux()
+                            .publishOn(Schedulers.boundedElastic())
+                            .subscribe(
+                                    ignored -> sink.next(supplier.get()),
+                                    sink::error,    // Handle errors by propagating them
+                                    () -> {}        // Avoid completing the sink
+                            );
+                })
+                .onErrorContinue((throwable, o) -> {
+                    // Log or handle the error
+                })
+                .share(); // Share the Flux to keep it active
     }
 
     public void onDatabaseUpdate() {
