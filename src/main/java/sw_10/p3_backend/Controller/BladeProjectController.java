@@ -21,9 +21,7 @@ public class BladeProjectController {
     public BladeProjectController(BladeProjectLogic bladeProjectLogic) {
         this.bladeProjectLogic = bladeProjectLogic;
     }
-
-
-    @PreAuthorize("isAuthenticated()")
+    
     @QueryMapping
     public List<BladeProject> AllBladeProjects() {
         return bladeProjectLogic.findAll();

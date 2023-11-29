@@ -28,7 +28,6 @@ public class BladeTaskController {
         return bladeTaskLogic.bladeTasksInRange(startDate, endDate);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @QueryMapping
     public List<BladeTask> AllBladeTasks(){
         return bladeTaskLogic.findAll();
