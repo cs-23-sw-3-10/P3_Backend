@@ -13,10 +13,11 @@ import java.util.List;
 @Getter @Setter //Lombok annotations to generate getters and setters
 @AllArgsConstructor //Lombok annotation to generate constructor with all arguments
 @NoArgsConstructor
-public class BladeProject {
+public class BladeProject implements Cloneable {
     private static String[] customerList;
     private static String[] projectLeaderList;
-    private static BladeProject[] bladeProjectList;
+    @Getter
+    private static List<BladeProject> bladeProjectList = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -46,4 +47,37 @@ public class BladeProject {
     public BladeProject(String projectName){
         setProjectName(projectName);
     }
-}
+
+
+    public static void setBladeProjectList(List<BladeProject> bladeProjectList) {
+        BladeProject.bladeProjectList = bladeProjectList;
+    }
+
+    public BladeProject cloneWithSchedule(Schedule newSchedule) {
+        try {
+            BladeProject cloned = (BladeProject) super.clone();
+
+            // Reset the ID to indicate a new entity
+            cloned.id = 0;
+
+            // Associate the cloned BladeProject with the provided Schedule
+            cloned.schedule = newSchedule;
+
+            // Deep clone bladeTasks
+            cloned.bladeTasks = new ArrayList<>();
+            for (BladeTask task : this.bladeTasks) {
+                // Clone the task and associate it with the cloned BladeProject
+                BladeTask clonedTask = task.clone();
+                clonedTask.setBladeProject(cloned);
+                cloned.bladeTasks.add(clonedTask);
+            }
+
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            // Handle the exception, possibly rethrow as a runtime exception
+            throw new RuntimeException(e);
+        }
+    }
+    }
+
+

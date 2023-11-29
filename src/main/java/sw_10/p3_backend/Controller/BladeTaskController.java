@@ -5,8 +5,11 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
+import reactor.core.publisher.Flux;
 import sw_10.p3_backend.Logic.BladeTaskLogic;
+import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.BladeTaskInput;
 import sw_10.p3_backend.exception.InputInvalidException;
@@ -24,12 +27,23 @@ public class BladeTaskController {
     }
 
     @QueryMapping
-    public List<BladeTask> AllBladeTasksInRange(@Argument String startDate, @Argument String endDate){
-        return bladeTaskLogic.bladeTasksInRange(startDate, endDate);
+    public List<BladeTask> AllBladeTasksInRange(@Argument String startDate, @Argument String endDate, @Argument boolean isActive){
+        return bladeTaskLogic.bladeTasksInRange(startDate, endDate, isActive);
+    }
+
+    @QueryMapping
+    public List<BladeTask> AllBladeTasksPending(){
+        return bladeTaskLogic.bladeTasksPending();
     }
 
     @QueryMapping
     public List<BladeTask> AllBladeTasks(){
+        return bladeTaskLogic.findAll();
+    }
+
+    @SubscriptionMapping
+    public List<BladeTask> bladeTasksAdded(){
+        System.out.println("bladeTasksAdded");
         return bladeTaskLogic.findAll();
     }
 
@@ -61,7 +75,25 @@ public class BladeTaskController {
 
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
+    public BladeTask updateBTInfo(@Argument BladeTaskInput updates, @Argument Long btId){
+        return bladeTaskLogic.updateBTInfo(updates, btId);
+    }
+
+    @MutationMapping
     public BladeTask updateStartAndDurationBladeTask(@Argument Long id, @Argument String startDate, @Argument Integer duration, @Argument Integer testRig){
         return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration, testRig);
     }
+
+    @SubscriptionMapping
+    public Flux<List<BladeTask>> AllBladeTasksInRangeSub(@Argument String startDate, @Argument String endDate, @Argument boolean isActive) {
+        System.out.println("AllBladeTasksInRangeSub");
+        return bladeTaskLogic.bladeTasksInRangeSub(startDate, endDate, isActive);
+    }
+
+    @SubscriptionMapping
+    public Flux<List<BladeTask>> AllBladeTasksPendingSub() {
+        System.out.println("bladeTasksPendingSub");
+        return bladeTaskLogic.bladeTasksPendingSub();
+    }
+
 }

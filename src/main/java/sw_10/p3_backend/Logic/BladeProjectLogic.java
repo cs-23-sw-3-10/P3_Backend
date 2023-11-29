@@ -21,6 +21,8 @@ public class BladeProjectLogic {
     private final ScheduleRepository scheduleRepository;
 
 
+
+
     public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ScheduleRepository scheduleRepository){
         this.BladeProjectRepository = bladeProjectRepository;
         this.scheduleRepository = scheduleRepository;
@@ -29,7 +31,10 @@ public class BladeProjectLogic {
     public BladeProject createProject(String name, String customer, String projectLeader) {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false);//Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
+
             BladeProjectRepository.save(project);
+            List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
+            BladeProject.setBladeProjectList(bladeProjects);
             return project;
     }
 
@@ -45,7 +50,19 @@ public class BladeProjectLogic {
     }
 
     public List<BladeProject> findAll(){
+        List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
+        BladeProject.setBladeProjectList(bladeProjects);
+        for (BladeProject bladeProject : bladeProjects) {
+            System.out.println(bladeProject.getBladeTasks().size());
+
+        }
+
+
         return BladeProjectRepository.findAll();
+    }
+
+    public List<BladeProject> findAllBySchedule(boolean isActive){
+        return BladeProjectRepository.findAllBySchedule(isActive);
     }
 
     private static String generateRandomColorHexCode() {
@@ -63,15 +80,25 @@ public class BladeProjectLogic {
     public void updateBladeProject(BladeProject bladeProject) {
         //set bladeProject start and end date to the earliest and latest bladeTask start and end date
         bladeProject.getBladeTasks().forEach(bladeTask -> {
-            if(bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
-                bladeProject.setStartDate(bladeTask.getStartDate());
-            }
-            if(bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
-                bladeProject.setEndDate(bladeTask.getEndDate());
+            if(bladeTask.getStartDate()!=null && bladeTask.getEndDate()!=null) {// Pending blade tasks does not contribute to project start- and end date
+                if (bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
+                    bladeProject.setStartDate(bladeTask.getStartDate());
+                }
+                if (bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
+                    bladeProject.setEndDate(bladeTask.getEndDate());
+                }
             }
         });
 
         BladeProjectRepository.save(bladeProject);
     }
+
+    public List<BladeProject> lookUpBladeData() {
+        return BladeProjectRepository.findAll();
+    }
 }
+
+
+
+
 

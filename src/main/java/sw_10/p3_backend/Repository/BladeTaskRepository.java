@@ -13,8 +13,13 @@ import java.util.List;
 public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
 
 
-    @Query("SELECT bt FROM BladeTask bt  WHERE (bt.startDate > :start AND bt.startDate < :end) " +
-            "OR (bt.endDate > :start AND bt.endDate < :end )")
-    List<BladeTask> bladeTasksInRange(LocalDate start, LocalDate end);
+    @Query("SELECT bt FROM BladeTask bt WHERE (bt.bladeProject.schedule.isActive = :isActive) " +
+            "AND ((bt.startDate > :start AND bt.startDate < :end) " +
+            "OR (bt.endDate > :start AND bt.endDate < :end))")
+    List<BladeTask> bladeTasksInRange(LocalDate start, LocalDate end, boolean isActive);
+
+
+    @Query("SELECT bt FROM BladeTask bt  WHERE (bt.startDate IS NULL) OR (bt.endDate IS NULL) OR (bt.testRig IS NULL)")
+    List<BladeTask> bladeTasksPending();
 
 }
