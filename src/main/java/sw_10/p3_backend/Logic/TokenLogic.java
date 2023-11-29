@@ -1,11 +1,16 @@
 package sw_10.p3_backend.Logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -15,8 +20,13 @@ import java.util.stream.Collectors;
 public class TokenLogic {
     private final JwtEncoder jwtEncoder;
 
-    public TokenLogic(JwtEncoder jwtEncoder) {
+    private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    public TokenLogic(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager) {
         this.jwtEncoder = jwtEncoder;
+        this.authenticationManager = authenticationManager;
+
     }
 
     public String generateToken(Authentication authentication) {
@@ -32,5 +42,14 @@ public class TokenLogic {
                 .claim("scope", scope)
                 .build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+
+    public Authentication authenticate(String username, String password) throws AuthenticationException {
+        // Create an Authentication token
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
+        // Authenticate the user
+        // If authentication fails, it will throw an AuthenticationException
+        return authenticationManager.authenticate(authRequest);
     }
 }

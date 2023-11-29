@@ -23,6 +23,7 @@ public class BladeProjectController {
     }
 
 
+    @PreAuthorize("isAuthenticated()")
     @QueryMapping
     public List<BladeProject> AllBladeProjects() {
         return bladeProjectLogic.findAll();
