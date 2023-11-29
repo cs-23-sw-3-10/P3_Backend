@@ -189,7 +189,6 @@ public class BladeTaskLogic {
             BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
             bladeTaskRepository.save(tempBladeTask);
         }
-        //bookingLogic.updateConflictBookings(bladeTaskToUpdate);
 
         LocalDate startDateParsed;
         if(startDate.equals("undefined")){
@@ -260,10 +259,6 @@ public class BladeTaskLogic {
 
     public void addRelatedConflict(BladeTask bladeTask, Conflict conflict) {
         bladeTask.addRelatedConflict(conflict);
-        bladeTaskRepository.save(bladeTask);
-    }
-
-    public void saveBladeTask(BladeTask bladeTask){
         bladeTaskRepository.save(bladeTask);
     }
 

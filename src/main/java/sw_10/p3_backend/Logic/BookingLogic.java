@@ -160,60 +160,8 @@ public class BookingLogic {
         System.out.println(bookings);
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
-        //List<Conflict> conflicts = conflictRepository.findConflictsByBladeTask(bladeTaskToUpdate.getId());
     }
 
-    public void updateConflictBookings(BladeTask bladeTaskToUpdate) {
-        Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
-        List<Booking> relatedBookings = new ArrayList<>();
-        Set<BladeTask> relatedBladeTasks = new HashSet<>();
-        System.out.println("Lists created");
-        for (Conflict relatedConflict : relatedConflicts) {
-            Booking tempBooking = relatedConflict.fetchBooking();
-            relatedBookings.add(tempBooking);
-            relatedBladeTasks.add(tempBooking.fetchBladeTask());
-        }
-        System.out.println("For each loop finished");
-        deleteListOfBookings(relatedBookings);
-
-        System.out.println(relatedConflicts);
-
-        System.out.println("Creating new bookings");
-        for (Booking relatedBooking : relatedBookings) {
-            createEquipmentBookingFromBooking(relatedBooking);
-        }
-        System.out.println("Booking for each loop finished");
-
-
-    }
-
-    private void deleteListOfBookings(List<Booking> listOfBookings){
-        System.out.println(listOfBookings);
-        conflictLogic.removeConflicts(listOfBookings);
-        System.out.println("Conflicts deleted from list");
-        bookingRepository.deleteAll(listOfBookings);
-        System.out.println("Bookings deleted from list");
-    }
-
-    private void createEquipmentBookingFromBooking(Booking oldBooking){
-        List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(oldBooking.getStartDate(), oldBooking.getEndDate(), oldBooking.getResourceName());
-        System.out.println(freeEquipmentList);
-        System.out.println("Number of free equipment: " + freeEquipmentList.size());
-
-
-        if (!freeEquipmentList.isEmpty()){
-            //If there is available equipment create a booking using the first available equipment
-            Booking newBooking = new Booking(oldBooking.getStartDate(), oldBooking.getEndDate(), freeEquipmentList.get(0), oldBooking.fetchBladeTask(), oldBooking.getResourceType(), oldBooking.getResourceName());
-            bookingRepository.save(newBooking);
-        }else {
-            //If there is no available equipment create a booking with no equipment and spawn a conflict!
-            Booking newBooking = new Booking(oldBooking.getStartDate(), oldBooking.getEndDate(), oldBooking.fetchBladeTask(), oldBooking.getResourceType(), oldBooking.getResourceName());
-            bookingRepository.save(newBooking);
-
-            conflictHandler(newBooking, newBooking.fetchBladeTask());
-        }
-
-    }
 
     public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
         removeBookings(bladeTask);
