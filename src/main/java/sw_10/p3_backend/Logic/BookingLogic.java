@@ -80,6 +80,7 @@ public class BookingLogic {
 
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
+            System.out.println("Creating booking with equipment: " + freeEquipmentList.get(0).getName());
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
             return 0;

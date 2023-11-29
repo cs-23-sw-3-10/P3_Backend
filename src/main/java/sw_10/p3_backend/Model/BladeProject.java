@@ -16,7 +16,8 @@ import java.util.List;
 public class BladeProject implements Cloneable {
     private static String[] customerList;
     private static String[] projectLeaderList;
-    private static BladeProject[] bladeProjectList;
+    @Getter
+    private static List<BladeProject> bladeProjectList = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -47,7 +48,10 @@ public class BladeProject implements Cloneable {
         setProjectName(projectName);
     }
 
-        // ...
+
+    public static void setBladeProjectList(List<BladeProject> bladeProjectList) {
+        BladeProject.bladeProjectList = bladeProjectList;
+    }
 
     public BladeProject cloneWithSchedule(Schedule newSchedule) {
         try {
@@ -75,4 +79,5 @@ public class BladeProject implements Cloneable {
         }
     }
     }
+
 
