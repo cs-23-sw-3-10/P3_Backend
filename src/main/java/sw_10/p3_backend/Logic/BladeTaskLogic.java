@@ -251,6 +251,62 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
 
+
+    public BladeTask updateBTInfo(BladeTaskInput updates, Long btId) {
+        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
+                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + btId));
+
+        LocalDate endDate = calculateEndDate(updates.startDate(), updates.duration());
+
+        System.out.println("startDate: " + updates.startDate());
+
+        System.out.println("endDate: " + endDate);
+
+        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), endDate, false);
+
+        System.out.println("bladeTasksInRange: " + bladeTasksInRange);
+
+        if (bladeTaskToUpdate.getStartDate() != updates.startDate()
+                || bladeTaskToUpdate.getEndDate() != endDate)
+        {
+            for (BladeTask bladeTask : bladeTasksInRange) {
+                if (bladeTask.getTestRig() == updates.testRig() && bladeTask.getId() != btId) {
+                    System.out.println("her er id " + bladeTask.getTestRig() + "og taskName " + bladeTask.getTaskName());
+                    throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
+                }
+            }
+            bladeTaskToUpdate.setStartDate(updates.startDate());
+            bladeTaskToUpdate.setEndDate(endDate);
+        }
+
+        if (bladeTaskToUpdate.getDuration() != updates.duration()){
+            bladeTaskToUpdate.setDuration(updates.duration());
+        }
+        if (bladeTaskToUpdate.getTestRig() != updates.testRig()){
+            bladeTaskToUpdate.setTestRig(updates.testRig());
+        }
+        if (bladeTaskToUpdate.getAttachPeriod() != updates.attachPeriod()){
+            bladeTaskToUpdate.setAttachPeriod(updates.attachPeriod());
+        }
+        if (bladeTaskToUpdate.getDetachPeriod() != updates.detachPeriod()){
+            bladeTaskToUpdate.setDetachPeriod(updates.detachPeriod());
+        }
+        if (bladeTaskToUpdate.getTaskName().equals(updates.taskName())){
+            bladeTaskToUpdate.setTaskName(updates.taskName());
+        }
+        if (bladeTaskToUpdate.getTestType().equals(updates.testType())){
+            bladeTaskToUpdate.setTestType(updates.testType());
+        }
+        // der skal tilføjes en metode til at opdatere resourceOrders men der er problemer med dem fordi de skal opdateres eller noget
+        /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
+            bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
+        }*/
+        bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
+        bladeTaskRepository.save(bladeTaskToUpdate);
+
+        return bladeTaskToUpdate;
+    }
+
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
         // Create a Flux stream to emit the list of blade tasks in a given range when to subscribers whenever an update occurs.
         return createFlux(() -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
