@@ -34,9 +34,6 @@ class BladeTaskLogicTest {
     private BookingLogic bookingLogic;
 
     @Mock
-    private BladeProjectLogic bladeProjectLogic;
-
-    @Mock
     private BladeTaskRepository bladeTaskRepository;
 
 
