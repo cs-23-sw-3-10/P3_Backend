@@ -71,6 +71,11 @@ public class BladeTaskController {
     }
 
     @MutationMapping
+    public BladeTask updateBTInfo(@Argument BladeTaskInput updates, @Argument Long btId){
+        return bladeTaskLogic.updateBTInfo(updates, btId);
+    }
+
+    @MutationMapping
     public BladeTask updateStartAndDurationBladeTask(@Argument Long id, @Argument String startDate, @Argument Integer duration, @Argument Integer testRig){
         return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration, testRig);
     }

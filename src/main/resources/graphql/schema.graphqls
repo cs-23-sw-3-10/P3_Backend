@@ -41,6 +41,7 @@ type Mutation{
 
     createBladeTask(bladeTask:BladeTaskInput):BladeTask
     updateStartAndDurationBladeTask(id:ID!, startDate:String, duration:Int, testRig:Int):BladeTask
+    updateBTInfo(updates:BladeTaskInput, btId:Int):BladeTask
 
     CreateEngineer(name:String!, maxWorkHours:Int!):Engineer
 
