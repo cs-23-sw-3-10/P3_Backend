@@ -45,9 +45,6 @@ public class ConflictLogic {
 
         Conflict conflict = new Conflict(booking, bladeTask, hashedBladeTasks);
         conflictRepository.save(conflict);
-        for (BladeTask hashedBladeTask : hashedBladeTasks) {
-            bladeTaskLogic.addRelatedConflict(hashedBladeTask, conflict);
-        }
     }
 
     //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)
