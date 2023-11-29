@@ -71,4 +71,8 @@ public class Conflict implements Cloneable{
         return cloned;
     }
 
+    public Booking fetchBooking(){
+        return booking;
+    }
+
 }

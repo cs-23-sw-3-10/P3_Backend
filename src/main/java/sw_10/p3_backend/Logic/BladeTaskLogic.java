@@ -176,6 +176,12 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
+        //Remove old bookings
+        bookingLogic.removeBookings(bladeTaskToUpdate);
+
+        System.out.println("Bookings deleted");
+        bookingLogic.updateConflictBookings(bladeTaskToUpdate);
+
         LocalDate startDateParsed;
         if(startDate.equals("undefined")){
             startDateParsed = null;
@@ -194,9 +200,6 @@ public class BladeTaskLogic {
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.of(bladeTaskToUpdate.getTestRig()).orElse(noTestRigAssignedValue);
         System.out.println(testRigValue);
-
-        //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToUpdate);
 
 
         // Save the new BladeTask in the database
@@ -230,20 +233,18 @@ public class BladeTaskLogic {
         System.out.println("Getting relevant bookings");
         List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate); //Implement
 
-        System.out.println("Bookings:");
-        System.out.println(bookings);
+        //System.out.println("Bookings:");
+        //System.out.println(bookings);
 
         List<BladeTask> bladeTasks = new ArrayList<>();
         for (Booking booking : bookings) {
-            System.out.println(booking);
+            //System.out.println(booking);
             BladeTask tempBladeTask = booking.fetchBladeTask();
-            System.out.println(tempBladeTask);
+            //System.out.println(tempBladeTask);
             bladeTasks.add(tempBladeTask);
         }
         System.out.println("BladeTasks:");
         System.out.println(bladeTasks);
-
-        //TODO: Ensure uniqueness of list items and make sure they are only from 1 of the 2 schedules
 
         return bladeTasks;
     }
