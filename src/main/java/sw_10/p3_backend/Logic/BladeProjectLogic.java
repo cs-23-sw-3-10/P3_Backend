@@ -21,6 +21,8 @@ public class BladeProjectLogic {
     private final ScheduleRepository scheduleRepository;
 
 
+
+
     public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ScheduleRepository scheduleRepository){
         this.BladeProjectRepository = bladeProjectRepository;
         this.scheduleRepository = scheduleRepository;
@@ -29,7 +31,10 @@ public class BladeProjectLogic {
     public BladeProject createProject(String name, String customer, String projectLeader) {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false);//Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
+
             BladeProjectRepository.save(project);
+            List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
+            BladeProject.setBladeProjectList(bladeProjects);
             return project;
     }
 
@@ -45,6 +50,14 @@ public class BladeProjectLogic {
     }
 
     public List<BladeProject> findAll(){
+        List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
+        BladeProject.setBladeProjectList(bladeProjects);
+        for (BladeProject bladeProject : bladeProjects) {
+            System.out.println(bladeProject.getBladeTasks().size());
+
+        }
+
+
         return BladeProjectRepository.findAll();
     }
 
@@ -79,5 +92,13 @@ public class BladeProjectLogic {
 
         BladeProjectRepository.save(bladeProject);
     }
+
+    public List<BladeProject> lookUpBladeData() {
+        return BladeProjectRepository.findAll();
+    }
 }
+
+
+
+
 

@@ -3,6 +3,9 @@ package sw_10.p3_backend.Logic;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
+import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
@@ -10,6 +13,9 @@ import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.util.function.Supplier;
+
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,6 +30,16 @@ public class BladeTaskLogic {
 
     @Autowired
     private ConflictLogic conflictLogic;
+
+    /**
+     * Defines a processor that acts as a sink for multiple publishers and a source for one or more subscribers.
+     * It is configured as a 'multicast' sink, meaning it can handle multiple publishers and will dispatch
+     * the emitted items to all subscribers. The 'onBackpressureBuffer' handles backpressure,
+     * if subscribers cannot keep up with the rate of items being emitted, the items are buffered until
+     * they can be processed. This buffer ensures that no data is lost if the downstream subscribers are slower
+     * than the producers, with our amount of subscriber buffer overload should not be a problem.
+     */
+    private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
 
     @Autowired
     public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository,
@@ -98,6 +114,8 @@ public class BladeTaskLogic {
         }
         bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
+
+        onDatabaseUpdate();
         return newBladeTask;
     }
 
@@ -191,9 +209,9 @@ public class BladeTaskLogic {
         }
 
         LocalDate startDateParsed;
-        if(startDate.equals("undefined")){
+        if (startDate.equals("undefined")) {
             startDateParsed = null;
-        }else {
+        } else {
             //parsed startDate to LocalDate
             startDateParsed = LocalDate.parse(startDate);
         }
@@ -222,8 +240,9 @@ public class BladeTaskLogic {
 
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
+        System.out.println(testRigValue);
 
-
+        onDatabaseUpdate();
         // Return the new BladeTask
         return bladeTaskToUpdate;
     }
@@ -232,8 +251,42 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
 
-    public List<BladeTask> bladeTasksPending(){
+    public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
+        // Create a Flux stream to emit the list of blade tasks in a given range when to subscribers whenever an update occurs.
+        return createFlux(() -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
+        //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
+    }
+
+    public Flux<List<BladeTask>> bladeTasksPendingSub() {
+        // Create a Flux stream to emit the list of blade tasks pending when to subscribers whenever an update occurs.
+        return createFlux(bladeTaskRepository::bladeTasksPending);
+    }
+
+    private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
+        // Generalization of the creation of the Flux stream based on a supplier.
+        // The supplier provides the actual data (list of BladeTasks) to be emitted by the Flux.
+
+        return Flux.defer(() -> Flux.just(supplier.get()))
+                // Flux.defer ensures that each subscriber receives its own version of the Flux sequence.
+                // It delays the creation of the Flux until a subscriber subscribes. Flux.just takes the data provided
+                // by the database calls and wraps them in a Flux.
+
+                .concatWith(Flux.defer(() -> processor.asFlux() // The concatWith operation appends another Flux to the initial one.
+                        .publishOn(Schedulers.boundedElastic()) // Make sure that the updates are handled on a separate thread
+                        .map(ignored -> supplier.get()))); // The map operation ignores the signal from the processor and runs the query again to get the updated data directly from the database
+
+
+    }
+
+    public void onDatabaseUpdate() {
+        //Updates the processor with a new object to trigger a signal emission to subscribers that will run the query again
+        processor.tryEmitNext(new Object());
+    }
+
+
+    public List<BladeTask> bladeTasksPending() {
         return bladeTaskRepository.bladeTasksPending();
+
     }
 
     //TODO: Find a better way to do this?

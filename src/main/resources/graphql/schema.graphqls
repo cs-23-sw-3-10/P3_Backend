@@ -1,5 +1,8 @@
 type Query {
-    AllBladeProjects: [BladeProject],
+
+    AllBladeProjects: [BladeProject]
+    AllBladeProjectsBySchedule(isActive: Boolean): [BladeProject]
+
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
@@ -28,6 +31,8 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+
+    trysub:[BladeProject]
 }
 
 type Mutation{
@@ -42,6 +47,15 @@ type Mutation{
     CreateEquipment(type:String!, calibrationExpirationDate:String!, name:String!):Equipment
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
+}
+
+type Subscription {
+    AllBladeTasksInRangeSub(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
+    AllBladeTasksPendingSub:[BladeTask]
+}
+
+type greetings{
+    greetings: String
 }
 
 type BladeProject {
