@@ -206,18 +206,27 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + btId));
 
-        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), updates.endDate(), false);
+        LocalDate endDate = calculateEndDate(updates.startDate(), updates.duration());
+
+        System.out.println("startDate: " + updates.startDate());
+
+        System.out.println("endDate: " + endDate);
+
+        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), endDate, false);
+
+        System.out.println("bladeTasksInRange: " + bladeTasksInRange);
 
         if (bladeTaskToUpdate.getStartDate() != updates.startDate()
-                || bladeTaskToUpdate.getEndDate() != updates.endDate())
+                || bladeTaskToUpdate.getEndDate() != endDate)
         {
             for (BladeTask bladeTask : bladeTasksInRange) {
-                if (bladeTask.getTestRig() == updates.testRig()) {
+                if (bladeTask.getTestRig() == updates.testRig() && bladeTask.getId() != btId) {
+                    System.out.println("her er id " + bladeTask.getTestRig() + "og taskName " + bladeTask.getTaskName());
                     throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
                 }
             }
             bladeTaskToUpdate.setStartDate(updates.startDate());
-            bladeTaskToUpdate.setEndDate(updates.endDate());
+            bladeTaskToUpdate.setEndDate(endDate);
         }
 
         if (bladeTaskToUpdate.getDuration() != updates.duration()){
