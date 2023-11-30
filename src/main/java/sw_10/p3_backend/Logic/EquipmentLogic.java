@@ -79,6 +79,7 @@ public class EquipmentLogic {
     }
     // TODO check if equipment is in use. otherwise delete
     public Equipment deleteEquipment(String name) {
+        System.out.println(name);
         try {
             Equipment equipment = equipmentRepository.findByName(name);
             if (equipment != null) {
