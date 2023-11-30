@@ -77,6 +77,22 @@ public class EquipmentLogic {
     private List<String> getEquipmentTypes(){
         return equipmentRepository.getEquipmentTypes();
     }
+    // TODO check if equipment is in use. otherwise delete
+    public Equipment deleteEquipment(String name) {
+        try {
+            Equipment equipment = equipmentRepository.findByName(name);
+            if (equipment != null) {
+                equipmentRepository.delete(equipment);
+                return equipment;
+            } else {
+                throw new NotFoundException("Equipment not found with name: " + name);
+            }
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting equipment");
+        }
+    }
 
 
 

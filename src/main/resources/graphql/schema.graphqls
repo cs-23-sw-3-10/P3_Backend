@@ -47,8 +47,10 @@ type Mutation{
     DeleteEngineer(name:String!):Engineer
 
     CreateEquipment(type:String!, calibrationExpirationDate:String!, name:String!):Equipment
+    DeleteEquipment(name:String!):Equipment
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
+    DeleteTechnician(type:String!):Technician
 
 
 }

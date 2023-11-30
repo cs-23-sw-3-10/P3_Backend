@@ -57,5 +57,8 @@ public class EquipmentController {
     public Equipment CreateEquipment(@Argument String name, @Argument String type, @Argument String calibrationExpirationDate) {
         return equipmentLogic.CreateEquipment(name, type, calibrationExpirationDate);
     }
+    public Equipment DeleteEquipment(@Argument String name) {
+        return equipmentLogic.deleteEquipment(name);
+    }
 
 }

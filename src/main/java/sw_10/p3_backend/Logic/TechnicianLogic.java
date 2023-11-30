@@ -69,6 +69,23 @@ public class TechnicianLogic {
     public Technician findTechnicians(String resourceName) {
         return technicianRepository.findByType(resourceName);
     }
+
+    public Technician deleteTechnician(String type) {
+        try {
+            Technician technician = technicianRepository.findByType(type);
+            if (technician != null) {
+                technicianRepository.delete(technician);
+                return technician;
+            } else {
+                throw new NotFoundException("Technician not found with type: " + type);
+            }
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting technician");
+        }
+    }
+
 }
 
 /*
