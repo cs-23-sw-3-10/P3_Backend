@@ -286,7 +286,7 @@ public class BladeTaskLogic {
         return bladeTaskToUpdate;
     }
 
-    public List<Conflict> findConflictsForBladeTask(Integer id, Boolean isActive) {
+    public List<Conflict> findConflictsForBladeTask(int id, boolean isActive) throws  NotFoundException{
         System.out.println("Vi finder konflikter");
 
         BladeTask bladeTask=this.findOne(id);

@@ -31,7 +31,7 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
-    findConflictsForBladeTask(id: Int!, isActive: Boolean!): [Conflict]
+    findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
 
     trysub:[BladeProject]
 }

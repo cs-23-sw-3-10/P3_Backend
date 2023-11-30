@@ -61,7 +61,7 @@ public class BladeTaskController {
     }
 
     @QueryMapping
-    public List<Conflict> findConflictsForBladeTask(Integer id, Boolean isActive){
+    public List<Conflict> findConflictsForBladeTask(@Argument Integer id, @Argument Boolean isActive){
         return bladeTaskLogic.findConflictsForBladeTask(id,isActive);
     }
 
