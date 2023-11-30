@@ -12,7 +12,7 @@ import java.util.Optional;
 public class TechnicianLogic {
     private final TechnicianRepository technicianRepository;
 
-    public TechnicianLogic(TechnicianRepository technicianRepository){
+    public TechnicianLogic(TechnicianRepository technicianRepository) {
         this.technicianRepository = technicianRepository;
     }
 
@@ -36,28 +36,64 @@ public class TechnicianLogic {
         }
     }
 
+    // If technician exists, update. Else create new technician with param values
     public Technician CreateTechnician(String type, Integer maxWorkHours, Integer count) {
-        if(technicianRepository.findByType(type) != null)
-            throw new InputInvalidException("Technician with type: " + type + " already exists");
+        Technician technician = technicianRepository.findByType(type);
         try {
-            Technician technician = new Technician();
+            if (type == null || maxWorkHours == null || count == null) {
+                throw new InputInvalidException("cannot parse null");
+            } //check if technician exists
+            if (technician != null) {
+                technician.setMaxWorkHours(maxWorkHours);
+                technician.setCount(count);
+                System.out.println("Technician updated");
+                return technicianRepository.save(technician);
+            }
+            technician = new Technician();
             technician.setType(type);
             technician.setMaxWorkHours(maxWorkHours);
             technician.setWorkHours(0);
             technician.setCount(count);
             return technicianRepository.save(technician);
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Error creating technician");
         }
     }
 
-    public Technician findTechnicians(String resourceName) {
-        return technicianRepository.findByType(resourceName);
-    }
-
-
     public void updateTechnician(Technician technician, int duration) {
         technician.setWorkHours(technician.getWorkHours() + duration);
         technicianRepository.save(technician);
     }
+    public Technician findTechnicians(String resourceName) {
+        return technicianRepository.findByType(resourceName);
+    }
 }
+
+/*
+        try {
+            if (type == null || maxWorkHours == null || count == null) {
+                throw new InputInvalidException("cannot parse null");
+            }
+            if (technician != null) // technician exists. Then update
+            {
+                technician.setMaxWorkHours(maxWorkHours);
+                technician.setCount(count);
+                technician.setWorkHours(0);
+                return technicianRepository.save(technician);
+            }
+            technician.setType(type);
+            technician.setMaxWorkHours(maxWorkHours);
+            technician.setWorkHours(0);
+            technician.setCount(count);
+            return technicianRepository.save(technician);
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating technician");
+        }
+    }
+}
+ */
+

@@ -33,14 +33,21 @@ public class EngineerLogic {
     }
 
     public Engineer CreateEngineer(String name, Integer maxWorkHours) {
-        if (engineerRepository.findByName(name) != null)
-            throw new InputInvalidException("Engineer with name: " + name + " already exists");
+            Engineer engineer = engineerRepository.findByName(name);
         try {
-            Engineer engineer = new Engineer();
-            engineer.setName(name);
-            engineer.setMaxWorkHours(maxWorkHours);
-            engineer.setWorkHours(0);
-            return engineerRepository.save(engineer);
+            if (name == null || maxWorkHours == null)
+                throw new InputInvalidException("cannot parse null");
+            if (engineer != null) { //check if engineer exists
+                engineer.setMaxWorkHours(maxWorkHours);
+                return engineerRepository.save(engineer);
+            }
+            Engineer newEngineer = new Engineer();
+            newEngineer.setName(name);
+            newEngineer.setMaxWorkHours(maxWorkHours);
+            newEngineer.setWorkHours(0);
+            return engineerRepository.save(newEngineer);
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Error creating engineer",e);
         }
@@ -54,4 +61,31 @@ public class EngineerLogic {
         engineer.setWorkHours(workHours);
         engineerRepository.save(engineer);
     }
+
+    public Engineer deleteEngineer(String name) {
+        try {
+            Engineer engineer = engineerRepository.findByName(name);
+            if (engineer != null) {
+                engineerRepository.delete(engineer);
+                return engineer;
+            } else {
+                throw new NotFoundException("Engineer not found with name: " + name);
+            }
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting engineer",e);
+
+        }
+
+
+    }
+
 }
+
+
+
+
+
+
+

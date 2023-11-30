@@ -8,4 +8,5 @@ import sw_10.p3_backend.Model.Equipment;
 @Repository
 public interface EngineerRepository extends JpaRepository<Engineer,Long> {
     Engineer findByName(String name);
+
 }
