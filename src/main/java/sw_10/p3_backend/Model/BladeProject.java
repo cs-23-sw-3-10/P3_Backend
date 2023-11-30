@@ -35,6 +35,10 @@ public class BladeProject implements Cloneable {
     @JoinColumn(name = "scheduleId")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
 
+    public Schedule getScheduleM() {
+        return schedule;
+    }
+
 
     public BladeProject(Schedule schedule, String projectName,String customer, String projectLeader, String color) {
         setSchedule(schedule);

@@ -28,9 +28,14 @@ public class ConflictLogic {
     }
 
 
+
+
     public void createConflict(Booking booking, BladeTask bladeTask) {
         //TODO: Add associated bladeTask to conflict
         Conflict conflict = new Conflict(booking, bladeTask);
+
+        conflict.setBooking(booking);
+
         conflictRepository.save(conflict);
     }
 
@@ -40,5 +45,12 @@ public class ConflictLogic {
             List<Conflict> conflicts = conflictRepository.findAllByBooking(booking);
             conflictRepository.deleteAll(conflicts);
         }
+    }
+
+
+    public Conflict findConflictByBookingId(int id, Boolean isActive) {
+
+        return conflictRepository.findConflictsForBladeTask(id,isActive);
+
     }
 }

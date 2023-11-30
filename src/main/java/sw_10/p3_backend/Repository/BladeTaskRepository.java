@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
+import sw_10.p3_backend.Model.Conflict;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,5 +22,7 @@ public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
 
     @Query("SELECT bt FROM BladeTask bt  WHERE (bt.startDate IS NULL) OR (bt.endDate IS NULL) OR (bt.testRig IS NULL)")
     List<BladeTask> bladeTasksPending();
+
+
 
 }
