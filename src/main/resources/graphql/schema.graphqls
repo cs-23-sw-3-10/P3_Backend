@@ -152,6 +152,7 @@ type Conflict {
     id: ID!
     type: String
     message: String
+    booking: Booking
     relatedBladeTasks: [BladeTask]
 }
 
