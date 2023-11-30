@@ -3,12 +3,14 @@ package sw_10.p3_backend.Logic;
 
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeProject;
+import sw_10.p3_backend.Model.BladeProjectInput;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -77,7 +79,7 @@ public class BladeProjectLogic {
         return String.format("#%02X%02X%02X", red, green, blue);
     }
 
-    public void updateBladeProject(BladeProject bladeProject) {
+    public void updateStartAndEndDate(BladeProject bladeProject) {
         //set bladeProject start and end date to the earliest and latest bladeTask start and end date
         bladeProject.getBladeTasks().forEach(bladeTask -> {
             if(bladeTask.getStartDate()!=null && bladeTask.getEndDate()!=null) {// Pending blade tasks does not contribute to project start- and end date
@@ -91,6 +93,34 @@ public class BladeProjectLogic {
         });
 
         BladeProjectRepository.save(bladeProject);
+    }
+
+    public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {
+        BladeProject BPToUpdate = BladeProjectRepository.findById(bpId)
+                .orElseThrow(() -> new InputInvalidException("Project with id " + updates.scheduleId() + " not found"));
+
+        LocalDate startDate = LocalDate.parse(updates.startDate());
+        LocalDate endDate = LocalDate.parse(updates.endDate());
+
+        if (!BPToUpdate.getProjectName().equals(updates.projectName())){
+            BPToUpdate.setProjectName(updates.projectName());
+        }
+        if (!BPToUpdate.getCustomer().equals(updates.customer())){
+            BPToUpdate.setCustomer(updates.customer());
+        }
+        if (!BPToUpdate.getProjectLeader().equals(updates.projectLeader())){
+            BPToUpdate.setProjectLeader(updates.projectLeader());
+        }
+        if (!BPToUpdate.getStartDate().equals(startDate)){
+            BPToUpdate.setStartDate(startDate);
+        }
+        if (!BPToUpdate.getEndDate().equals(endDate)){
+            BPToUpdate.setEndDate(endDate);
+        }
+
+        BladeProjectRepository.save(BPToUpdate);
+
+        return BPToUpdate;
     }
 
     public List<BladeProject> lookUpBladeData() {
