@@ -42,6 +42,7 @@ type Mutation{
 
     createBladeTask(bladeTask:BladeTaskInput):BladeTask
     updateStartAndDurationBladeTask(id:ID!, startDate:String, duration:Int, testRig:Int):BladeTask
+    updateBTInfo(updates:BladeTaskInput, btId:Int):BladeTask
 
     CreateEngineer(name:String!, maxWorkHours:Int!):Engineer
     DeleteEngineer(name:String!):Engineer
@@ -109,7 +110,6 @@ type ResourceOrder {
     id: ID!
     resourceName: String
     resourceType: String
-    amount: Int
     workHours: Int
     equipmentAssignmentStatus: [Boolean]
 }
@@ -187,7 +187,6 @@ input BladeTaskInput {
 input ResourceOrderInput {
     resourceType: String
     resourceName: String
-    amount: Int
     workHours: Int
     equipmentAssignmentStatus: [Boolean]
 }

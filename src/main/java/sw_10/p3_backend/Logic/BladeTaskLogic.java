@@ -225,6 +225,62 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
 
+
+    public BladeTask updateBTInfo(BladeTaskInput updates, Long btId) {
+        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
+                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + btId));
+
+        LocalDate endDate = calculateEndDate(updates.startDate(), updates.duration());
+
+        System.out.println("startDate: " + updates.startDate());
+
+        System.out.println("endDate: " + endDate);
+
+        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), endDate, false);
+
+        System.out.println("bladeTasksInRange: " + bladeTasksInRange);
+
+        if (bladeTaskToUpdate.getStartDate() != updates.startDate()
+                || bladeTaskToUpdate.getEndDate() != endDate)
+        {
+            for (BladeTask bladeTask : bladeTasksInRange) {
+                if (bladeTask.getTestRig() == updates.testRig() && bladeTask.getId() != btId) {
+                    System.out.println("her er id " + bladeTask.getTestRig() + "og taskName " + bladeTask.getTaskName());
+                    throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
+                }
+            }
+            bladeTaskToUpdate.setStartDate(updates.startDate());
+            bladeTaskToUpdate.setEndDate(endDate);
+        }
+
+        if (bladeTaskToUpdate.getDuration() != updates.duration()){
+            bladeTaskToUpdate.setDuration(updates.duration());
+        }
+        if (bladeTaskToUpdate.getTestRig() != updates.testRig()){
+            bladeTaskToUpdate.setTestRig(updates.testRig());
+        }
+        if (bladeTaskToUpdate.getAttachPeriod() != updates.attachPeriod()){
+            bladeTaskToUpdate.setAttachPeriod(updates.attachPeriod());
+        }
+        if (bladeTaskToUpdate.getDetachPeriod() != updates.detachPeriod()){
+            bladeTaskToUpdate.setDetachPeriod(updates.detachPeriod());
+        }
+        if (bladeTaskToUpdate.getTaskName().equals(updates.taskName())){
+            bladeTaskToUpdate.setTaskName(updates.taskName());
+        }
+        if (bladeTaskToUpdate.getTestType().equals(updates.testType())){
+            bladeTaskToUpdate.setTestType(updates.testType());
+        }
+        // der skal tilføjes en metode til at opdatere resourceOrders men der er problemer med dem fordi de skal opdateres eller noget
+        /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
+            bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
+        }*/
+        bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
+        bladeTaskRepository.save(bladeTaskToUpdate);
+
+        return bladeTaskToUpdate;
+    }
+
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
         // Create a Flux stream to emit the list of blade tasks in a given range when to subscribers whenever an update occurs.
         return createFlux(() -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
@@ -240,16 +296,23 @@ public class BladeTaskLogic {
         // Generalization of the creation of the Flux stream based on a supplier.
         // The supplier provides the actual data (list of BladeTasks) to be emitted by the Flux.
 
-        return Flux.defer(() -> Flux.just(supplier.get()))
-                // Flux.defer ensures that each subscriber receives its own version of the Flux sequence.
-                // It delays the creation of the Flux until a subscriber subscribes. Flux.just takes the data provided
-                // by the database calls and wraps them in a Flux.
+        return Flux.<List<BladeTask>>create(sink -> {
+                    // Emit the current state immediately to new subscribers
+                    sink.next(supplier.get());
 
-                .concatWith(Flux.defer(() -> processor.asFlux() // The concatWith operation appends another Flux to the initial one.
-                        .publishOn(Schedulers.boundedElastic()) // Make sure that the updates are handled on a separate thread
-                        .map(ignored -> supplier.get()))); // The map operation ignores the signal from the processor and runs the query again to get the updated data directly from the database
-
-
+                    // Handle updates from the processor
+                    processor.asFlux()
+                            .publishOn(Schedulers.boundedElastic())
+                            .subscribe(
+                                    ignored -> sink.next(supplier.get()),
+                                    sink::error,    // Handle errors by propagating them
+                                    () -> {}        // Avoid completing the sink
+                            );
+                })
+                .onErrorContinue((throwable, o) -> {
+                    // Log or handle the error
+                })
+                .share(); // Share the Flux to keep it active
     }
 
     public void onDatabaseUpdate() {
