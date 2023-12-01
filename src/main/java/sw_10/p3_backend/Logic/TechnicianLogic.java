@@ -106,29 +106,3 @@ public class TechnicianLogic {
 
 }
 
-/*
-        try {
-            if (type == null || maxWorkHours == null || count == null) {
-                throw new InputInvalidException("cannot parse null");
-            }
-            if (technician != null) // technician exists. Then update
-            {
-                technician.setMaxWorkHours(maxWorkHours);
-                technician.setCount(count);
-                technician.setWorkHours(0);
-                return technicianRepository.save(technician);
-            }
-            technician.setType(type);
-            technician.setMaxWorkHours(maxWorkHours);
-            technician.setWorkHours(0);
-            technician.setCount(count);
-            return technicianRepository.save(technician);
-        } catch (InputInvalidException e) {
-            throw new InputInvalidException(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException("Error creating technician");
-        }
-    }
-}
- */
-
