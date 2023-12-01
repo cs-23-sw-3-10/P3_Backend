@@ -115,6 +115,8 @@ public class BladeTaskLogic {
         bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
 
+        bookingLogic.recalculateConflicts(newBladeTask);
+
         onDatabaseUpdate();
         return newBladeTask;
     }
@@ -254,6 +256,8 @@ public class BladeTaskLogic {
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
+
+        bookingLogic.recalculateConflicts(bladeTaskToUpdate);
 
         //Sends the updates to the clients
         onDatabaseUpdate();

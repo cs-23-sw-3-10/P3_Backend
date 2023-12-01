@@ -60,4 +60,5 @@ public class ConflictLogic {
             conflictRepository.deleteAll(conflicts);
         }
     }
+
 }

@@ -95,4 +95,8 @@ public class Booking implements Cloneable {
 
         return cloned;
     }
+
+    public Equipment fetchEquipment() {
+        return equipment;
+    }
 }

@@ -177,4 +177,17 @@ public class BookingLogic {
     public void resetRelatedConflicts(BladeTask bladeTaskToUpdate) {
         bladeTaskToUpdate.setRelatedConflicts(new HashSet<>());
     }
+
+    public void recalculateConflicts(BladeTask bladeTaskToUpdate) {
+        List<Booking> bookings = bookingRepository.findAllByPeriod(bladeTaskToUpdate.getStartDate(), bladeTaskToUpdate.getEndDate());
+        System.out.println("Printing found bookings:");
+        System.out.println(bookings);
+        conflictLogic.removeConflicts(bookings);
+
+        for (Booking booking: bookings) {
+            if(booking.fetchEquipment() == null){
+                conflictLogic.createConflict(booking, booking.fetchBladeTask());
+            }
+        }
+    }
 }
