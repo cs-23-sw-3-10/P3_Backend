@@ -288,28 +288,20 @@ public class BladeTaskLogic {
 
     public List<Conflict> findConflictsForBladeTask(int id, boolean isActive) throws  NotFoundException{
 
-
         BladeTask bladeTask=this.findOne(id);
 
         List<Booking> bookings=bladeTask.getBookings();
 
-
         List<Conflict> conflicts=new ArrayList<>();
 
         for(Booking booking: bookings){
-            System.out.println("booking");
-            System.out.println(booking);
             Conflict conflict=conflictLogic.findConflictByBookingId(booking.getId(), isActive);
-
-            System.out.println("conflict");
-            System.out.println(conflict);
 
             if(conflict!=null){
                 conflicts.add(conflict);
             }
         }
-        System.out.println("conflicts");
-        System.out.println(conflicts);
+
         return conflicts;
     }
 
