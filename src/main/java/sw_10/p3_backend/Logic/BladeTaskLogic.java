@@ -13,6 +13,7 @@ import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import java.time.Duration;
@@ -112,7 +113,7 @@ public class BladeTaskLogic {
         if (testRigValue != 0 && resourceOrders != null) {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
-        bladeProjectLogic.updateBladeProject(newBladeTask.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
 
         bookingLogic.recalculateConflicts(newBladeTask);
@@ -253,7 +254,7 @@ public class BladeTaskLogic {
         }
 
         //Checks if the start date and end date of the bladeproject should change and then saves the bladetask
-        bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
 
@@ -277,20 +278,13 @@ public class BladeTaskLogic {
 
         LocalDate endDate = calculateEndDate(updates.startDate(), updates.duration());
 
-        System.out.println("startDate: " + updates.startDate());
-
-        System.out.println("endDate: " + endDate);
-
         List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), endDate, false);
-
-        System.out.println("bladeTasksInRange: " + bladeTasksInRange);
 
         if (bladeTaskToUpdate.getStartDate() != updates.startDate()
                 || bladeTaskToUpdate.getEndDate() != endDate)
         {
             for (BladeTask bladeTask : bladeTasksInRange) {
-                if (bladeTask.getTestRig() == updates.testRig() && bladeTask.getId() != btId) {
-                    System.out.println("her er id " + bladeTask.getTestRig() + "og taskName " + bladeTask.getTaskName());
+                if (Objects.equals(bladeTask.getTestRig(), updates.testRig()) && bladeTask.getId() != btId) {
                     throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
                 }
             }
@@ -301,7 +295,7 @@ public class BladeTaskLogic {
         if (bladeTaskToUpdate.getDuration() != updates.duration()){
             bladeTaskToUpdate.setDuration(updates.duration());
         }
-        if (bladeTaskToUpdate.getTestRig() != updates.testRig()){
+        if (!Objects.equals(bladeTaskToUpdate.getTestRig(), updates.testRig())){
             bladeTaskToUpdate.setTestRig(updates.testRig());
         }
         if (bladeTaskToUpdate.getAttachPeriod() != updates.attachPeriod()){
@@ -320,7 +314,7 @@ public class BladeTaskLogic {
         /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
             bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
         }*/
-        bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
 
         return bladeTaskToUpdate;
