@@ -18,19 +18,15 @@ public class ResourceOrderLogic {
         for (ResourceOrderInput resourceOrder: resourceOrders) {
 
             int workHours = 0;
-            int amount = 0;
             //Validate resourceOrder have required fields
             //TODO: Find better solution for this
             validateResourceOrder(resourceOrder);
-            if(resourceOrder.amount() != null){
-                amount = resourceOrder.amount();
-            }
             if(resourceOrder.workHours() != null){
                 workHours = resourceOrder.workHours();
             }
 
             //Create new resourceOrder
-            ResourceOrder newResourceOrder = new ResourceOrder(resourceOrder.resourceType(), resourceOrder.resourceName(), amount,
+            ResourceOrder newResourceOrder = new ResourceOrder(resourceOrder.resourceType(), resourceOrder.resourceName(),
                     resourceOrder.equipmentAssignmentStatus(), workHours, bladeTask);
             bladeTask.addResourceOrder(newResourceOrder);
 
