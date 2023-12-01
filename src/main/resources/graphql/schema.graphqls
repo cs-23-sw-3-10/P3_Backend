@@ -32,6 +32,7 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+    findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
 
     authenticate: String
 
