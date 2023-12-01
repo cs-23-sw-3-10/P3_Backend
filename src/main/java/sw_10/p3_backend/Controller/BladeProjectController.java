@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Sinks;
 import sw_10.p3_backend.Logic.BladeProjectLogic;
 import sw_10.p3_backend.Model.BladeProject;
+import sw_10.p3_backend.Model.BladeProjectInput;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import org.reactivestreams.Publisher;
@@ -53,6 +54,10 @@ public class BladeProjectController {
         return bladeProjectLogic.deleteProject(id);
     }
 
+    @MutationMapping
+    public BladeProject updateBladeProject(@Argument Long bpId, @Argument BladeProjectInput updates) {
+        return bladeProjectLogic.updateBladeProject(bpId, updates);
+    }
 
 
 }
