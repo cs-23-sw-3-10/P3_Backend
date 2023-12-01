@@ -169,4 +169,8 @@ public class BookingLogic {
         createBookings(bladeTask.getResourceOrders(), bladeTask);
         return bladeTask;
     }
+
+    public void resetRelatedConflicts(BladeTask bladeTaskToUpdate) {
+        bladeTaskToUpdate.setRelatedConflicts(new HashSet<>());
+    }
 }

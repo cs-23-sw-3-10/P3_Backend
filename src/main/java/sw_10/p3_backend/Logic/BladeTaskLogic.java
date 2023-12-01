@@ -198,11 +198,16 @@ public class BladeTaskLogic {
         Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
         Set<BladeTask> relatedBladeTasks = new HashSet<>();
         System.out.println("Lists created");
+
+        bookingLogic.resetRelatedConflicts(bladeTaskToUpdate);
+        System.out.println("Related conflicts reset");
+
         for (Conflict relatedConflict : relatedConflicts) {
             Booking tempBooking = relatedConflict.fetchBooking();
             relatedBladeTasks.add(tempBooking.fetchBladeTask());
         }
 
+        System.out.println();
         for (BladeTask relatedBladeTask : relatedBladeTasks) {
             BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
             bladeTaskRepository.save(tempBladeTask);
@@ -226,10 +231,15 @@ public class BladeTaskLogic {
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.of(bladeTaskToUpdate.getTestRig()).orElse(noTestRigAssignedValue);
         System.out.println(testRigValue);
+        System.out.println("Number of resource orders: " + bladeTaskToUpdate.getResourceOrders().size());
 
+
+        System.out.println("Just before saving bladetask");
+        System.out.println(bladeTaskToUpdate);
 
         // Save the new BladeTask in the database
         bladeTaskRepository.save(bladeTaskToUpdate);
+        System.out.println("BT saved");
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
         if (testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null) {
