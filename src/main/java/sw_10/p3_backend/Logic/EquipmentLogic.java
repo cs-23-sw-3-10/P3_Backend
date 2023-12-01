@@ -77,17 +77,26 @@ public class EquipmentLogic {
     private List<String> getEquipmentTypes(){
         return equipmentRepository.getEquipmentTypes();
     }
-    // TODO check if equipment is in use. otherwise delete
+
+    //
+    //TODO Ideally we would check if the equipment is in use, if so, then we would check if there's enough equipment to cover the BT and then delete the equipment.
     public Equipment deleteEquipment(String name) {
         System.out.println(name);
         try {
             Equipment equipment = equipmentRepository.findByName(name);
+
+            //Current implementation: If a booking with the specific equipment ID is found, throw exception.
             if (equipment != null) {
+                if (!equipment.getBookings().isEmpty()) {
+                    throw new InputInvalidException("Cannot delete equipment that is assigned to a task.");
+                }
                 equipmentRepository.delete(equipment);
                 return equipment;
             } else {
                 throw new NotFoundException("Equipment not found with name: " + name);
             }
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
         } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
         } catch (Exception e) {

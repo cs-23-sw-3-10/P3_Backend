@@ -2,18 +2,22 @@ package sw_10.p3_backend.Logic;
 
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.Engineer;
+import sw_10.p3_backend.Model.ResourceOrder;
 import sw_10.p3_backend.Repository.EngineerRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EngineerLogic {
     private final EngineerRepository engineerRepository;
+    private final ResourceOrderLogic resourceOrderLogic;
 
-    EngineerLogic(EngineerRepository engineerRepository){
+    EngineerLogic(EngineerRepository engineerRepository, ResourceOrderLogic resourceOrderLogic) {
         this.engineerRepository = engineerRepository;
+        this.resourceOrderLogic = resourceOrderLogic;
     }
 
     public Engineer EngineerById(Integer id) throws NotFoundException {
@@ -66,11 +70,16 @@ public class EngineerLogic {
         try {
             Engineer engineer = engineerRepository.findByName(name);
             if (engineer != null) {
+                List<ResourceOrder> resourceOrders = resourceOrderLogic.findResourceName(name);
+                if (!resourceOrders.isEmpty())
+                    throw new InputInvalidException("Cannot delete engineer that is assigned to a task. Currently assigned " + resourceOrders.size() + " blade tasks");
                 engineerRepository.delete(engineer);
                 return engineer;
             } else {
                 throw new NotFoundException("Engineer not found with name: " + name);
             }
+        } catch (InputInvalidException e) {
+            throw new InputInvalidException(e.getMessage());
         } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
         } catch (Exception e) {
