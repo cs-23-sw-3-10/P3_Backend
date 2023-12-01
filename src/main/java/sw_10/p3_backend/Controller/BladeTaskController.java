@@ -4,6 +4,7 @@ package sw_10.p3_backend.Controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
@@ -60,16 +61,19 @@ public class BladeTaskController {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeTask(@Argument Integer id){
         return bladeTaskLogic.deleteTask(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeTask createBladeTask(@Argument BladeTaskInput bladeTask){
         return bladeTaskLogic.createBladeTask(bladeTask);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeTask updateBTInfo(@Argument BladeTaskInput updates, @Argument Long btId){
         return bladeTaskLogic.updateBTInfo(updates, btId);
