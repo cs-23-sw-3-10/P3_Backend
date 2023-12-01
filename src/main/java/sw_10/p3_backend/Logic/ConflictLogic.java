@@ -27,15 +27,10 @@ public class ConflictLogic {
         return conflictRepository.findAll();
     }
 
-
-
-
     public void createConflict(Booking booking, BladeTask bladeTask) {
         //TODO: Add associated bladeTask to conflict
         Conflict conflict = new Conflict(booking, bladeTask);
-
         conflict.setBooking(booking);
-
         conflictRepository.save(conflict);
     }
 

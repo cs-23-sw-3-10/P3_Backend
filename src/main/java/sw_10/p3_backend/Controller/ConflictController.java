@@ -27,5 +27,4 @@ public class ConflictController {
         return conflictRepository.findAll();
     } //Consider adding logic and error handling
 
-
 }
