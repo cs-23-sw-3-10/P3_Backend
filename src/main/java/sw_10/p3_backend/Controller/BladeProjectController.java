@@ -7,9 +7,7 @@ import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Sinks;
 import sw_10.p3_backend.Logic.BladeProjectLogic;
-import sw_10.p3_backend.Model.BladeProject;
-import sw_10.p3_backend.Model.BladeProjectInput;
-import sw_10.p3_backend.Model.BladeTask;
+import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -45,8 +43,8 @@ public class BladeProjectController {
     }
 
     @MutationMapping
-    public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader) {
-        return bladeProjectLogic.createProject(name, customer, projectLeader);
+    public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {
+        return bladeProjectLogic.createProject(name, customer, projectLeader, resourceOrders);
     }
 
     @MutationMapping

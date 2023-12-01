@@ -48,7 +48,7 @@ public class BladeProjectLogicTest {
         BladeProject expectedProject = new BladeProject(mockSchedule, name, customer, projectLeader, color);
 
         // Act
-        BladeProject result = bladeProjectLogic.createProject(name, customer, projectLeader);
+        BladeProject result = bladeProjectLogic.createProject(name, customer, projectLeader, null);
 
         // Assert
         assertNotNull(result);

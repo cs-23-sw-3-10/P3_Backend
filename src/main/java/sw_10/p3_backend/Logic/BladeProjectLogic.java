@@ -4,6 +4,7 @@ package sw_10.p3_backend.Logic;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeProjectInput;
+import sw_10.p3_backend.Model.ResourceOrderInput;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
@@ -30,8 +31,8 @@ public class BladeProjectLogic {
         this.scheduleRepository = scheduleRepository;
     }
 
-    public BladeProject createProject(String name, String customer, String projectLeader) {
-            Schedule schedule = scheduleRepository.findScheduleByIsActive(false);//Makes sure all new assigned projects are assigned to the draft schedule
+    public BladeProject createProject(String name, String customer, String projectLeader, List<ResourceOrderInput> resourceOrders) {
+            Schedule schedule = scheduleRepository.findScheduleByIsActive(false); //Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 
             BladeProjectRepository.save(project);

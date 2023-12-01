@@ -36,7 +36,7 @@ type Query {
 }
 
 type Mutation{
-    createBladeProject(name: String, customer: String, projectLeader: String) :BladeProject
+    createBladeProject(name: String, customer: String, projectLeader: String, resourceOrder:ResourceOrderInput) :BladeProject
     deleteBladeProject(id:ID!):String
     updateBladeProject(bpId: Int, updates:BladeProjectInput):BladeProject
 
