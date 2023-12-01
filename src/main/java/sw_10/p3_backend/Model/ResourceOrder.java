@@ -30,7 +30,6 @@ public class ResourceOrder implements Cloneable {
     private String resourceType;
     private String resourceName;
     private int workHours;
-    private int amount;
 
     @ElementCollection
     private List<Boolean> equipmentAssignmentStatus = new ArrayList<>(Arrays.asList(new Boolean[2]));
@@ -40,10 +39,9 @@ public class ResourceOrder implements Cloneable {
     @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public ResourceOrder(String type, String resourceName, Integer amount, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
+    public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
         this.resourceType = type;
         this.resourceName = resourceName;
-        this.amount = amount;
         this.workHours = integer;
         this.bladeTask = newBladeTask;
         //Fills up remaining list with false, if booleans.size() < 2(The expected size)
