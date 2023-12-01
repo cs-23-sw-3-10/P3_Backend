@@ -99,9 +99,6 @@ public class BladeProjectLogic {
         BladeProject BPToUpdate = BladeProjectRepository.findById(bpId)
                 .orElseThrow(() -> new InputInvalidException("Project with id " + updates.scheduleId() + " not found"));
 
-        LocalDate startDate = LocalDate.parse(updates.startDate());
-        LocalDate endDate = LocalDate.parse(updates.endDate());
-
         if (!BPToUpdate.getProjectName().equals(updates.projectName())){
             BPToUpdate.setProjectName(updates.projectName());
         }
@@ -110,12 +107,6 @@ public class BladeProjectLogic {
         }
         if (!BPToUpdate.getProjectLeader().equals(updates.projectLeader())){
             BPToUpdate.setProjectLeader(updates.projectLeader());
-        }
-        if (!BPToUpdate.getStartDate().equals(startDate)){
-            BPToUpdate.setStartDate(startDate);
-        }
-        if (!BPToUpdate.getEndDate().equals(endDate)){
-            BPToUpdate.setEndDate(endDate);
         }
 
         BladeProjectRepository.save(BPToUpdate);
