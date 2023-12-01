@@ -257,6 +257,7 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
 
+        //Ensures that older conflicts are updated with the related bladetasks
         bookingLogic.recalculateConflicts(bladeTaskToUpdate);
 
         //Sends the updates to the clients

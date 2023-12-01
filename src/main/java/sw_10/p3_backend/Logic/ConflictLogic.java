@@ -43,7 +43,6 @@ public class ConflictLogic {
 
 
     public void createConflict(Booking booking, BladeTask bladeTask) {
-        //TODO: Add associated bladeTask to conflict
         System.out.println("Getting related bladetasks");
 
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());

@@ -179,11 +179,12 @@ public class BookingLogic {
     }
 
     public void recalculateConflicts(BladeTask bladeTaskToUpdate) {
+        //Finds all bookings that overlaps with the bladetask in regard to dates
         List<Booking> bookings = bookingRepository.findAllByPeriod(bladeTaskToUpdate.getStartDate(), bladeTaskToUpdate.getEndDate());
-        System.out.println("Printing found bookings:");
-        System.out.println(bookings);
+        //Removes the conflicts from the fetched bookings
         conflictLogic.removeConflicts(bookings);
 
+        //This creates a new conflict, if the booking does not have a specific piece of equipment assigned
         for (Booking booking: bookings) {
             if(booking.fetchEquipment() == null){
                 conflictLogic.createConflict(booking, booking.fetchBladeTask());
