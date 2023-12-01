@@ -11,6 +11,8 @@ import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import java.time.Duration;
@@ -244,7 +246,7 @@ public class BladeTaskLogic {
                 || bladeTaskToUpdate.getEndDate() != endDate)
         {
             for (BladeTask bladeTask : bladeTasksInRange) {
-                if (bladeTask.getTestRig() == updates.testRig() && bladeTask.getId() != btId) {
+                if (Objects.equals(bladeTask.getTestRig(), updates.testRig()) && bladeTask.getId() != btId) {
                     System.out.println("her er id " + bladeTask.getTestRig() + "og taskName " + bladeTask.getTaskName());
                     throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
                 }
@@ -256,7 +258,7 @@ public class BladeTaskLogic {
         if (bladeTaskToUpdate.getDuration() != updates.duration()){
             bladeTaskToUpdate.setDuration(updates.duration());
         }
-        if (bladeTaskToUpdate.getTestRig() != updates.testRig()){
+        if (!Objects.equals(bladeTaskToUpdate.getTestRig(), updates.testRig())){
             bladeTaskToUpdate.setTestRig(updates.testRig());
         }
         if (bladeTaskToUpdate.getAttachPeriod() != updates.attachPeriod()){
@@ -271,10 +273,16 @@ public class BladeTaskLogic {
         if (bladeTaskToUpdate.getTestType().equals(updates.testType())){
             bladeTaskToUpdate.setTestType(updates.testType());
         }
-        // der skal tilføjes en metode til at opdatere resourceOrders men der er problemer med dem fordi de skal opdateres eller noget
-        /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
-            bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
-        }*/
+
+        List<ResourceOrder> newResourceOrders = new ArrayList<>();
+
+        updates.resourceOrders().forEach(resourceOrderInput -> {
+            ResourceOrder newOrder = new ResourceOrder(resourceOrderInput.resourceType(), resourceOrderInput.resourceName(), resourceOrderInput.equipmentAssignmentStatus(), resourceOrderInput.workHours(), bladeTaskToUpdate);
+            newResourceOrders.add(newOrder);
+        });
+        bladeTaskToUpdate.setResourceOrders(newResourceOrders);
+        bookingLogic.deleteAndRecreateBookings(bladeTaskToUpdate);
+
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
 
@@ -325,6 +333,7 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksPending();
 
     }
+
 }
 
 

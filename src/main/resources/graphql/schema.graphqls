@@ -110,7 +110,6 @@ type ResourceOrder {
 
 type Booking {
     id: ID!
-
     startDate: String
     endDate: String
     duration: Int
@@ -176,8 +175,6 @@ input BladeTaskInput {
     testType: String!
     resourceOrders: [ResourceOrderInput]
 }
-
-
 
 input ResourceOrderInput {
     resourceType: String

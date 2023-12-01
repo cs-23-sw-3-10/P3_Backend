@@ -160,4 +160,11 @@ public class BookingLogic {
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
     }
+
+    public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
+        //Deletes bookings on a bladetask and then recreates them
+        removeBookings(bladeTask);
+        createBookings(bladeTask.getResourceOrders(), bladeTask);
+        return bladeTask;
+    }
 }
