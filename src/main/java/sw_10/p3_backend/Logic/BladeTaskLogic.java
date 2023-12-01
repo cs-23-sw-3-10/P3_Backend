@@ -195,19 +195,22 @@ public class BladeTaskLogic {
         bookingLogic.removeBookings(bladeTaskToUpdate);
         System.out.println("Bookings deleted");
 
+        //Finding all the related conflicts
         Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
         Set<BladeTask> relatedBladeTasks = new HashSet<>();
         System.out.println("Lists created");
 
+        //Removes the old relations on the bladetask that is being updated. This makes it possible to save the bladetask later
         bookingLogic.resetRelatedConflicts(bladeTaskToUpdate);
         System.out.println("Related conflicts reset");
 
+        //run through all the related conflicts to find the related bladetasks
         for (Conflict relatedConflict : relatedConflicts) {
             Booking tempBooking = relatedConflict.fetchBooking();
             relatedBladeTasks.add(tempBooking.fetchBladeTask());
         }
 
-        System.out.println();
+        //Deletes and recreates all the bookings on the related bladetasks
         for (BladeTask relatedBladeTask : relatedBladeTasks) {
             BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
             bladeTaskRepository.save(tempBladeTask);
@@ -237,7 +240,7 @@ public class BladeTaskLogic {
         System.out.println("Just before saving bladetask");
         System.out.println(bladeTaskToUpdate);
 
-        // Save the new BladeTask in the database
+        // Save the new BladeTask in the database. This creates problems, if you do not reset the relatedConflicts after deleting them
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println("BT saved");
 
@@ -247,11 +250,12 @@ public class BladeTaskLogic {
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
 
-
+        //Checks if the start date and end date of the bladeproject should change and then saves the bladetask
         bladeProjectLogic.updateBladeProject(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
 
+        //Sends the updates to the clients
         onDatabaseUpdate();
         // Return the new BladeTask
         return bladeTaskToUpdate;

@@ -157,14 +157,18 @@ public class BookingLogic {
     }
 
     public void removeBookings(BladeTask bladeTaskToUpdate) {
+        //Finds the bladetasks bookings
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
         System.out.println(bookings);
+        //Deletes the bookings and their conflicts
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
     }
 
 
+
     public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
+        //Deletes bookings on a bladetask and then recreates them
         removeBookings(bladeTask);
         createBookings(bladeTask.getResourceOrders(), bladeTask);
         return bladeTask;
