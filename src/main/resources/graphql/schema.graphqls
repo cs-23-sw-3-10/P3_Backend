@@ -115,6 +115,7 @@ type Booking {
     endDate: String
     duration: Int
     resourceType: String
+    resourceName: String
     workHours: Int
     task: BladeTask
     equipment: Equipment
