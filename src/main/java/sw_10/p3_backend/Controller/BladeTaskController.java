@@ -9,8 +9,8 @@ import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
 import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import sw_10.p3_backend.Logic.BladeTaskLogic;
-import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
+import sw_10.p3_backend.Model.Conflict;
 import sw_10.p3_backend.Model.BladeTaskInput;
 import sw_10.p3_backend.exception.InputInvalidException;
 
@@ -59,6 +59,11 @@ public class BladeTaskController {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    @QueryMapping
+    public List<Conflict> findConflictsForBladeTask(@Argument Integer id, @Argument Boolean isActive){
+        return bladeTaskLogic.findConflictsForBladeTask(id,isActive);
     }
 
     @PreAuthorize("isAuthenticated()")

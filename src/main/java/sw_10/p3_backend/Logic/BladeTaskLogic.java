@@ -9,6 +9,7 @@ import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
+import sw_10.p3_backend.Repository.ConflictRepository;
 import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
@@ -16,7 +17,7 @@ import sw_10.p3_backend.exception.NotFoundException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import java.time.Duration;
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -27,6 +28,7 @@ public class BladeTaskLogic {
     private final BookingLogic bookingLogic;
     private final ResourceOrderLogic resourceOrderLogic;
     private final BladeProjectLogic bladeProjectLogic;
+    private final ConflictLogic conflictLogic;
     private final BookingRepository bookingRepository;
 
     @Autowired
@@ -43,16 +45,15 @@ public class BladeTaskLogic {
     private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
 
     @Autowired
-    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository,
-                          BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic,
-                          BookingRepository bookingRepository) {
+    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository, ConflictRepository conflictRepository
+            , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic, ConflictLogic conflictLogic, BookingRepository bookingRepository) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
         this.bookingRepository = bookingRepository;
         this.bladeProjectLogic = bladeProjectLogic;
-
+        this.conflictLogic=conflictLogic;
     }
 
     @PostConstruct
@@ -318,6 +319,25 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(bladeTaskToUpdate);
 
         return bladeTaskToUpdate;
+    }
+
+    public List<Conflict> findConflictsForBladeTask(int id, boolean isActive) throws  NotFoundException{
+
+        BladeTask bladeTask=this.findOne(id);
+
+        List<Booking> bookings=bladeTask.getBookings();
+
+        List<Conflict> conflicts=new ArrayList<>();
+
+        for(Booking booking: bookings){
+            Conflict conflict=conflictLogic.findConflictByBookingId(booking.getId(), isActive);
+
+            if(conflict!=null){
+                conflicts.add(conflict);
+            }
+        }
+
+        return conflicts;
     }
 
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {

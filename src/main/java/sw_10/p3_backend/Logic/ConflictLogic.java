@@ -41,7 +41,6 @@ public class ConflictLogic {
         return conflictRepository.findAll();
     }
 
-
     public void createConflict(Booking booking, BladeTask bladeTask) {
         System.out.println("Getting related bladetasks");
 
@@ -60,4 +59,11 @@ public class ConflictLogic {
         }
     }
 
+
+    public Conflict findConflictByBookingId(int bookingId, boolean isActive) {
+
+        return conflictRepository.findConflictByBookingId(bookingId, isActive);
+        //,isActive
+
+    }
 }

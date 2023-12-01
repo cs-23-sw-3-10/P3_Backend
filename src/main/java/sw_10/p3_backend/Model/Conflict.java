@@ -32,6 +32,10 @@ public class Conflict implements Cloneable{
     @JoinColumn(name = "bookingId")
     @Getter(AccessLevel.NONE) Booking booking; //Ensures getter of will not get stuck in endless recursive loop
 
+    @ManyToOne
+    @JoinColumn(name = "scheduleId")
+    @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
+
     @JoinTable(
             name = "conflict_relations",
             joinColumns = @JoinColumn(name = "conflict_id"),
