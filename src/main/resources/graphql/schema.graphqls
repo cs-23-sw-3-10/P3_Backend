@@ -34,7 +34,8 @@ type Query {
     getAllBookings:[Booking]
     findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
 
-    trysub:[BladeProject]
+    authenticate: String
+
 }
 
 type Mutation{
@@ -54,7 +55,11 @@ type Mutation{
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
     DeleteTechnician(type:String!):Technician
+}
 
+type AuthData {
+    token: String!
+    userId: String!
 
 }
 
