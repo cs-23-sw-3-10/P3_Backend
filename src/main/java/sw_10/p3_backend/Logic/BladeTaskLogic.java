@@ -28,7 +28,6 @@ public class BladeTaskLogic {
     private final BookingLogic bookingLogic;
     private final ResourceOrderLogic resourceOrderLogic;
     private final BladeProjectLogic bladeProjectLogic;
-    private final ConflictLogic conflictLogic;
     private final BookingRepository bookingRepository;
 
     @Autowired
@@ -45,8 +44,8 @@ public class BladeTaskLogic {
     private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
 
     @Autowired
-    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository, ConflictRepository conflictRepository
-            , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic, ConflictLogic conflictLogic, BookingRepository bookingRepository) {
+    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository,
+                          BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic, ConflictLogic conflictLogic, BookingRepository bookingRepository) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
