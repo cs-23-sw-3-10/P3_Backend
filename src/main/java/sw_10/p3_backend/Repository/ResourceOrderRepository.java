@@ -1,10 +1,15 @@
 package sw_10.p3_backend.Repository;
 
+import jakarta.annotation.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sw_10.p3_backend.Model.ResourceOrder;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
+
 @Repository
 public interface ResourceOrderRepository extends JpaRepository<ResourceOrder,Long> {
+    List<ResourceOrder> findAllByResourceName(String resourceName);
 
 }

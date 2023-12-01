@@ -22,6 +22,7 @@ type Query {
     AllEquipment: [Equipment]
     EquipmentById(id:ID!):Equipment
     EquipmentByType(type:String):[Equipment]
+    GetEquipmentTypes:[String]
 
     AllTechnicians: [Technician]
     TechnicianByType(type:String): Technician
@@ -31,8 +32,10 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+    findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
 
-    trysub:[BladeProject]
+    authenticate: String
+
 }
 
 type Mutation{
@@ -45,10 +48,19 @@ type Mutation{
     updateBTInfo(updates:BladeTaskInput, btId:Int):BladeTask
 
     CreateEngineer(name:String!, maxWorkHours:Int!):Engineer
+    DeleteEngineer(name:String!):Engineer
 
     CreateEquipment(type:String!, calibrationExpirationDate:String!, name:String!):Equipment
+    DeleteEquipment(name:String!):Equipment
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
+    DeleteTechnician(type:String!):Technician
+}
+
+type AuthData {
+    token: String!
+    userId: String!
+
 }
 
 type Subscription {
