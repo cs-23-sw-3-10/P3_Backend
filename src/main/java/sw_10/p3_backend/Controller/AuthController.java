@@ -28,12 +28,13 @@ public class AuthController {
     public  ResponseEntity<String> authenticate(@RequestBody AuthRequest authRequest) {
         System.out.println("Authenticating");
         try {
-            // Assuming you have a method to authenticate and return an Authentication object
+            //Authenticate and return an Authentication object
             Authentication authentication = tokenLogic.authenticate(authRequest.username(), authRequest.password());
 
+            //Generate a token from the Authentication object
             String token = tokenLogic.generateToken(authentication);
             System.out.println("Token: " + token);
-            return ResponseEntity.ok(token); // Return the token with an OK status
+            return ResponseEntity.ok(token); // Return the bearer token with an OK status
         } catch (AuthenticationException e) {
             // Handle authentication failure
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: " + e.getMessage());

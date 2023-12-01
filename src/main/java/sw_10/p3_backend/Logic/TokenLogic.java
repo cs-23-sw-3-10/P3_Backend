@@ -30,18 +30,18 @@ public class TokenLogic {
     }
 
     public String generateToken(Authentication authentication) {
-        Instant now = Instant.now();
-        String scope = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+        Instant now = Instant.now();// Create a JWT Claims Set instance with issuer, timestamp, subject, and scope claims
+        String scope = authentication.getAuthorities().stream()// Create a space-separated string of authorities
+                .map(GrantedAuthority::getAuthority)// Create a space-separated string of authorities from the authentication object
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .subject(authentication.getName())
-                .claim("scope", scope)
+                .issuer("self")// Set the issuer to self (the authorization server)
+                .issuedAt(now) // Set issued at to now (the current timestamp)
+                .expiresAt(now.plus(1, ChronoUnit.HOURS)) // Set the expiration to 1 hour from now
+                .subject(authentication.getName())// Set the subject to the user name from the authentication object
+                .claim("scope", scope) // Set the scope to the space-separated string of authorities from the authentication object
                 .build();
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(); // Encode the claims set into a JWT and return it as a string (the token value)
     }
 
 
