@@ -18,5 +18,6 @@ public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
 
     List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String type);
 
-
+    @Query("SELECT DISTINCT e.type FROM Equipment e")
+    List<String> getEquipmentTypes();
 }

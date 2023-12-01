@@ -4,13 +4,18 @@ import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.ResourceOrder;
 import sw_10.p3_backend.Model.ResourceOrderInput;
+import sw_10.p3_backend.Model.Technician;
+import sw_10.p3_backend.Repository.ResourceOrderRepository;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ResourceOrderLogic {
+    private final ResourceOrderRepository resourceOrderRepository;
+    public ResourceOrderLogic(ResourceOrderRepository resourceOrderRepository) {
+        this.resourceOrderRepository = resourceOrderRepository;
+    }
     public List<ResourceOrder> createResourceOrders(List<ResourceOrderInput> resourceOrders, BladeTask bladeTask) {
 
 
@@ -39,6 +44,9 @@ public class ResourceOrderLogic {
         if(resourceOrder.resourceType() == null || resourceOrder.resourceName() == null || resourceOrder.equipmentAssignmentStatus() == null){
             throw new IllegalArgumentException("ResourceOrder is missing required fields");
         }
+    }
+    public List<ResourceOrder> findResourceName(String resourceOrder) {
+        return resourceOrderRepository.findAllByResourceName(resourceOrder);
     }
 
 }

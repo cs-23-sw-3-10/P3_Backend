@@ -48,9 +48,18 @@ public class EquipmentController {
             throw e;
         }
     }
+    @QueryMapping
+    public List<String> GetEquipmentTypes() {
+        return equipmentRepository.getEquipmentTypes();
+    }
 
     @MutationMapping
     public Equipment CreateEquipment(@Argument String name, @Argument String type, @Argument String calibrationExpirationDate) {
         return equipmentLogic.CreateEquipment(name, type, calibrationExpirationDate);
     }
+    @MutationMapping
+    public Equipment DeleteEquipment(@Argument String name) {
+        return equipmentLogic.deleteEquipment(name);
+    }
+
 }
