@@ -299,7 +299,7 @@ public class BladeTaskLogic {
         for(Booking booking: bookings){
             System.out.println("booking");
             System.out.println(booking);
-            Conflict conflict=conflictLogic.findConflictByBookingId(booking.getId(),isActive);
+            Conflict conflict=conflictLogic.findConflictByBookingId(booking.getId(), isActive);
 
             System.out.println("conflict");
             System.out.println(conflict);

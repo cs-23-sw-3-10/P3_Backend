@@ -48,9 +48,10 @@ public class ConflictLogic {
     }
 
 
-    public Conflict findConflictByBookingId(int bookingId, Boolean isActive) {
+    public Conflict findConflictByBookingId(int bookingId, boolean isActive) {
 
-        return conflictRepository.findConflictByBookingId(bookingId,isActive);
+        return conflictRepository.findConflictByBookingId(bookingId, isActive);
+        //,isActive
 
     }
 }
