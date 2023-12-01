@@ -50,4 +50,8 @@ public class TechnicianController {
     public Technician CreateTechnician(@Argument String type, @Argument Integer maxWorkHours, @Argument Integer count){
         return technicianLogic.CreateTechnician(type, maxWorkHours, count);
     }
+    @MutationMapping
+    public Technician DeleteTechnician(@Argument String type) {
+        return technicianLogic.deleteTechnician(type);
+    }
 }
