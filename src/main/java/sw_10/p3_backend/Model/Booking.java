@@ -66,7 +66,6 @@ public class Booking implements Cloneable {
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
-
     }
 
     //constructor for engineer booking
@@ -78,7 +77,10 @@ public class Booking implements Cloneable {
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
+    }
 
+    public BladeTask fetchBladeTask(){
+        return bladeTask;
     }
 
     @Override
@@ -92,5 +94,9 @@ public class Booking implements Cloneable {
         //cloned.bladeTask = this.bladeTask.clone();
 
         return cloned;
+    }
+
+    public Equipment fetchEquipment() {
+        return equipment;
     }
 }
