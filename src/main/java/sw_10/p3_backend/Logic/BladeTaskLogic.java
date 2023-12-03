@@ -1,5 +1,6 @@
 package sw_10.p3_backend.Logic;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -9,6 +10,7 @@ import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
 import sw_10.p3_backend.Repository.ConflictRepository;
+import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
 
@@ -17,8 +19,7 @@ import java.util.function.Supplier;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BladeTaskLogic {
@@ -27,8 +28,10 @@ public class BladeTaskLogic {
     private final BookingLogic bookingLogic;
     private final ResourceOrderLogic resourceOrderLogic;
     private final BladeProjectLogic bladeProjectLogic;
-    private final ConflictLogic conflictLogic;
+    private final BookingRepository bookingRepository;
 
+    @Autowired
+    private ConflictLogic conflictLogic;
 
     /**
      * Defines a processor that acts as a sink for multiple publishers and a source for one or more subscribers.
@@ -41,16 +44,21 @@ public class BladeTaskLogic {
     private final Sinks.Many<Object> processor = Sinks.many().multicast().onBackpressureBuffer();
 
     @Autowired
-    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository, ConflictRepository conflictRepository
-            , BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic, ConflictLogic conflictLogic) {
+    public BladeTaskLogic(BladeTaskRepository bladeTaskRepository, BladeProjectRepository bladeProjectRepository,
+                          BookingLogic bookingLogic, ResourceOrderLogic resourceOrderLogic, BladeProjectLogic bladeProjectLogic, ConflictLogic conflictLogic, BookingRepository bookingRepository) {
         this.bladeTaskRepository = bladeTaskRepository;
         this.bladeProjectRepository = bladeProjectRepository;
         this.bookingLogic = bookingLogic;
         this.resourceOrderLogic = resourceOrderLogic;
+        this.bookingRepository = bookingRepository;
         this.bladeProjectLogic = bladeProjectLogic;
         this.conflictLogic=conflictLogic;
     }
 
+    @PostConstruct
+    public void init() {
+        conflictLogic.setBladeTaskLogic(this);
+    }
 
     public String deleteTask(Integer id) {
         try {
@@ -107,6 +115,8 @@ public class BladeTaskLogic {
         }
         bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProjectId());
         // Return the new BladeTask
+
+        bookingLogic.recalculateConflicts(newBladeTask);
 
         onDatabaseUpdate();
         return newBladeTask;
@@ -184,6 +194,31 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
+        //Remove old bookings
+        bookingLogic.removeBookings(bladeTaskToUpdate);
+        System.out.println("Bookings deleted");
+
+        //Finding all the related conflicts
+        Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
+        Set<BladeTask> relatedBladeTasks = new HashSet<>();
+        System.out.println("Lists created");
+
+        //Removes the old relations on the bladetask that is being updated. This makes it possible to save the bladetask later
+        bookingLogic.resetRelatedConflicts(bladeTaskToUpdate);
+        System.out.println("Related conflicts reset");
+
+        //run through all the related conflicts to find the related bladetasks
+        for (Conflict relatedConflict : relatedConflicts) {
+            Booking tempBooking = relatedConflict.fetchBooking();
+            relatedBladeTasks.add(tempBooking.fetchBladeTask());
+        }
+
+        //Deletes and recreates all the bookings on the related bladetasks
+        for (BladeTask relatedBladeTask : relatedBladeTasks) {
+            BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
+            bladeTaskRepository.save(tempBladeTask);
+        }
+
         LocalDate startDateParsed;
         if (startDate.equals("undefined")) {
             startDateParsed = null;
@@ -202,11 +237,15 @@ public class BladeTaskLogic {
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.of(bladeTaskToUpdate.getTestRig()).orElse(noTestRigAssignedValue);
         System.out.println(testRigValue);
+        System.out.println("Number of resource orders: " + bladeTaskToUpdate.getResourceOrders().size());
 
-        //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToUpdate);
 
-        // Save the new BladeTask in the database
+        System.out.println("Just before saving bladetask");
+        System.out.println(bladeTaskToUpdate);
+
+        // Save the new BladeTask in the database. This creates problems, if you do not reset the relatedConflicts after deleting them
+        bladeTaskRepository.save(bladeTaskToUpdate);
+        System.out.println("BT saved");
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
         if (testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null) {
@@ -214,11 +253,15 @@ public class BladeTaskLogic {
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
 
-
+        //Checks if the start date and end date of the bladeproject should change and then saves the bladetask
         bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
 
+        //Ensures that older conflicts are updated with the related bladetasks
+        bookingLogic.recalculateConflicts(bladeTaskToUpdate);
+
+        //Sends the updates to the clients
         onDatabaseUpdate();
         // Return the new BladeTask
         return bladeTaskToUpdate;
@@ -340,6 +383,33 @@ public class BladeTaskLogic {
         return bladeTaskRepository.bladeTasksPending();
 
     }
+
+    //TODO: Find a better way to do this?
+    public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
+        System.out.println("Getting relevant bookings");
+        List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate); //Implement
+
+        //System.out.println("Bookings:");
+        //System.out.println(bookings);
+
+        List<BladeTask> bladeTasks = new ArrayList<>();
+        for (Booking booking : bookings) {
+            //System.out.println(booking);
+            BladeTask tempBladeTask = booking.fetchBladeTask();
+            //System.out.println(tempBladeTask);
+            bladeTasks.add(tempBladeTask);
+        }
+        System.out.println("BladeTasks:");
+        System.out.println(bladeTasks);
+
+        return bladeTasks;
+    }
+
+    public void addRelatedConflict(BladeTask bladeTask, Conflict conflict) {
+        bladeTask.addRelatedConflict(conflict);
+        bladeTaskRepository.save(bladeTask);
+    }
+
 }
 
 

@@ -56,7 +56,7 @@ class BladeProjectControllerIntTest {
     @Test
     void createBladeTask(){
 
-        scheduleRepository.save(new Schedule(1,true,null,null));
+        scheduleRepository.save(new Schedule(1,true,null));
 
         BladeProject bladeProject = this.httpGraphQlTester.document("""
                 mutation CreateBladeProject {

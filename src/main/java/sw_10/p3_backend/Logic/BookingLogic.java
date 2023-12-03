@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BookingRepository;
+import sw_10.p3_backend.Repository.ConflictRepository;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BookingLogic {
@@ -18,6 +18,7 @@ public class BookingLogic {
     private final EquipmentLogic equipmentLogic;
     private final TechnicianLogic technicianLogic;
     private final ConflictLogic conflictLogic;
+
 
     @Autowired
     public BookingLogic(BookingRepository bookingRepository, EngineerLogic engineerLogic, EquipmentLogic equipmentLogic, TechnicianLogic technicianLogic, ConflictLogic conflictLogic) {
@@ -75,7 +76,7 @@ public class BookingLogic {
         //Find available equipment
         String equipmentName = resourceOrder.getResourceName().toLowerCase();
         List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, equipmentName);
-
+        System.out.println(freeEquipmentList);
         System.out.println("Number of free equipment: " + freeEquipmentList.size());
 
 
@@ -146,6 +147,7 @@ public class BookingLogic {
     }
     private void conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
+        System.out.println("Creating Conflict");
         conflictLogic.createConflict(booking, bladeTask);
         bladeTask.setInConflict(true);
     }
@@ -156,9 +158,38 @@ public class BookingLogic {
     }
 
     public void removeBookings(BladeTask bladeTaskToUpdate) {
+        //Finds the bladetasks bookings
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
         System.out.println(bookings);
+        //Deletes the bookings and their conflicts
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);
+    }
+
+
+
+    public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
+        //Deletes bookings on a bladetask and then recreates them
+        removeBookings(bladeTask);
+        createBookings(bladeTask.getResourceOrders(), bladeTask);
+        return bladeTask;
+    }
+
+    public void resetRelatedConflicts(BladeTask bladeTaskToUpdate) {
+        bladeTaskToUpdate.setRelatedConflicts(new HashSet<>());
+    }
+
+    public void recalculateConflicts(BladeTask bladeTaskToUpdate) {
+        //Finds all bookings that overlaps with the bladetask in regard to dates
+        List<Booking> bookings = bookingRepository.findAllByPeriod(bladeTaskToUpdate.getStartDate(), bladeTaskToUpdate.getEndDate());
+        //Removes the conflicts from the fetched bookings
+        conflictLogic.removeConflicts(bookings);
+
+        //This creates a new conflict, if the booking does not have a specific piece of equipment assigned
+        for (Booking booking: bookings) {
+            if(booking.fetchEquipment() == null){
+                conflictLogic.createConflict(booking, booking.fetchBladeTask());
+            }
+        }
     }
 }

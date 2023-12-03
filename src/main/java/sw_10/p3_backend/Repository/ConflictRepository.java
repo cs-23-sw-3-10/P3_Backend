@@ -18,5 +18,5 @@ public interface ConflictRepository extends JpaRepository<Conflict,Long> {
 
     @Query("SELECT conflict FROM Conflict conflict WHERE (conflict.booking.id = :bookingId ) AND (conflict.booking.bladeTask.bladeProject.schedule.isActive = :isActive) ")
     Conflict findConflictByBookingId( Integer bookingId, boolean isActive);
-    
+
 }
