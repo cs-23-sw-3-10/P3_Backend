@@ -9,7 +9,6 @@ import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
-import sw_10.p3_backend.Repository.ConflictRepository;
 import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
@@ -80,13 +79,13 @@ public class BladeTaskLogic {
 
         LocalDate startDate = input.startDate();
         Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
+
         // Calculate the end date of the blade task
         LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
-        System.out.println(testRigValue);
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
@@ -114,8 +113,6 @@ public class BladeTaskLogic {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
         bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProjectId());
-        // Return the new BladeTask
-
         bookingLogic.recalculateConflicts(newBladeTask);
 
         onDatabaseUpdate();
@@ -129,7 +126,7 @@ public class BladeTaskLogic {
 
     private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
         if (input.resourceOrders() != null) {
-            return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
+            return resourceOrderLogic.createResourceOrdersBladeTask(input.resourceOrders(), newBladeTask);
         }
         return null;
     }

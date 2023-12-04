@@ -16,19 +16,19 @@ public class Booking implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private LocalDate startDate;
     private LocalDate endDate;
-
     private int duration;
     private String resourceType;
     private String resourceName;
-  
     private int workHours;
 
     @ManyToOne
     @JoinColumn(name = "bladeTaskId")
     @Getter(AccessLevel.NONE) private BladeTask bladeTask;
+    @ManyToOne
+    @JoinColumn(name = "bladeProjectId")
+    @Getter(AccessLevel.NONE) private BladeProject bladeProject;
     @ManyToOne
     @JoinColumn(name = "engineerId")
     @Getter(AccessLevel.NONE) private Engineer engineer;
@@ -38,6 +38,7 @@ public class Booking implements Cloneable {
     @ManyToOne
     @JoinColumn(name = "equipmentId")
     @Getter(AccessLevel.NONE) private Equipment equipment;
+
 
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = startDate;
@@ -57,7 +58,7 @@ public class Booking implements Cloneable {
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
     }
-    //constructor for technician booking
+    //Constructor for technician booking
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -68,7 +69,7 @@ public class Booking implements Cloneable {
         this.resourceName = resourceName;
     }
 
-    //constructor for engineer booking
+    //Constructor for engineer booking
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;

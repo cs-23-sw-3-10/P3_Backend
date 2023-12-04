@@ -31,10 +31,8 @@ public class BookingLogic {
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
     public void createBookings(List<ResourceOrder> resourceOrders, BladeTask bladeTask) {
-        System.out.println("Creating bookings for bladeTask: " + bladeTask.getTaskName() + " with resourceOrders: " + resourceOrders);
         int tempconflictcheck = 0;
         for (ResourceOrder resourceOrder: resourceOrders) {
-            System.out.println("Creating bookings for" + resourceOrder);
 
             //Find start and end date of booking based on equipmentAssignmentStatus
             LocalDate bookingStartDate = bookingStartDate(resourceOrder, bladeTask);
@@ -69,9 +67,72 @@ public class BookingLogic {
         }
     }
 
+    public void createBookings(List<ResourceOrder> resourceOrders, BladeProject bladeProject) {
+        int tempconflictcheck = 0;
+        for (ResourceOrder resourceOrder: resourceOrders) {
+            System.out.println("Creating bookings for" + resourceOrder);
+
+            //When you create a booking, the start and end date of the project are null
+            LocalDate bookingStartDate = bladeProject.getStartDate();
+            LocalDate bookingEndDate = bladeProject.getEndDate();
+
+            //Handle all different types of resource orders
+            switch (resourceOrder.getResourceType().toLowerCase()){
+                case "equipment":
+                {
+                    System.out.println("Equipment booking");
+                    tempconflictcheck += handleEquipmentBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
+                    break;
+                }
+                case "technician":
+                {
+                    System.out.println("Technician booking");
+                    handleTechnicianBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
+                    break;
+                }
+                case "engineer":
+                {
+                    System.out.println("Engineer booking");
+                    handleEngineerBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
+                    break;
+                }
+
+            }
+
+        }
+        if(tempconflictcheck == 0){
+            bladeProject.setInConflict(false);
+        }
+    }
+
     //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
+        System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
+        //Find available equipment
+        String equipmentName = resourceOrder.getResourceName().toLowerCase();
+        List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, equipmentName);
+        System.out.println(freeEquipmentList);
+        System.out.println("Number of free equipment: " + freeEquipmentList.size());
+
+
+        if (!freeEquipmentList.isEmpty()){
+            //If there is available equipment create a booking using the first available equipment
+            System.out.println("Creating booking with equipment: " + freeEquipmentList.get(0).getName());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType(), resourceOrder.getResourceName());
+            bookingRepository.save(newBooking);
+            return 0;
+        }else {
+            //If there is no available equipment create a booking with no equipment and spawn a conflict!
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
+            bookingRepository.save(newBooking);
+
+            conflictHandler(newBooking, bladeTask);
+            return 1;
+        }
+    }
+
+    private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeProject bladeProject, LocalDate bookingStartDate, LocalDate bookingEndDate) {
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
         String equipmentName = resourceOrder.getResourceName().toLowerCase();
@@ -126,12 +187,12 @@ public class BookingLogic {
     }
 
     //TODO: ultra stupid logic for finding start and end date of booking refactor plox
-    private LocalDate bookingStartDate(ResourceOrder resourceOrder, BladeTask bladeTask){
+    private LocalDate bookingStartDate(ResourceOrder resourceOrder, BladeTask bladeTask) {
         //startDate if [true,...]
-        if(resourceOrder.getEquipmentAssignmentStatus().get(0)){
+        if (resourceOrder.getEquipmentAssignmentStatus().get(0)) {
             return bladeTask.getStartDate();
-        //startDate if [false,...]
-        }else{
+            //startDate if [false,...]
+        } else {
             return bladeTask.getStartDate().plusDays(bladeTask.getAttachPeriod());
         }
     }

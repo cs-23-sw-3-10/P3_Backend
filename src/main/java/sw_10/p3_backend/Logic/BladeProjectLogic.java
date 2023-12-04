@@ -2,46 +2,51 @@ package sw_10.p3_backend.Logic;
 
 
 import org.springframework.stereotype.Service;
-import sw_10.p3_backend.Model.BladeProject;
-import sw_10.p3_backend.Model.BladeProjectInput;
-import sw_10.p3_backend.Model.ResourceOrderInput;
-import sw_10.p3_backend.Model.Schedule;
+import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
+
 import sw_10.p3_backend.Repository.ScheduleRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
 
 @Service
 public class BladeProjectLogic {
-
-
     private final BladeProjectRepository BladeProjectRepository;
+    private final ResourceOrderLogic resourceOrderLogic;
     private final ScheduleRepository scheduleRepository;
 
-
-
-
-    public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ScheduleRepository scheduleRepository){
+    public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ResourceOrderLogic resourceOrderLogic, ScheduleRepository scheduleRepository){
         this.BladeProjectRepository = bladeProjectRepository;
+        this.resourceOrderLogic = resourceOrderLogic;
         this.scheduleRepository = scheduleRepository;
     }
 
-    public BladeProject createProject(String name, String customer, String projectLeader, List<ResourceOrderInput> resourceOrders) {
+    public BladeProject createProject(String name, String customer, String projectLeader, List<ResourceOrderInput> resourceOrderInput) {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false); //Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 
+            List<ResourceOrder> resourceOrders = handleResourceOrders(resourceOrderInput, project);
+
             //Saves Blade Project in database
             BladeProjectRepository.save(project);
+
+
             //Query all blade projects(New addition included) -> Save in Blade Project List
             List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
             BladeProject.setBladeProjectList(bladeProjects);
             return project;
     }
+    private List<ResourceOrder> handleResourceOrders(List<ResourceOrderInput> resourceOrderInputs, BladeProject bladeProject) {
+        if (resourceOrderInputs != null) {
+            return resourceOrderLogic.createResourceOrdersBladeProject(resourceOrderInputs, bladeProject);
+        }
+        return null;
+    }
+
 
     public String deleteProject(Long id) {
         BladeProject project = BladeProjectRepository.findById(id).orElseThrow(() -> new InputInvalidException("Project with id " + id + " not found"));

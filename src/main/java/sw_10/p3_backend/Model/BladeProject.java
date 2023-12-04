@@ -24,9 +24,21 @@ public class BladeProject implements Cloneable {
     private String projectLeader;
     private String projectName;
     private String color;
+    private boolean inConflict = false;
 
     @OneToMany(mappedBy = "bladeProject", cascade = CascadeType.ALL)
     private List<BladeTask> bladeTasks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "bladeProject", cascade = CascadeType.ALL)
+    private List<ResourceOrder> resourceOrders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "bladeProject", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
+
+    public void addResourceOrder(ResourceOrder resourceOrder){
+        resourceOrders.add(resourceOrder);
+        resourceOrder.setBladeProject(this);
+    }
 
     @ManyToOne
     @JoinColumn(name = "scheduleId")
