@@ -74,6 +74,11 @@ public class BladeTaskLogic {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
+        if (checkForBTOverlap(input.startDate(),
+                calculateEndDate(input.startDate(), input.duration()),
+                null)){
+            throw new InputInvalidException("BladeTask with testRig " + input.testRig() + " already exists in the given time period");
+        }
 
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
@@ -285,10 +290,8 @@ public class BladeTaskLogic {
         //Checks for overlap with other bladetasks
         if (bladeTaskToUpdate.getStartDate() != updates.startDate()
                 || bladeTaskToUpdate.getEndDate() != endDate) {
-            for (BladeTask bladeTask : bladeTasksInRange) {
-                if (Objects.equals(bladeTask.getTestRig(), updates.testRig()) && bladeTask.getId() != btId) {
-                    throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
-                }
+            if (checkForBTOverlap(updates.startDate(), endDate, bladeTaskToUpdate)){
+                throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
             }
             bladeTaskToUpdate.setStartDate(updates.startDate());
             bladeTaskToUpdate.setEndDate(endDate);
@@ -402,6 +405,30 @@ public class BladeTaskLogic {
     public void addRelatedConflict(BladeTask bladeTask, Conflict conflict) {
         bladeTask.addRelatedConflict(conflict);
         bladeTaskRepository.save(bladeTask);
+    }
+
+    private boolean checkForBTOverlap(LocalDate startDate, LocalDate endDate, BladeTask checkBladeTask) {
+
+        List <BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(startDate, endDate, false);
+
+        for (BladeTask bladeTask : bladeTasksInRange) {
+            LocalDate btStartDate = bladeTask.getStartDate();
+            LocalDate btEndDate = bladeTask.getEndDate();
+            if (Objects.equals(bladeTask.getTestRig(), checkBladeTask.getTestRig()) &&
+                    bladeTask.getId() != checkBladeTask.getId() &&
+                    (btStartDate.isBefore(endDate) && btStartDate.isAfter(startDate) ||
+                            btEndDate.isBefore(endDate) && btEndDate.isAfter(startDate) ||
+                            startDate.isBefore(btEndDate) && startDate.isAfter(btStartDate) ||
+                            endDate.isAfter(btStartDate) && endDate.isBefore(btEndDate) ||
+                            btStartDate.isEqual(startDate) ||
+                            btEndDate.isEqual(endDate)
+                    )
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
