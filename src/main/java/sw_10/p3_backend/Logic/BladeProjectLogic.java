@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 
+import sw_10.p3_backend.Repository.ResourceOrderRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
@@ -17,11 +19,13 @@ import java.util.Random;
 public class BladeProjectLogic {
     private final BladeProjectRepository BladeProjectRepository;
     private final ResourceOrderLogic resourceOrderLogic;
+    private final BookingLogic bookingLogic;
     private final ScheduleRepository scheduleRepository;
 
-    public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ResourceOrderLogic resourceOrderLogic, ScheduleRepository scheduleRepository){
+    public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ResourceOrderLogic resourceOrderLogic, BookingLogic bookingLogic, ScheduleRepository scheduleRepository){
         this.BladeProjectRepository = bladeProjectRepository;
         this.resourceOrderLogic = resourceOrderLogic;
+        this.bookingLogic = bookingLogic;
         this.scheduleRepository = scheduleRepository;
     }
 
@@ -30,14 +34,13 @@ public class BladeProjectLogic {
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 
             List<ResourceOrder> resourceOrders = handleResourceOrders(resourceOrderInput, project);
+            for (ResourceOrder resourceOrder: resourceOrders) {
+                project.addResourceOrder(resourceOrder);
+            }
 
             //Saves Blade Project in database
             BladeProjectRepository.save(project);
 
-
-            //Query all blade projects(New addition included) -> Save in Blade Project List
-            List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
-            BladeProject.setBladeProjectList(bladeProjects);
             return project;
     }
     private List<ResourceOrder> handleResourceOrders(List<ResourceOrderInput> resourceOrderInputs, BladeProject bladeProject) {
@@ -80,19 +83,42 @@ public class BladeProjectLogic {
     }
 
     public void updateStartAndEndDate(BladeProject bladeProject) {
+        boolean startDateChanged = false;
+        boolean endDateChanged = false;
         //set bladeProject start and end date to the earliest and latest bladeTask start and end date
-        bladeProject.getBladeTasks().forEach(bladeTask -> {
+        List<BladeTask> bladeTasks = bladeProject.getBladeTasks();
+
+        for(BladeTask bladeTask : bladeTasks){
             if(bladeTask.getStartDate()!=null && bladeTask.getEndDate()!=null) {// Pending blade tasks does not contribute to project start- and end date
                 if (bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
                     bladeProject.setStartDate(bladeTask.getStartDate());
+                    startDateChanged = true;
                 }
                 if (bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
                     bladeProject.setEndDate(bladeTask.getEndDate());
+                    endDateChanged = true;
                 }
             }
-        });
+        };
 
+        //Create bookings if there are existing resource orders and no bookings
+        if(!bladeProject.getResourceOrders().isEmpty() && bladeProject.getBookings().isEmpty()){
+            bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
+        }
+
+        if(startDateChanged || endDateChanged){
+            updateBookings(bladeProject, bladeProject.getStartDate(), bladeProject.getEndDate());
+        }
         BladeProjectRepository.save(bladeProject);
+    }
+
+
+    public void updateBookings(BladeProject bladeProject, LocalDate startDate, LocalDate endDate){
+        List<Booking> bookings = bladeProject.getBookings();
+        for (Booking booking: bookings) {
+            booking.setStartDate(startDate);
+            booking.setEndDate(endDate);
+        }
     }
 
     public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {

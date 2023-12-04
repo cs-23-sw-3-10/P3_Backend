@@ -39,26 +39,17 @@ public class Booking implements Cloneable {
     @JoinColumn(name = "equipmentId")
     @Getter(AccessLevel.NONE) private Equipment equipment;
 
-
+    //Blade Task - Equipment Booking
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.resourceType = resourceType;
+        this.resourceName = resourceName;
         this.equipment = equipment;
         this.bladeTask = bladeTask;
-        this.duration = (int) ChronoUnit.DAYS.between(startDate, endDate);
-        this.resourceName = resourceName;
     }
 
-    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, String resourceType, String resourceName) {
-        this.startDate = bookingStartDate;
-        this.endDate = bookingEndDate;
-        this.bladeTask = bladeTask;
-        this.resourceType = resourceType;
-        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
-        this.resourceName = resourceName;
-    }
-    //Constructor for technician booking
+    //Blade Task - Technician Booking
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -69,13 +60,54 @@ public class Booking implements Cloneable {
         this.resourceName = resourceName;
     }
 
-    //Constructor for engineer booking
+    //Blade Task - Engineer Booking
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
         this.resourceType = resourceType;
         this.engineer = engineer;
         this.bladeTask = bladeTask;
+        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+        this.resourceName = resourceName;
+    }
+
+    //Blade Task - Empty Booking
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, String resourceType, String resourceName) {
+        this.startDate = bookingStartDate;
+        this.endDate = bookingEndDate;
+        this.bladeTask = bladeTask;
+        this.resourceType = resourceType;
+        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+        this.resourceName = resourceName;
+    }
+
+    //Blade Project - Equipment Booking
+    public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeProject bladeProject, String resourceType, String resourceName) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.resourceType = resourceType;
+        this.resourceName = resourceName;
+        this.equipment = equipment;
+        this.bladeProject = bladeProject;
+    }
+
+    //Blade Project - Engineer Booking
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeProject bladeProject, String resourceType, String resourceName) {
+        this.startDate = bookingStartDate;
+        this.endDate = bookingEndDate;
+        this.resourceType = resourceType;
+        this.engineer = engineer;
+        this.bladeProject = bladeProject;
+        this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
+        this.resourceName = resourceName;
+    }
+
+    //Blade Project - Empty Booking
+    public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeProject bladeProject, String resourceType, String resourceName) {
+        this.startDate = bookingStartDate;
+        this.endDate = bookingEndDate;
+        this.bladeProject = bladeProject;
+        this.resourceType = resourceType;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
         this.resourceName = resourceName;
     }

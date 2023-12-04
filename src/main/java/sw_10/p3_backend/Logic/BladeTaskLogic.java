@@ -112,7 +112,7 @@ public class BladeTaskLogic {
         if (testRigValue != 0 && resourceOrders != null) {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
-        bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProject());
         bookingLogic.recalculateConflicts(newBladeTask);
 
         onDatabaseUpdate();
@@ -251,7 +251,7 @@ public class BladeTaskLogic {
         }
 
         //Checks if the start date and end date of the bladeproject should change and then saves the bladetask
-        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
 
@@ -311,7 +311,7 @@ public class BladeTaskLogic {
         /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
             bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
         }*/
-        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
         bladeTaskRepository.save(bladeTaskToUpdate);
 
         return bladeTaskToUpdate;

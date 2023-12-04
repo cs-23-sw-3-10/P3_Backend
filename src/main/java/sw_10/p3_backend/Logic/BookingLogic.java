@@ -84,12 +84,6 @@ public class BookingLogic {
                     tempconflictcheck += handleEquipmentBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
                     break;
                 }
-                case "technician":
-                {
-                    System.out.println("Technician booking");
-                    handleTechnicianBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
-                    break;
-                }
                 case "engineer":
                 {
                     System.out.println("Engineer booking");
@@ -98,7 +92,6 @@ public class BookingLogic {
                 }
 
             }
-
         }
         if(tempconflictcheck == 0){
             bladeProject.setInConflict(false);
@@ -144,15 +137,15 @@ public class BookingLogic {
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
             System.out.println("Creating booking with equipment: " + freeEquipmentList.get(0).getName());
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType(), resourceOrder.getResourceName());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeProject,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
             return 0;
         }else {
             //If there is no available equipment create a booking with no equipment and spawn a conflict!
-            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
+            Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeProject ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
 
-            conflictHandler(newBooking, bladeTask);
+            //conflictHandler(newBooking, bladeProject);
             return 1;
         }
     }
@@ -176,6 +169,23 @@ public class BookingLogic {
 
         //Create a new booking with the engineer
         Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType(), resourceOrder.getResourceName());
+
+        System.out.println(newBooking);
+
+        //Save the booking to the database
+        bookingRepository.save(newBooking);
+
+        //update the engineers workhours
+        engineerLogic.updateEngineer(engineer, resourceOrder.getWorkHours());
+    }
+
+
+    private void handleEngineerBooking(ResourceOrder resourceOrder, BladeProject bladeProject, LocalDate bookingStartDate, LocalDate bookingEndDate) {
+        //Find the engineer that is assigned to the resource order
+        Engineer engineer = engineerLogic.findByName(resourceOrder.getResourceName());
+
+        //Create a new booking with the engineer
+        Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeProject, resourceOrder.getResourceType(), resourceOrder.getResourceName());
 
         System.out.println(newBooking);
 
