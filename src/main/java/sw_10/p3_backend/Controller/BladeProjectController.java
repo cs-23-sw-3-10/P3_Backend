@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 //Model + Logic
 import sw_10.p3_backend.Logic.BladeProjectLogic;
 import sw_10.p3_backend.Model.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,9 +37,10 @@ public class BladeProjectController {
 
     //PreAuthorize: Checks if the user invoking the method is authorized to do so
     //Authorization criteria: User is logged in on the website -> Editing privileges
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {
+        System.out.println("REQUEST RECEIVED");
         return bladeProjectLogic.createProject(name, customer, projectLeader, resourceOrders);
     }
 
