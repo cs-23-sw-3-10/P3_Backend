@@ -9,6 +9,7 @@ import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
+import sw_10.p3_backend.Repository.ConflictRepository;
 import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
@@ -51,7 +52,7 @@ public class BladeTaskLogic {
         this.resourceOrderLogic = resourceOrderLogic;
         this.bookingRepository = bookingRepository;
         this.bladeProjectLogic = bladeProjectLogic;
-        this.conflictLogic=conflictLogic;
+        this.conflictLogic = conflictLogic;
     }
 
     @PostConstruct
@@ -273,13 +274,15 @@ public class BladeTaskLogic {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + btId));
 
-        LocalDate endDate = calculateEndDate(updates.startDate(), updates.duration());
+        int totalDuration = updates.duration() + updates.attachPeriod() + updates.detachPeriod();
+
+        LocalDate endDate = calculateEndDate(updates.startDate(), totalDuration);
 
         List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(updates.startDate(), endDate, false);
 
+        //Checks for overlap with other bladetasks
         if (bladeTaskToUpdate.getStartDate() != updates.startDate()
-                || bladeTaskToUpdate.getEndDate() != endDate)
-        {
+                || bladeTaskToUpdate.getEndDate() != endDate) {
             for (BladeTask bladeTask : bladeTasksInRange) {
                 if (Objects.equals(bladeTask.getTestRig(), updates.testRig()) && bladeTask.getId() != btId) {
                     throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
@@ -289,46 +292,37 @@ public class BladeTaskLogic {
             bladeTaskToUpdate.setEndDate(endDate);
         }
 
-        if (bladeTaskToUpdate.getDuration() != updates.duration()){
-            bladeTaskToUpdate.setDuration(updates.duration());
-        }
-        if (!Objects.equals(bladeTaskToUpdate.getTestRig(), updates.testRig())){
-            bladeTaskToUpdate.setTestRig(updates.testRig());
-        }
-        if (bladeTaskToUpdate.getAttachPeriod() != updates.attachPeriod()){
-            bladeTaskToUpdate.setAttachPeriod(updates.attachPeriod());
-        }
-        if (bladeTaskToUpdate.getDetachPeriod() != updates.detachPeriod()){
-            bladeTaskToUpdate.setDetachPeriod(updates.detachPeriod());
-        }
-        if (bladeTaskToUpdate.getTaskName().equals(updates.taskName())){
-            bladeTaskToUpdate.setTaskName(updates.taskName());
-        }
-        if (bladeTaskToUpdate.getTestType().equals(updates.testType())){
-            bladeTaskToUpdate.setTestType(updates.testType());
-        }
-        // der skal tilføjes en metode til at opdatere resourceOrders men der er problemer med dem fordi de skal opdateres eller noget
-        /*if (bladeTaskToUpdate.getResourceOrders() != updates.resourceOrders()){
-            bladeTaskToUpdate.setResourceOrders(updates.resourceOrders());
-        }*/
-        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
+        //Sets the values of the bladetask to the incoming values
+        bladeTaskToUpdate.setDuration(totalDuration);
+        bladeTaskToUpdate.setTestRig(updates.testRig());
+        bladeTaskToUpdate.setAttachPeriod(updates.attachPeriod());
+        bladeTaskToUpdate.setDetachPeriod(updates.detachPeriod());
+        bladeTaskToUpdate.setTaskName(updates.taskName());
+        bladeTaskToUpdate.setTestType(updates.testType());
+
+        resourceOrderLogic.removeResourceOrders(bladeTaskToUpdate);
+        resourceOrderLogic.createResourceOrdersBladeTask(updates.resourceOrders(), bladeTaskToUpdate);
+
         bladeTaskRepository.save(bladeTaskToUpdate);
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
+
+        bladeTaskToUpdate = updateStartAndDurationBladeTask((long) bladeTaskToUpdate.getId(), bladeTaskToUpdate.getStartDate().toString(),bladeTaskToUpdate.getDuration(), bladeTaskToUpdate.getTestRig() );
 
         return bladeTaskToUpdate;
     }
 
-    public List<Conflict> findConflictsForBladeTask(int id, boolean isActive) throws  NotFoundException{
+    public List<Conflict> findConflictsForBladeTask(int id, boolean isActive) throws NotFoundException {
 
-        BladeTask bladeTask=this.findOne(id);
+        BladeTask bladeTask = this.findOne(id);
 
-        List<Booking> bookings=bladeTask.getBookings();
+        List<Booking> bookings = bladeTask.getBookings();
 
-        List<Conflict> conflicts=new ArrayList<>();
+        List<Conflict> conflicts = new ArrayList<>();
 
-        for(Booking booking: bookings){
-            Conflict conflict=conflictLogic.findConflictByBookingId(booking.getId(), isActive);
+        for (Booking booking : bookings) {
+            Conflict conflict = conflictLogic.findConflictByBookingId(booking.getId(), isActive);
 
-            if(conflict!=null){
+            if (conflict != null) {
                 conflicts.add(conflict);
             }
         }
@@ -361,7 +355,8 @@ public class BladeTaskLogic {
                             .subscribe(
                                     ignored -> sink.next(supplier.get()),
                                     sink::error,    // Handle errors by propagating them
-                                    () -> {}        // Avoid completing the sink
+                                    () -> {
+                                    }        // Avoid completing the sink
                             );
                 })
                 .onErrorContinue((throwable, o) -> {
