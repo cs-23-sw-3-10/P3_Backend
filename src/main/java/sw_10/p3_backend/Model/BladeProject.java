@@ -5,18 +5,15 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-@Entity//tells Hibernate to make a table out of this class
+@Entity //Tells Hibernate to make a table out of this class
 @Table(name = "bladeProject")
-@Getter @Setter //Lombok annotations to generate getters and setters
+@Getter @Setter //Lombok annotations to generate getters and setters for INSTANCE METHODS
 @AllArgsConstructor //Lombok annotation to generate constructor with all arguments
 @NoArgsConstructor
 public class BladeProject implements Cloneable {
-    private static String[] customerList;
-    private static String[] projectLeaderList;
-    @Getter
+    @Getter //Static method hence the @Getter annotation again
     private static List<BladeProject> bladeProjectList = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,9 +30,8 @@ public class BladeProject implements Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "scheduleId")
-    @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter of will not get stuck in endless recursive loop
-
-    public BladeProject(Schedule schedule, String projectName,String customer, String projectLeader, String color) {
+    @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter will not get stuck in endless recursive loop
+    public BladeProject(Schedule schedule, String projectName, String customer, String projectLeader, String color) {
         setSchedule(schedule);
         setProjectName(projectName);
         setProjectLeader(projectLeader);
@@ -77,6 +73,6 @@ public class BladeProject implements Cloneable {
             throw new RuntimeException(e);
         }
     }
-    }
+}
 
 

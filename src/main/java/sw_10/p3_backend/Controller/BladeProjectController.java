@@ -1,23 +1,16 @@
 package sw_10.p3_backend.Controller;
 
+//Spring Imports
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-
 import org.springframework.stereotype.Controller;
-import reactor.core.publisher.Sinks;
+
+//Model + Logic
 import sw_10.p3_backend.Logic.BladeProjectLogic;
 import sw_10.p3_backend.Model.*;
-import sw_10.p3_backend.Repository.BladeProjectRepository;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-
-import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
 
 @Controller
@@ -25,26 +18,23 @@ public class BladeProjectController {
 
     private final BladeProjectLogic bladeProjectLogic;
 
-    private final BladeProjectRepository bladeProjectRepository;
-
-
-
-    public BladeProjectController(BladeProjectLogic bladeProjectLogic, BladeProjectRepository bladeProjectRepository) {
+    public BladeProjectController(BladeProjectLogic bladeProjectLogic) {
         this.bladeProjectLogic = bladeProjectLogic;
-        this.bladeProjectRepository = bladeProjectRepository;
-        
     }
-    
 
+    //Returns all Blade Projects
     @QueryMapping
     public List<BladeProject> AllBladeProjects() {return bladeProjectLogic.findAll();
     }
-    
+
+    //Returns all Blade Projects, based on if user is looking at "active" or "draft(inactive)" schedule
     @QueryMapping
     public List<BladeProject> AllBladeProjectsBySchedule(@Argument boolean isActive) {
         return bladeProjectLogic.findAllBySchedule(isActive);
     }
 
+    //PreAuthorize: Checks if the user invoking the method is authorized to do so
+    //Authorization criteria: User is logged in on the website -> Editing privileges
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {

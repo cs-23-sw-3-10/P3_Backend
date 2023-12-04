@@ -35,7 +35,9 @@ public class BladeProjectLogic {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false); //Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 
+            //Saves Blade Project in database
             BladeProjectRepository.save(project);
+            //Query all blade projects(New addition included) -> Save in Blade Project List
             List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
             BladeProject.setBladeProjectList(bladeProjects);
             return project;
@@ -48,19 +50,11 @@ public class BladeProjectLogic {
             return "Project deleted";
         }
         else {
-            return "Project has tasks";//Create logic to delete tasks before deleting project
+            return "Project has tasks"; //Create logic to delete tasks before deleting project
         }
     }
 
     public List<BladeProject> findAll(){
-        List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
-        BladeProject.setBladeProjectList(bladeProjects);
-        for (BladeProject bladeProject : bladeProjects) {
-            System.out.println(bladeProject.getBladeTasks().size());
-
-        }
-
-
         return BladeProjectRepository.findAll();
     }
 
