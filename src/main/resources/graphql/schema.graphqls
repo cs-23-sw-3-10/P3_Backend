@@ -57,6 +57,7 @@ type Mutation{
     DeleteTechnician(type:String!):Technician
 
     cloneScheduleAndReplace:Schedule
+    discardEditChanges:Schedule
 }
 
 type AuthData {

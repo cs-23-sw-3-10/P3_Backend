@@ -27,6 +27,11 @@ public class ScheduleController {
         return scheduleLogic.cloneScheduleAndReplace();
     }
 
+    @MutationMapping
+    public Schedule discardEditChanges() throws CloneNotSupportedException {
+        return scheduleLogic.discardEditChanges();
+    }
+
     @QueryMapping
     public List<Schedule> AllSchedules() {
         return scheduleLogic.findAll();

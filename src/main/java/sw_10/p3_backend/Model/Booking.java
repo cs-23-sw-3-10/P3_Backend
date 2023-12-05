@@ -96,7 +96,7 @@ public class Booking implements Cloneable {
         // Deep clone bladeTasks
         //cloned.bladeTask = this.bladeTask.clone();
         if(this.conflict != null){
-            cloned.conflict = this.conflict.clone();
+            cloned.conflict = this.conflict.clone(cloned);
         }
 
         return cloned;

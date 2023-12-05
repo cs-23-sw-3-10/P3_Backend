@@ -48,7 +48,7 @@ public class ConflictLogic {
         Set<BladeTask> hashedBladeTasks = Sets.newHashSet(relatedBladeTasks);
 
         Conflict conflict = new Conflict(booking, bladeTask, hashedBladeTasks);
-        conflictRepository.save(conflict);
+        //conflictRepository.save(conflict);
 
         return conflict;
     }

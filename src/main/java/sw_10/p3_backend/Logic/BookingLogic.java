@@ -91,9 +91,11 @@ public class BookingLogic {
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
 
-            conflictHandler(newBooking, bladeTask);
+            //conflictHandler(newBooking, bladeTask);
 
+            newBooking.setConflict(conflictHandler(newBooking, bladeTask));
 
+            bookingRepository.save(newBooking);
 
 
             return 1;
