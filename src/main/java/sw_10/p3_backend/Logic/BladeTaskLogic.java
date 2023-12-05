@@ -74,11 +74,6 @@ public class BladeTaskLogic {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
-        if (checkForBTOverlap(input.startDate(),
-                calculateEndDate(input.startDate(), input.duration()),
-                null)){
-            throw new InputInvalidException("BladeTask with testRig " + input.testRig() + " already exists in the given time period");
-        }
 
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
@@ -105,8 +100,12 @@ public class BladeTaskLogic {
                 testRigValue,
                 bladeProject
         );
-
-
+        if (checkForBTOverlap(input.startDate(),
+                calculateEndDate(input.startDate(), input.duration()),
+                newBladeTask)){
+            throw new InputInvalidException("BladeTask with testRig " + input.testRig() + " already exists in the given time period");
+        }
+        
         // Create resource orders for the blade task (if any)
         List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
 
