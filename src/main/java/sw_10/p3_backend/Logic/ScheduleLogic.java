@@ -12,10 +12,12 @@ import java.util.Optional;
 @Service
 public class ScheduleLogic {
     private final ScheduleRepository scheduleRepository;
+    private final BladeTaskLogic bladeTaskLogic;
 
 
-    ScheduleLogic(ScheduleRepository scheduleRepository){
+    ScheduleLogic(ScheduleRepository scheduleRepository , BladeTaskLogic bladeTaskLogic){
         this.scheduleRepository = scheduleRepository;
+        this.bladeTaskLogic = bladeTaskLogic;
 
     }
 
@@ -64,6 +66,7 @@ public class ScheduleLogic {
 
         scheduleRepository.save(newViewSchedule);
 
+        bladeTaskLogic.onDatabaseUpdate();
         return newViewSchedule;
 
     }
@@ -93,6 +96,8 @@ public class ScheduleLogic {
         scheduleRepository.save(newEditSchedule);
 
         cloneScheduleAndReplace();
+
+
 
         return newEditSchedule;
     }
