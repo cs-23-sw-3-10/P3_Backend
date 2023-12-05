@@ -71,6 +71,12 @@ public class Conflict implements Cloneable{
 
         // Reset the ID to indicate a new entity
         cloned.id = 0;
+
+
+        // Deep clone relatedBladeTasks
+        //cloned.relatedBladeTasks = Sets.newHashSet();
+
+
         return cloned;
     }
 

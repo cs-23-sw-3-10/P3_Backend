@@ -92,6 +92,10 @@ public class BookingLogic {
             bookingRepository.save(newBooking);
 
             conflictHandler(newBooking, bladeTask);
+
+
+
+
             return 1;
         }
     }
@@ -145,11 +149,12 @@ public class BookingLogic {
             return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
         }
     }
-    private void conflictHandler(Booking booking, BladeTask bladeTask){
+    private Conflict conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
         System.out.println("Creating Conflict");
-        conflictLogic.createConflict(booking, bladeTask);
+        Conflict conflict = conflictLogic.createConflict(booking, bladeTask);
         bladeTask.setInConflict(true);
+        return conflict;
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {

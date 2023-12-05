@@ -135,6 +135,7 @@ type Booking {
     equipment: Equipment
     engineer: Engineer
     technician: Technician
+    conflict: Conflict
 }
 
 type Engineer {
