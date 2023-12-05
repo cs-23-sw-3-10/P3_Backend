@@ -1,6 +1,7 @@
 package sw_10.p3_backend.Logic;
 
 import jakarta.annotation.PostConstruct;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -132,7 +133,7 @@ public class BladeTaskLogic {
                 .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + bladeProjectId));
     }
 
-    private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
+    private @Nullable List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
         if (input.resourceOrders() != null) {
             return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
         }
