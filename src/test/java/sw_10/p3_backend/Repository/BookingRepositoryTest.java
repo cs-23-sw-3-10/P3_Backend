@@ -42,9 +42,11 @@ class BookingRepositoryTest {
     @Autowired
     BladeTaskRepository bladeTaskRepository;
 
-    @BeforeEach
-    public void config(){
-        System.out.println("Before all");
+
+
+    @Test
+    void testFindOverlappingEventsShouldReturnOverlappingBookings(){
+        // Given
         Schedule schedule = new Schedule();
         schedule.setActive(false);
         scheduleRepository.save(schedule);
@@ -58,27 +60,15 @@ class BookingRepositoryTest {
 
         bladeTaskRepository.save(bladeTask);
 
-
-    }
-
-    @Test
-    void testFindOverlappingEventsShouldReturnOverlappingBookings(){
-        // Given
         Equipment e1 = new Equipment(1, "hammer", LocalDate.of(2000,10,10), "hammer1", null);
         Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "hammer1", null);
 
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
 
-<<<<<<< Updated upstream
-        Booking booking1 = new Booking(1,LocalDate.of(2020,10,1), LocalDate.of(2020,10,10),10, "hammer", e1.getName(), 0, null,null,null,e1);
-        Booking booking2 = new Booking(2,LocalDate.of(2020,10,11),LocalDate.of(2020,10,20),10, "hammer",e1.getName(), 0, null,null,null,e1);
-        Booking booking3 = new Booking(3,LocalDate.of(2020,10,22), LocalDate.of(2020,10,30),10, "hammer", e1.getName(), 0, null,null,null,e2);
-=======
-        Booking booking1 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, bladeTaskRepository.getBladeTaskById(1), e1.getType(), e1.getName());
-        Booking booking2 = new Booking(LocalDate.of(2020,10,20), LocalDate.of(2020,10,30), e1, bladeTaskRepository.getBladeTaskById(1), e1.getType(), e1.getName());
-        Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,30), e2, bladeTaskRepository.getBladeTaskById(1), e2.getType(), e2.getName());
->>>>>>> Stashed changes
+        Booking booking1 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, bladeTask, e1.getType(), e1.getName());
+        Booking booking2 = new Booking(LocalDate.of(2020,10,20), LocalDate.of(2020,10,30), e1, bladeTask, e1.getType(), e1.getName());
+        Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,30), e2, bladeTask, e2.getType(), e2.getName());
 
         System.out.println("look here" + booking1.fetchBladeTask());
 
@@ -97,20 +87,10 @@ class BookingRepositoryTest {
 
         System.out.println(bookingsByTypeHammerAndPeriod);
 
-        Schedule schedule = scheduleRepository.findScheduleByIsActive(false);
+        System.out.println("BP tasks: " + bladeProject.getBladeTasks().size());
 
-        List<BladeProject> BP = schedule.getBladeProject();
-
-        for (BladeProject bladeProject : BP) {
-            System.out.println("BP som bt: " + bladeProject.getBladeTasks());
-        }
-
-        System.out.println("BP: " + BP);
         // Assert the overlapping bookings are found and non-overlapping are not
-
         assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2, booking3);
-
-
 
         List<Booking> bookingsByTypeSawAndPeriod = bookingRepository.findByBladeTask(bladeTaskRepository.getBladeTaskById(1));
         assertThat(bookingsByTypeSawAndPeriod).hasSize(1);
