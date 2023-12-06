@@ -95,7 +95,7 @@ public class BladeProjectLogic {
                 if (finalStartDate == null || bladeTask.getStartDate().isBefore(finalStartDate)) {
                     finalStartDate = bladeTask.getStartDate();
                 }
-                if (finalEndDate == null || bladeTask.getEndDate().isBefore(finalEndDate)) {
+                if (finalEndDate == null || bladeTask.getEndDate().isAfter(finalEndDate)) {
                     finalEndDate = bladeTask.getEndDate();
                 }
             }
