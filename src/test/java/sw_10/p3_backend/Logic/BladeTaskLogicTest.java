@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.LocalTime.now;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -51,7 +52,7 @@ class BladeTaskLogicTest {
 
         input = new BladeTaskInput(
                 1L,
-                LocalDate.of(2023,11,28),
+                LocalDate.now(),
                 15,
                 2,
                 3,
@@ -77,8 +78,8 @@ class BladeTaskLogicTest {
     @Test
     public void testBladeTasksInRangeSubInitialLoad() {
         // Arrange
-        String startDate = "2023-01-01";
-        String endDate = "2023-01-31";
+        LocalDate startDate =  LocalDate.now().plusDays(1);
+        LocalDate endDate = startDate.plusDays(30);
         boolean isActive = true;
         BladeTask mockTask = new BladeTask();
         BladeTask mockTask2 = new BladeTask();
@@ -88,10 +89,10 @@ class BladeTaskLogicTest {
 
 
 
-        when(bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate) ,isActive)).thenReturn(initialTasks);
+        when(bladeTaskRepository.bladeTasksInRange(startDate, endDate ,isActive)).thenReturn(initialTasks);
 
         // Act
-        StepVerifier.create(bladeTaskLogic.bladeTasksInRangeSub(startDate, endDate ,isActive).take(1))
+        StepVerifier.create(bladeTaskLogic.bladeTasksInRangeSub(String.valueOf(startDate), String.valueOf(endDate),isActive).take(1))
                 .expectNext(initialTasks)
                 .verifyComplete();
 
@@ -100,8 +101,8 @@ class BladeTaskLogicTest {
     @Test
     void testBladeTasksInRangeSub() {
         // Arrange
-        String startDate = "2023-01-01";
-        String endDate = "2023-01-31";
+        LocalDate startDate =  LocalDate.now().plusDays(1);
+        LocalDate endDate = startDate.plusDays(30);
         boolean isActive = true;
 
         BladeTask mockTask = new BladeTask();
@@ -114,10 +115,10 @@ class BladeTaskLogicTest {
         List<BladeTask> updatedTasks2 = List.of(mockTask, mockTask2, mockTask3);
 
 
-        when(bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive)).thenReturn(initialTasks, updatedTasks1, updatedTasks2);
+        when(bladeTaskRepository.bladeTasksInRange(startDate, endDate, isActive)).thenReturn(initialTasks, updatedTasks1, updatedTasks2);
 
         // Act
-        StepVerifier.create(bladeTaskLogic.bladeTasksInRangeSub(startDate, endDate ,isActive).take(3))// Take 3 updates from database (initial load + 2 updates)
+        StepVerifier.create(bladeTaskLogic.bladeTasksInRangeSub(String.valueOf(startDate), String.valueOf(endDate) ,isActive).take(3))// Take 3 updates from database (initial load + 2 updates)
                 .expectNext(initialTasks)// Initial load of data
                 .then((() ->  bladeTaskLogic.onDatabaseUpdate()))// Trigger update of data in database
                 .expectNext(updatedTasks1)// Expect updated data from database after update
@@ -148,7 +149,7 @@ class BladeTaskLogicTest {
     @Test
     void TestStartDateIsUnaffectedByAttachPeriod(){
         //Assert
-        assertEquals(LocalDate.of(2023,11,28), result.getStartDate());
+        assertEquals(LocalDate.now(), result.getStartDate());
     }
 
     @Test

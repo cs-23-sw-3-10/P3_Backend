@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import sw_10.p3_backend.Logic.TokenLogic;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.Schedule;
+import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +31,12 @@ class BladeProjectControllerIntTest {
 
     @Autowired
     ScheduleRepository scheduleRepository;
+
+    @Autowired
+    TokenLogic tokenLogic;
+
+    @Autowired
+    BladeProjectRepository bladeProjectRepository;
 
 
     @Test
@@ -50,7 +59,7 @@ class BladeProjectControllerIntTest {
 
 
         //language = GraphQL
-    assertThat(bladeProject).hasSize(1);
+    assertThat(bladeProject).hasSize(0);
     }
 
     @Test
@@ -58,7 +67,13 @@ class BladeProjectControllerIntTest {
 
         scheduleRepository.save(new Schedule(1,true,null));
 
-        BladeProject bladeProject = this.httpGraphQlTester.document("""
+        Authentication authentication = tokenLogic.authenticate("user", "password");
+
+        //Generate a token from the Authentication object
+        String token = tokenLogic.generateToken(authentication);
+
+        BladeProject bladeProject = this.httpGraphQlTester.mutate().header("Authorization", "Bearer " + token).build().
+                document("""
                 mutation CreateBladeProject {
                     createBladeProject(
                         name: "TestBP1"
@@ -77,6 +92,10 @@ class BladeProjectControllerIntTest {
         assertThat(bladeProject.getProjectName()).isEqualTo("TestBP1");
         assertThat(bladeProject.getCustomer()).isEqualTo("Bestas");
         assertThat(bladeProject.getProjectLeader()).isEqualTo("Henning");
+
+        bladeProjectRepository.deleteAll();
+
+
 
 
 

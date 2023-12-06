@@ -26,7 +26,6 @@ public class TokenLogic {
     public TokenLogic(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager) {
         this.jwtEncoder = jwtEncoder;
         this.authenticationManager = authenticationManager;
-
     }
 
     public String generateToken(Authentication authentication) {

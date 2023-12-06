@@ -1,5 +1,8 @@
 package sw_10.p3_backend.Repository;
 
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -7,8 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import sw_10.p3_backend.Model.Booking;
-import sw_10.p3_backend.Model.Equipment;
+import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.TestP3BackendApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,27 +35,56 @@ class BookingRepositoryTest {
     BookingRepository bookingRepository;
     @Autowired
     EquipmentRepository equipmentRepository;
+    @Autowired
+    ScheduleRepository scheduleRepository;
+    @Autowired
+    BladeProjectRepository bladeProjectRepository;
+    @Autowired
+    BladeTaskRepository bladeTaskRepository;
 
+    @BeforeEach
+    public void config(){
+        System.out.println("Before all");
+        Schedule schedule = new Schedule();
+        schedule.setActive(false);
+        scheduleRepository.save(schedule);
+
+        BladeProject bladeProject = new BladeProject(schedule, "test", "test", "test", "test");
+
+        bladeProjectRepository.save(bladeProject);
+
+
+        BladeTask bladeTask = new BladeTask(LocalDate.of(2020,10,1), 30, bladeProject);
+
+        bladeTaskRepository.save(bladeTask);
+
+
+    }
 
     @Test
     void testFindOverlappingEventsShouldReturnOverlappingBookings(){
-
-        System.out.println("Number of bookings" + equipmentRepository.findAll());
-
-
+        // Given
         Equipment e1 = new Equipment(1, "hammer", LocalDate.of(2000,10,10), "hammer1", null);
         Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "hammer1", null);
 
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
 
+<<<<<<< Updated upstream
         Booking booking1 = new Booking(1,LocalDate.of(2020,10,1), LocalDate.of(2020,10,10),10, "hammer", e1.getName(), 0, null,null,null,e1);
         Booking booking2 = new Booking(2,LocalDate.of(2020,10,11),LocalDate.of(2020,10,20),10, "hammer",e1.getName(), 0, null,null,null,e1);
         Booking booking3 = new Booking(3,LocalDate.of(2020,10,22), LocalDate.of(2020,10,30),10, "hammer", e1.getName(), 0, null,null,null,e2);
+=======
+        Booking booking1 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, bladeTaskRepository.getBladeTaskById(1), e1.getType(), e1.getName());
+        Booking booking2 = new Booking(LocalDate.of(2020,10,20), LocalDate.of(2020,10,30), e1, bladeTaskRepository.getBladeTaskById(1), e1.getType(), e1.getName());
+        Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,30), e2, bladeTaskRepository.getBladeTaskById(1), e2.getType(), e2.getName());
+>>>>>>> Stashed changes
 
-        LocalDate test = LocalDate.now();
-        System.out.println(test);
+        System.out.println("look here" + booking1.fetchBladeTask());
 
+        Schedule test33 = scheduleRepository.findScheduleByIsActive(false);
+
+        System.out.println(test33);
         // Save bookings to the repository
         bookingRepository.save(booking1);
         bookingRepository.save(booking2);
@@ -61,18 +92,28 @@ class BookingRepositoryTest {
 
         // When
         // Check for overlapping events for same type
-        List<Equipment> overlappingBookings = equipmentRepository.findAvailableEquipment(LocalDate.of(2020,10,1),LocalDate.of(2020,10,20),"hammer");
+        List<Booking> bookingsByTypeHammerAndPeriod = bookingRepository.findAll();
         // Then
+
+        System.out.println(bookingsByTypeHammerAndPeriod);
+
+        Schedule schedule = scheduleRepository.findScheduleByIsActive(false);
+
+        List<BladeProject> BP = schedule.getBladeProject();
+
+        for (BladeProject bladeProject : BP) {
+            System.out.println("BP som bt: " + bladeProject.getBladeTasks());
+        }
+
+        System.out.println("BP: " + BP);
         // Assert the overlapping bookings are found and non-overlapping are not
-        List<Integer> overlappingIds = overlappingBookings.stream()
-                .map(Equipment::getId)
-                .collect(Collectors.toList());
 
-        assertThat(overlappingIds).containsExactlyInAnyOrder(booking1.getId(), booking2.getId());
-        assertThat(overlappingIds).doesNotContain(booking3.getId());
+        assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2, booking3);
 
-        List<Equipment> overlappingBookingsDifferentType = equipmentRepository.findAvailableEquipment(LocalDate.of(2020,10,1),LocalDate.of(2020,10,30),"saw");
-        assertThat(overlappingBookingsDifferentType).hasSize(1);
+
+
+        List<Booking> bookingsByTypeSawAndPeriod = bookingRepository.findByBladeTask(bladeTaskRepository.getBladeTaskById(1));
+        assertThat(bookingsByTypeSawAndPeriod).hasSize(1);
     }
 
 
