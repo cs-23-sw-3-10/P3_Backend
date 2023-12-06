@@ -1,13 +1,18 @@
 package sw_10.p3_backend.Logic;
 
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import sw_10.p3_backend.Model.*;
+import sw_10.p3_backend.Model.BladeProject;
+import sw_10.p3_backend.Model.BladeProjectInput;
+import sw_10.p3_backend.Model.BladeTask;
+import sw_10.p3_backend.Model.Schedule;
+import sw_10.p3_backend.Model.ResourceOrder;
+import sw_10.p3_backend.Model.ResourceOrderInput;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
-
-import sw_10.p3_backend.Repository.ResourceOrderRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
+import sw_10.p3_backend.exception.NotFoundException;
 
 
 import java.time.LocalDate;
@@ -17,13 +22,13 @@ import java.util.Random;
 
 @Service
 public class BladeProjectLogic {
-    private final BladeProjectRepository BladeProjectRepository;
     private final ResourceOrderLogic resourceOrderLogic;
     private final BookingLogic bookingLogic;
+    private final BladeProjectRepository bladeProjectRepository;
     private final ScheduleRepository scheduleRepository;
 
     public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ResourceOrderLogic resourceOrderLogic, BookingLogic bookingLogic, ScheduleRepository scheduleRepository){
-        this.BladeProjectRepository = bladeProjectRepository;
+        this.bladeProjectRepository = bladeProjectRepository;
         this.resourceOrderLogic = resourceOrderLogic;
         this.bookingLogic = bookingLogic;
         this.scheduleRepository = scheduleRepository;
@@ -41,7 +46,7 @@ public class BladeProjectLogic {
             }
 
             //Saves Blade Project in database
-            BladeProjectRepository.save(project);
+            bladeProjectRepository.save(project);
 
             return project;
     }
@@ -54,9 +59,9 @@ public class BladeProjectLogic {
 
 
     public String deleteProject(Long id) {
-        BladeProject project = BladeProjectRepository.findById(id).orElseThrow(() -> new InputInvalidException("Project with id " + id + " not found"));
+        BladeProject project = bladeProjectRepository.findById(id).orElseThrow(() -> new InputInvalidException("Project with id " + id + " not found"));
         if(project.getBladeTasks().isEmpty()) {//makes sure the project has no tasks before deleting
-            BladeProjectRepository.deleteById(id);
+            bladeProjectRepository.deleteById(id);
             return "Project deleted";
         }
         else {
@@ -65,11 +70,11 @@ public class BladeProjectLogic {
     }
 
     public List<BladeProject> findAll(){
-        return BladeProjectRepository.findAll();
+        return bladeProjectRepository.findAll();
     }
 
     public List<BladeProject> findAllBySchedule(boolean isActive){
-        return BladeProjectRepository.findAllBySchedule(isActive);
+        return bladeProjectRepository.findAllBySchedule(isActive);
     }
 
     private static String generateRandomColorHexCode() {
@@ -111,11 +116,11 @@ public class BladeProjectLogic {
         }
 
 
-        BladeProjectRepository.save(bladeProject);
+        bladeProjectRepository.save(bladeProject);
     }
 
     public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {
-        BladeProject BPToUpdate = BladeProjectRepository.findById(bpId)
+        BladeProject BPToUpdate = bladeProjectRepository.findById(bpId)
                 .orElseThrow(() -> new InputInvalidException("Project with id " + updates.scheduleId() + " not found"));
 
         if (!BPToUpdate.getProjectName().equals(updates.projectName())){
@@ -128,13 +133,27 @@ public class BladeProjectLogic {
             BPToUpdate.setProjectLeader(updates.projectLeader());
         }
 
-        BladeProjectRepository.save(BPToUpdate);
+        bladeProjectRepository.save(BPToUpdate);
 
         return BPToUpdate;
     }
 
     public List<BladeProject> lookUpBladeData() {
-        return BladeProjectRepository.findAll();
+        return bladeProjectRepository.findAll();
+    }
+
+    public String deleteBladeProject(Long id){
+        BladeProject bladeProjectToDelete = bladeProjectRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + id));
+
+        if(bladeProjectToDelete.getBladeTasks().isEmpty()){
+            bladeProjectRepository.delete(bladeProjectToDelete);
+            return "BladeProject with id: " + bladeProjectToDelete.getId() + " has been deleted";
+        }else{
+
+            return "BladeProject with id: " + bladeProjectToDelete.getId() + " has bladetasks and can therefore not be deleted";
+        }
+
     }
 }
 
