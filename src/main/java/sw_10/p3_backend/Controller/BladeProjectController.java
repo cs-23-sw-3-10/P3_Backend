@@ -53,15 +53,19 @@ public class BladeProjectController {
         return bladeProjectLogic.createProject(name, customer, projectLeader);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    /*@PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeProject(@Argument Long id) {
         return bladeProjectLogic.deleteProject(id);
-    }
+    }*/
 
     @MutationMapping
     public BladeProject updateBladeProject(@Argument Long bpId, @Argument BladeProjectInput updates) {
         return bladeProjectLogic.updateBladeProject(bpId, updates);
+    }
+
+    public String deleteBladeProject(@Argument Long id){
+        return bladeProjectLogic.deleteBladeProject(id);
     }
 
 

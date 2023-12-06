@@ -427,20 +427,20 @@ public class BladeTaskLogic {
     }
 
     public void deleteBladeTask(Long id){
-        BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
+        BladeTask bladeTaskToDelete = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
         //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToUpdate);
+        bookingLogic.removeBookings(bladeTaskToDelete);
         System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
-        Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
+        Set<Conflict> relatedConflicts = bladeTaskToDelete.getRelatedConflicts();
         Set<BladeTask> relatedBladeTasks = new HashSet<>();
         System.out.println("Lists created");
 
         //Removes the old relations on the bladetask that is being updated. This makes it possible to save the bladetask later
-        bookingLogic.resetRelatedConflicts(bladeTaskToUpdate);
+        bookingLogic.resetRelatedConflicts(bladeTaskToDelete);
         System.out.println("Related conflicts reset");
 
         //run through all the related conflicts to find the related bladetasks
@@ -454,9 +454,9 @@ public class BladeTaskLogic {
             BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
             bladeTaskRepository.save(tempBladeTask);
         }
-        bookingLogic.recalculateConflicts(bladeTaskToUpdate);
+        bookingLogic.recalculateConflicts(bladeTaskToDelete);
 
-        bladeTaskRepository.delete(bladeTaskToUpdate);
+        bladeTaskRepository.delete(bladeTaskToDelete);
         onDatabaseUpdate();
 
     }
