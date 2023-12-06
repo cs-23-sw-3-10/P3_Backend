@@ -188,7 +188,7 @@ public class BladeTaskLogic {
 
     private LocalDate calculateEndDate(LocalDate startDate, Integer duration) {
         if (startDate != null && duration != null) {
-            return startDate.plusDays(duration);
+            return startDate.plusDays(duration-1);
         }
         return null;
     }
