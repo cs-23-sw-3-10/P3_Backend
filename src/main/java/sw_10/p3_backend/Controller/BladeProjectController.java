@@ -64,6 +64,7 @@ public class BladeProjectController {
         return bladeProjectLogic.updateBladeProject(bpId, updates);
     }
 
+    @MutationMapping
     public String deleteBladeProject(@Argument Long id){
         return bladeProjectLogic.deleteBladeProject(id);
     }
