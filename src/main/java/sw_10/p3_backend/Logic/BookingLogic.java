@@ -263,4 +263,13 @@ public class BookingLogic {
             }
         }
     }
+
+    public void updateBookings(BladeProject bladeProject, LocalDate startDate, LocalDate endDate){
+        List<Booking> bookings = bladeProject.getBookings();
+        for (Booking booking: bookings) {
+            booking.setStartDate(startDate);
+            booking.setEndDate(endDate);
+            bookingRepository.save(booking);
+        }
+    }
 }

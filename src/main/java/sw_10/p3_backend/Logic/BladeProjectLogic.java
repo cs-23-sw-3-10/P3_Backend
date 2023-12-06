@@ -109,18 +109,10 @@ public class BladeProjectLogic {
         }
 
         if(startDateChanged || endDateChanged){
-            updateBookings(bladeProject, bladeProject.getStartDate(), bladeProject.getEndDate());
+            bookingLogic.updateBookings(bladeProject, bladeProject.getStartDate(), bladeProject.getEndDate());
         }
+
         BladeProjectRepository.save(bladeProject);
-    }
-
-
-    public void updateBookings(BladeProject bladeProject, LocalDate startDate, LocalDate endDate){
-        List<Booking> bookings = bladeProject.getBookings();
-        for (Booking booking: bookings) {
-            booking.setStartDate(startDate);
-            booking.setEndDate(endDate);
-        }
     }
 
     public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {
