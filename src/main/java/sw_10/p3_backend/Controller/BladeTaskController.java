@@ -66,11 +66,11 @@ public class BladeTaskController {
         return bladeTaskLogic.findConflictsForBladeTask(id,isActive);
     }
 
-    @PreAuthorize("isAuthenticated()")
+/*    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeTask(@Argument Integer id){
         return bladeTaskLogic.deleteTask(id);
-    }
+    }*/
 
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
@@ -91,6 +91,7 @@ public class BladeTaskController {
 
     @MutationMapping
     public String deleteBladeTask(@Argument Long id){
+        System.out.println(id);
         bladeTaskLogic.deleteBladeTask(id);
         return "BladeTask with id: " + id;
     }
