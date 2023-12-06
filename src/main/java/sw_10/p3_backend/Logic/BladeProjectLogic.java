@@ -85,20 +85,18 @@ public class BladeProjectLogic {
     }
 
     public void updateStartAndEndDate(BladeProject bladeProject) {
-        boolean startDateChanged = false;
-        boolean endDateChanged = false;
-        //set bladeProject start and end date to the earliest and latest bladeTask start and end date
+        //Set bladeProject start and end date to the earliest and latest bladeTask start and end date
         List<BladeTask> bladeTasks = bladeProject.getBladeTasks();
+        LocalDate finalStartDate = null;
+        LocalDate finalEndDate = null;
 
         for(BladeTask bladeTask : bladeTasks){
             if(bladeTask.getStartDate()!=null && bladeTask.getEndDate()!=null) {// Pending blade tasks does not contribute to project start- and end date
-                if (bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
-                    bladeProject.setStartDate(bladeTask.getStartDate());
-                    startDateChanged = true;
+                if (finalStartDate == null || bladeTask.getStartDate().isBefore(finalStartDate)) {
+                    finalStartDate = bladeTask.getStartDate();
                 }
-                if (bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
-                    bladeProject.setEndDate(bladeTask.getEndDate());
-                    endDateChanged = true;
+                if (finalEndDate == null || bladeTask.getEndDate().isBefore(finalEndDate)) {
+                    finalEndDate = bladeTask.getEndDate();
                 }
             }
         };
@@ -108,9 +106,10 @@ public class BladeProjectLogic {
             bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
         }
 
-        if(startDateChanged || endDateChanged){
-            bookingLogic.updateBookings(bladeProject, bladeProject.getStartDate(), bladeProject.getEndDate());
+        if(bladeProject.getStartDate() == null || bladeProject.getEndDate() == null || finalStartDate != null && finalStartDate.isBefore(bladeProject.getStartDate()) || finalEndDate != null && finalEndDate.isAfter(bladeProject.getEndDate())) {
+            bookingLogic.updateBookings(bladeProject, finalStartDate, finalEndDate);
         }
+
 
         BladeProjectRepository.save(bladeProject);
     }
