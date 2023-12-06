@@ -401,10 +401,6 @@ public class BladeTaskLogic {
         return bladeTasks;
     }
 
-    public void addRelatedConflict(BladeTask bladeTask, Conflict conflict) {
-        bladeTask.addRelatedConflict(conflict);
-        bladeTaskRepository.save(bladeTask);
-    }
 
     private boolean checkForBTOverlap(LocalDate startDate, LocalDate endDate, BladeTask checkBladeTask) {
 
@@ -461,6 +457,7 @@ public class BladeTaskLogic {
         bookingLogic.recalculateConflicts(bladeTaskToUpdate);
 
         bladeTaskRepository.delete(bladeTaskToUpdate);
+        onDatabaseUpdate();
 
     }
 
