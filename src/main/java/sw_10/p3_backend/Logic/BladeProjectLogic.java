@@ -106,6 +106,9 @@ public class BladeProjectLogic {
             }
         };
 
+        bladeProject.setStartDate(finalStartDate);
+        bladeProject.setEndDate(finalEndDate);
+
         //Create bookings if there are existing resource orders and no bookings
         if(!bladeProject.getResourceOrders().isEmpty() && bladeProject.getBookings().isEmpty()){
             bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
@@ -114,6 +117,7 @@ public class BladeProjectLogic {
         if(bladeProject.getStartDate() == null || bladeProject.getEndDate() == null || finalStartDate != null && finalStartDate.isBefore(bladeProject.getStartDate()) || finalEndDate != null && finalEndDate.isAfter(bladeProject.getEndDate())) {
             bookingLogic.updateBookings(bladeProject, finalStartDate, finalEndDate);
         }
+
 
 
         bladeProjectRepository.save(bladeProject);
