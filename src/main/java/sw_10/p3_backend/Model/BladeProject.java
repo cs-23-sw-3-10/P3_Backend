@@ -79,6 +79,24 @@ public class BladeProject implements Cloneable {
                 cloned.bladeTasks.add(clonedTask);
             }
 
+            // Deep clone resourceOrders
+            cloned.resourceOrders = new ArrayList<>();
+            for (ResourceOrder order : this.resourceOrders) {
+                // Clone the order and associate it with the cloned BladeProject
+                ResourceOrder clonedOrder = order.clone();
+                clonedOrder.setBladeProject(cloned);
+                cloned.resourceOrders.add(clonedOrder);
+            }
+
+            // Deep clone bookings
+            cloned.bookings = new ArrayList<>();
+            for (Booking booking : this.bookings) {
+                // Clone the booking and associate it with the cloned BladeProject
+                Booking clonedBooking = booking.clone();
+                clonedBooking.setBladeProject(cloned);
+                cloned.bookings.add(clonedBooking);
+            }
+
             return cloned;
         } catch (CloneNotSupportedException e) {
             // Handle the exception, possibly rethrow as a runtime exception

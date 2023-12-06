@@ -125,7 +125,6 @@ public class Booking implements Cloneable {
 
         // Reset the ID to indicate a new entity
         cloned.id = 0;
-        System.out.println("clone bladeTask in bookings" + cloned.getId());
         // Deep clone bladeTasks
         //cloned.bladeTask = this.bladeTask.clone();
         if(this.conflict != null){
