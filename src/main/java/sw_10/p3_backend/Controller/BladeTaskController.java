@@ -89,6 +89,12 @@ public class BladeTaskController {
         return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration, testRig);
     }
 
+    @MutationMapping
+    public String deleteBladeTask(@Argument Long id){
+        bladeTaskLogic.deleteBladeTask(id);
+        return "BladeTask with id: " + id;
+    }
+
     @SubscriptionMapping
     public Flux<List<BladeTask>> AllBladeTasksInRangeSub(@Argument String startDate, @Argument String endDate, @Argument boolean isActive) {
         System.out.println("AllBladeTasksInRangeSub");
