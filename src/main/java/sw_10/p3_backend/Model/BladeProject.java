@@ -103,6 +103,10 @@ public class BladeProject implements Cloneable {
             throw new RuntimeException(e);
         }
     }
+
+    public Schedule fetchSchedule() {
+        return schedule;
+    }
 }
 
 

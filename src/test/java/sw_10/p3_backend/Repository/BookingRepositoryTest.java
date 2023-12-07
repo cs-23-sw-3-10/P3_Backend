@@ -63,7 +63,7 @@ class BookingRepositoryTest {
         bladeTaskRepository.save(bladeTask);
 
         Equipment e1 = new Equipment(1, "hammer", LocalDate.of(2000,10,10), "hammer1", null);
-        Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "hammer1", null);
+        Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "saw1", null);
 
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
@@ -87,18 +87,15 @@ class BookingRepositoryTest {
 
         // When
         // Check for overlapping events for same type
-        List<Booking> bookingsByTypeHammerAndPeriod = bookingRepository.findAll();
+        List<Booking> bookingsByTypeHammerAndPeriod = bookingRepository.findBookedEquipmentByTypeAndPeriod("hammer1", LocalDate.of(2020,10,1), LocalDate.of(2020,10,30));
         // Then
 
         System.out.println(bookingsByTypeHammerAndPeriod);
 
         System.out.println("BP tasks: " + bladeProject.getBladeTasks().size());
 
-        // Assert the overlapping bookings are found and non-overlapping are not
-        assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2, booking3);
-
-        List<Booking> bookingsByTypeSawAndPeriod = bookingRepository.findByBladeTask(bladeTaskRepository.getBladeTaskById(1));
-        assertThat(bookingsByTypeSawAndPeriod).hasSize(1);
+        assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2);
+        assertThat(bookingsByTypeHammerAndPeriod).hasSize(2);
 
     }
 

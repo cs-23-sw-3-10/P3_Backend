@@ -81,4 +81,8 @@ public class ResourceOrder implements Cloneable {
 
         return cloned;
     }
+
+    public BladeProject fetchBladeProject() {
+        return this.bladeProject;
+    }
 }

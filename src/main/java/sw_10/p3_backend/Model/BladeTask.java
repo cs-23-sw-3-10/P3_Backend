@@ -60,6 +60,7 @@ public class BladeTask implements Cloneable {
         setStartDate(startDate);
         setDuration(duration);
         setBladeProject(bladeProject);
+        setEndDate(startDate.plusDays(duration));
     }
 
     public BladeTask(LocalDate startDate, LocalDate endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {
