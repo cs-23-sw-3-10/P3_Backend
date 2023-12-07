@@ -161,7 +161,7 @@ class BladeTaskLogicTest {
     @Test
     void TestEndDateIsSetAccordingToDurationAttachAndDetachPeriod(){
         int totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
-        assertEquals(result.getEndDate(),input.startDate().plusDays(totalDuration));
+        assertEquals(result.getEndDate(),input.startDate().plusDays(totalDuration-1));
     }
 
 

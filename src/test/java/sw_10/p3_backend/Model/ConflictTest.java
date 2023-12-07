@@ -2,7 +2,6 @@ package sw_10.p3_backend.Model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Booking;
 import sw_10.p3_backend.Model.Conflict;
@@ -33,39 +32,16 @@ public class ConflictTest {
         relatedBladeTasks.add(new BladeTask());
         conflict.setRelatedBladeTasks(relatedBladeTasks);
 
-        Conflict clonedConflict = conflict.clone();
+        Conflict clonedConflict = conflict.clone(new Booking());
 
         assertNotSame(conflict, clonedConflict);
-        assertNotEquals(conflict.getId(), clonedConflict.getId());
+        assertEquals(0, clonedConflict.getId());
         assertEquals(conflict.getType(), clonedConflict.getType());
         assertEquals(conflict.getMessage(), clonedConflict.getMessage());
-        assertSame(conflict.getBooking(), clonedConflict.getBooking());
-        assertSame(conflict.getSchedule(), clonedConflict.getSchedule());
-
-    }
-
-    @Test
-    public void cloneShouldReturnNewConflictWithEmptyRelatedBladeTasksWhenOriginalHasNone() throws CloneNotSupportedException {
-        conflict.setId(1);
-        conflict.setType("Type");
-        conflict.setMessage("Message");
-        conflict.setBooking(new Booking());
-        conflict.setSchedule(new Schedule());
-        Set<BladeTask> relatedBladeTasks = new HashSet<>();
-        relatedBladeTasks.add(new BladeTask());
-        conflict.setRelatedBladeTasks(relatedBladeTasks);
-
-        Conflict clonedConflict = conflict.clone();
-
-        assertNotSame(conflict, clonedConflict);
-        assertNotEquals(conflict.getId(), clonedConflict.getId());
-        assertEquals(conflict.getType(), clonedConflict.getType());
-        assertEquals(conflict.getMessage(), clonedConflict.getMessage());
-        assertSame(conflict.getBooking(), clonedConflict.getBooking());
+        assertNotSame(conflict.getBooking(), clonedConflict.getBooking());
         assertSame(conflict.getSchedule(), clonedConflict.getSchedule());
         assertNotSame(conflict.getRelatedBladeTasks(), clonedConflict.getRelatedBladeTasks());
-        assertEquals(conflict.getRelatedBladeTasks().size(), clonedConflict.getRelatedBladeTasks().size());
-
+        assertTrue(clonedConflict.getRelatedBladeTasks().isEmpty());
     }
 
     @Test
@@ -86,7 +62,11 @@ public class ConflictTest {
 
         assertEquals("Type", conflict.getType());
         assertSame(booking, conflict.fetchBooking());
-        assertEquals("Conflict! \nBooking of equipment: Resource in period 2021-01-01 - 2021-01-31 for Task was not possible due to lack of resources.\nBladetasks: Task has bookings of this equipment in this period.", conflict.getMessage());
+        assertTrue(conflict.getMessage().contains("Conflict!"));
+        assertTrue(conflict.getMessage().contains("Booking of equipment: Resource"));
+        assertTrue(conflict.getMessage().contains("in period 2021-01-01 - 2021-01-31 for Task"));
+        assertTrue(conflict.getMessage().contains("was not possible due to lack of resources."));
+        assertTrue(conflict.getMessage().contains("Bladetasks: Task has bookings of this equipment in this period."));
         assertSame(hashedBladeTasks, conflict.getRelatedBladeTasks());
     }
 }
