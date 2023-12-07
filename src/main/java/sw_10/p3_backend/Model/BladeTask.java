@@ -74,7 +74,7 @@ public class BladeTask implements Cloneable {
         this.testRig = testRig;
     }
 
-    public BladeProject getBladeProjectId() {
+    public BladeProject getBladeProject() {
         return bladeProject;
     }
 
@@ -85,7 +85,6 @@ public class BladeTask implements Cloneable {
         // Reset the ID to indicate a new entity
         cloned.id = 0;
 
-        System.out.println("clone bookings " + cloned.getId());
         // Deep clone bookings
         cloned.bookings = new ArrayList<>();
         for (Booking booking : this.bookings) {
@@ -94,7 +93,6 @@ public class BladeTask implements Cloneable {
             cloned.bookings.add(clonedBooking); // Recursive call
         }
 
-        System.out.println("clone resourceOrders " + cloned.getId());
         // Deep clone resourceOrders
         cloned.resourceOrders = new ArrayList<>();
         for (ResourceOrder resourceOrder : this.resourceOrders) {

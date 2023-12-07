@@ -38,12 +38,29 @@ public class ResourceOrder implements Cloneable {
     @JoinColumn(name = "bladeTaskId")
     BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
+    @ManyToOne
+    @JoinColumn(name = "bladeProjectId")
+    @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
+
 
     public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
         this.resourceType = type;
         this.resourceName = resourceName;
         this.workHours = integer;
         this.bladeTask = newBladeTask;
+        //Fills up remaining list with false, if booleans.size() < 2(The expected size)
+        if (booleans.size() < 2) {
+            booleans.addAll(Collections.nCopies(2 - booleans.size(), false));
+        }
+        this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 2));
+    }
+
+    public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer workHours, BladeProject BladeProject) {
+        this.resourceType = type;
+        this.resourceName = resourceName;
+        this.workHours = workHours;
+        this.bladeProject = BladeProject;
+
         //Fills up remaining list with false, if booleans.size() < 2(The expected size)
         if (booleans.size() < 2) {
             booleans.addAll(Collections.nCopies(2 - booleans.size(), false));

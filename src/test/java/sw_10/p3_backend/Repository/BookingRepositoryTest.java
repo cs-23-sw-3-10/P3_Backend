@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import sw_10.p3_backend.Model.*;
+
 import sw_10.p3_backend.TestP3BackendApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,6 +47,7 @@ class BookingRepositoryTest {
 
     @Test
     void testFindOverlappingEventsShouldReturnOverlappingBookings(){
+
         // Given
         Schedule schedule = new Schedule();
         schedule.setActive(false);
@@ -66,6 +68,7 @@ class BookingRepositoryTest {
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
 
+
         Booking booking1 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, bladeTask, e1.getType(), e1.getName());
         Booking booking2 = new Booking(LocalDate.of(2020,10,20), LocalDate.of(2020,10,30), e1, bladeTask, e1.getType(), e1.getName());
         Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,30), e2, bladeTask, e2.getType(), e2.getName());
@@ -76,9 +79,11 @@ class BookingRepositoryTest {
 
         System.out.println(test33);
         // Save bookings to the repository
+
         bookingRepository.save(booking1);
         bookingRepository.save(booking2);
         bookingRepository.save(booking3);
+
 
         // When
         // Check for overlapping events for same type
@@ -94,6 +99,7 @@ class BookingRepositoryTest {
 
         List<Booking> bookingsByTypeSawAndPeriod = bookingRepository.findByBladeTask(bladeTaskRepository.getBladeTaskById(1));
         assertThat(bookingsByTypeSawAndPeriod).hasSize(1);
+
     }
 
 
