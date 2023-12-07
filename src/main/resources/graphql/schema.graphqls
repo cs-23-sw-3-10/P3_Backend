@@ -32,6 +32,7 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+    BookingByBPId(id: ID!): [Booking]
     findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
 
     authenticate: String
@@ -131,6 +132,7 @@ type Booking {
     resourceType: String
     workHours: Int
     task: BladeTask
+    resourceName: String
     equipment: Equipment
     engineer: Engineer
     technician: Technician

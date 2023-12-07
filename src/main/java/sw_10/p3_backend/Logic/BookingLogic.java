@@ -273,4 +273,8 @@ public class BookingLogic {
             bookingRepository.save(booking);
         }
     }
+
+    public List<Booking> getBookingById(Long id){
+        return bookingRepository.findBookingsByBPId(id);
+    }
 }
