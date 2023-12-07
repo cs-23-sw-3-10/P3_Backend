@@ -39,13 +39,14 @@ type Query {
 }
 
 type Mutation{
-    createBladeProject(name: String, customer: String, projectLeader: String) :BladeProject
+    createBladeProject(name: String, customer: String, projectLeader: String, resourceOrders:[ResourceOrderInput]) :BladeProject
     deleteBladeProject(id:ID!):String
     updateBladeProject(bpId: Int, updates:BladeProjectInput):BladeProject
 
     createBladeTask(bladeTask:BladeTaskInput):BladeTask
     updateStartAndDurationBladeTask(id:ID!, startDate:String, duration:Int, testRig:Int):BladeTask
     updateBTInfo(updates:BladeTaskInput, btId:Int):BladeTask
+    deleteBladeTask(id:ID!):String
 
     CreateEngineer(name:String!, maxWorkHours:Int!):Engineer
     DeleteEngineer(name:String!):Engineer

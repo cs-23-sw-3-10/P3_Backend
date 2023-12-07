@@ -1,13 +1,18 @@
 package sw_10.p3_backend.Logic;
 
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeProjectInput;
+import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Schedule;
+import sw_10.p3_backend.Model.ResourceOrder;
+import sw_10.p3_backend.Model.ResourceOrderInput;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.ScheduleRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
+import sw_10.p3_backend.exception.NotFoundException;
 
 
 import java.time.LocalDate;
@@ -17,54 +22,59 @@ import java.util.Random;
 
 @Service
 public class BladeProjectLogic {
-
-
-    private final BladeProjectRepository BladeProjectRepository;
+    private final ResourceOrderLogic resourceOrderLogic;
+    private final BookingLogic bookingLogic;
+    private final BladeProjectRepository bladeProjectRepository;
     private final ScheduleRepository scheduleRepository;
 
-
-
-
-    public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ScheduleRepository scheduleRepository){
-        this.BladeProjectRepository = bladeProjectRepository;
+    public BladeProjectLogic(BladeProjectRepository bladeProjectRepository, ResourceOrderLogic resourceOrderLogic, BookingLogic bookingLogic, ScheduleRepository scheduleRepository){
+        this.bladeProjectRepository = bladeProjectRepository;
+        this.resourceOrderLogic = resourceOrderLogic;
+        this.bookingLogic = bookingLogic;
         this.scheduleRepository = scheduleRepository;
     }
 
-    public BladeProject createProject(String name, String customer, String projectLeader) {
-            Schedule schedule = scheduleRepository.findScheduleByIsActive(false);//Makes sure all new assigned projects are assigned to the draft schedule
+    public BladeProject createProject(String name, String customer, String projectLeader, List<ResourceOrderInput> resourceOrderInput) {
+            System.out.println("BP CREATION STARTED");
+            System.out.println(resourceOrderInput);
+            Schedule schedule = scheduleRepository.findScheduleByIsActive(false); //Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 
-            BladeProjectRepository.save(project);
-            List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
-            BladeProject.setBladeProjectList(bladeProjects);
+            List<ResourceOrder> resourceOrders = handleResourceOrders(resourceOrderInput, project);
+            for (ResourceOrder resourceOrder: resourceOrders) {
+                project.addResourceOrder(resourceOrder);
+            }
+
+            //Saves Blade Project in database
+            bladeProjectRepository.save(project);
+
             return project;
     }
+    private List<ResourceOrder> handleResourceOrders(List<ResourceOrderInput> resourceOrderInputs, BladeProject bladeProject) {
+        if (resourceOrderInputs != null) {
+            return resourceOrderLogic.createResourceOrdersBladeProject(resourceOrderInputs, bladeProject);
+        }
+        return null;
+    }
+
 
     public String deleteProject(Long id) {
-        BladeProject project = BladeProjectRepository.findById(id).orElseThrow(() -> new InputInvalidException("Project with id " + id + " not found"));
+        BladeProject project = bladeProjectRepository.findById(id).orElseThrow(() -> new InputInvalidException("Project with id " + id + " not found"));
         if(project.getBladeTasks().isEmpty()) {//makes sure the project has no tasks before deleting
-            BladeProjectRepository.deleteById(id);
+            bladeProjectRepository.deleteById(id);
             return "Project deleted";
         }
         else {
-            return "Project has tasks";//Create logic to delete tasks before deleting project
+            return "Project has tasks"; //Create logic to delete tasks before deleting project
         }
     }
 
     public List<BladeProject> findAll(){
-        List<BladeProject> bladeProjects = BladeProjectRepository.findAll();
-        BladeProject.setBladeProjectList(bladeProjects);
-        for (BladeProject bladeProject : bladeProjects) {
-            System.out.println(bladeProject.getBladeTasks().size());
-
-        }
-
-
-        return BladeProjectRepository.findAll();
+        return bladeProjectRepository.findAll();
     }
 
     public List<BladeProject> findAllBySchedule(boolean isActive){
-        return BladeProjectRepository.findAllBySchedule(isActive);
+        return bladeProjectRepository.findAllBySchedule(isActive);
     }
 
     private static String generateRandomColorHexCode() {
@@ -80,23 +90,37 @@ public class BladeProjectLogic {
     }
 
     public void updateStartAndEndDate(BladeProject bladeProject) {
-        //set bladeProject start and end date to the earliest and latest bladeTask start and end date
-        bladeProject.getBladeTasks().forEach(bladeTask -> {
+        //Set bladeProject start and end date to the earliest and latest bladeTask start and end date
+        List<BladeTask> bladeTasks = bladeProject.getBladeTasks();
+        LocalDate finalStartDate = null;
+        LocalDate finalEndDate = null;
+
+        for(BladeTask bladeTask : bladeTasks){
             if(bladeTask.getStartDate()!=null && bladeTask.getEndDate()!=null) {// Pending blade tasks does not contribute to project start- and end date
-                if (bladeProject.getStartDate() == null || bladeTask.getStartDate().isBefore(bladeProject.getStartDate())) {
-                    bladeProject.setStartDate(bladeTask.getStartDate());
+                if (finalStartDate == null || bladeTask.getStartDate().isBefore(finalStartDate)) {
+                    finalStartDate = bladeTask.getStartDate();
                 }
-                if (bladeProject.getEndDate() == null || bladeTask.getEndDate().isAfter(bladeProject.getEndDate())) {
-                    bladeProject.setEndDate(bladeTask.getEndDate());
+                if (finalEndDate == null || bladeTask.getEndDate().isAfter(finalEndDate)) {
+                    finalEndDate = bladeTask.getEndDate();
                 }
             }
-        });
+        };
 
-        BladeProjectRepository.save(bladeProject);
+        //Create bookings if there are existing resource orders and no bookings
+        if(!bladeProject.getResourceOrders().isEmpty() && bladeProject.getBookings().isEmpty()){
+            bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
+        }
+
+        if(bladeProject.getStartDate() == null || bladeProject.getEndDate() == null || finalStartDate != null && finalStartDate.isBefore(bladeProject.getStartDate()) || finalEndDate != null && finalEndDate.isAfter(bladeProject.getEndDate())) {
+            bookingLogic.updateBookings(bladeProject, finalStartDate, finalEndDate);
+        }
+
+
+        bladeProjectRepository.save(bladeProject);
     }
 
     public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {
-        BladeProject BPToUpdate = BladeProjectRepository.findById(bpId)
+        BladeProject BPToUpdate = bladeProjectRepository.findById(bpId)
                 .orElseThrow(() -> new InputInvalidException("Project with id " + updates.scheduleId() + " not found"));
 
         if (!BPToUpdate.getProjectName().equals(updates.projectName())){
@@ -109,13 +133,27 @@ public class BladeProjectLogic {
             BPToUpdate.setProjectLeader(updates.projectLeader());
         }
 
-        BladeProjectRepository.save(BPToUpdate);
+        bladeProjectRepository.save(BPToUpdate);
 
         return BPToUpdate;
     }
 
     public List<BladeProject> lookUpBladeData() {
-        return BladeProjectRepository.findAll();
+        return bladeProjectRepository.findAll();
+    }
+
+    public String deleteBladeProject(Long id){
+        BladeProject bladeProjectToDelete = bladeProjectRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + id));
+
+        if(bladeProjectToDelete.getBladeTasks().isEmpty()){
+            bladeProjectRepository.delete(bladeProjectToDelete);
+            return "BladeProject with id: " + bladeProjectToDelete.getId() + " has been deleted";
+        }else{
+
+            return "BladeProject with id: " + bladeProjectToDelete.getId() + " has bladetasks and can therefore not be deleted";
+        }
+
     }
 }
 

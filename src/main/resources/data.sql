@@ -239,7 +239,7 @@ insert into equipment (type, name, calibration_expiration_date) values ('adapter
 insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter b', 'exc-200', '2026-04-02 05:29:08');
 
 --blade project 1--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (2, '#77b280' , '2024-01-01', '2024-03-01', 'goldwind', 'curran chanter', 'gw-53');
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#77b280' , '2024-01-01', '2024-03-01', 'goldwind', 'curran chanter', 'gw-53', false);
 
 --blade task 1--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, '2024-01-01', 9, '2024-01-09', 'flapwise static proof', 4, 2, 'gw-53_bt-1', 1, 'false');
@@ -280,7 +280,7 @@ insert into booking (start_date, duration, end_date, resource_type, blade_task_i
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, null, 10, null, 'flapwise static proof', 4, 2, 'gw-53_bt-6', null,false);
 
 --blade project 2--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (2, '#acb277' ,'2024-01-07', '2024-03-28', 'suzlon', 'clyve birley', 'su-95');
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#acb277' ,'2024-01-07', '2024-03-28', 'suzlon', 'clyve birley', 'su-95', false);
 
 --blade task 7--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (2, '2024-01-07', 21, '2024-01-27', 'edgewise static proof', 5, 3, 'su-95_bt-1', 2, 'false');
@@ -310,7 +310,7 @@ insert into booking (start_date, duration, end_date, resource_type, blade_task_i
 
 
 --blade project 3--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name) values (2, '#b28c77' ,'2023-12-15', '2024-02-19', 'goldwind', 'ringo fernando', 'gw-102');
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#b28c77' ,'2023-12-15', '2024-02-19', 'goldwind', 'ringo fernando', 'gw-102', false);
 
 --blade task 11--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (3, '2023-12-15', 20, '2024-01-03', 'flapwise static proof', 4, 2, 'gw-102_bt-1', 4, 'false');

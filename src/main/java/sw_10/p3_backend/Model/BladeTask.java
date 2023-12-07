@@ -74,7 +74,7 @@ public class BladeTask implements Cloneable {
         this.testRig = testRig;
     }
 
-    public BladeProject getBladeProjectId() {
+    public BladeProject getBladeProject() {
         return bladeProject;
     }
 

@@ -80,13 +80,13 @@ public class BladeTaskLogic {
 
         LocalDate startDate = input.startDate();
         Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
+
         // Calculate the end date of the blade task
         LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
-        System.out.println(testRigValue);
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
@@ -117,9 +117,7 @@ public class BladeTaskLogic {
         if (testRigValue != 0 && resourceOrders != null) {
             bookingLogic.createBookings(resourceOrders, newBladeTask);
         }
-        bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProjectId());
-        // Return the new BladeTask
-
+        bladeProjectLogic.updateStartAndEndDate(newBladeTask.getBladeProject());
         bookingLogic.recalculateConflicts(newBladeTask);
 
         onDatabaseUpdate();
@@ -133,7 +131,7 @@ public class BladeTaskLogic {
 
     private List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
         if (input.resourceOrders() != null) {
-            return resourceOrderLogic.createResourceOrders(input.resourceOrders(), newBladeTask);
+            return resourceOrderLogic.createResourceOrdersBladeTask(input.resourceOrders(), newBladeTask);
         }
         return null;
     }
@@ -258,7 +256,7 @@ public class BladeTaskLogic {
         }
 
         //Checks if the start date and end date of the bladeproject should change and then saves the bladetask
-        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
         bladeTaskRepository.save(bladeTaskToUpdate);
         System.out.println(testRigValue);
 
@@ -305,10 +303,10 @@ public class BladeTaskLogic {
         bladeTaskToUpdate.setTestType(updates.testType());
 
         resourceOrderLogic.removeResourceOrders(bladeTaskToUpdate);
-        resourceOrderLogic.createResourceOrders(updates.resourceOrders(), bladeTaskToUpdate);
+        resourceOrderLogic.createResourceOrdersBladeTask(updates.resourceOrders(), bladeTaskToUpdate);
 
         bladeTaskRepository.save(bladeTaskToUpdate);
-        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProjectId());
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
 
         bladeTaskToUpdate = updateStartAndDurationBladeTask((long) bladeTaskToUpdate.getId(), bladeTaskToUpdate.getStartDate().toString(),bladeTaskToUpdate.getDuration(), bladeTaskToUpdate.getTestRig() );
 
@@ -401,10 +399,6 @@ public class BladeTaskLogic {
         return bladeTasks;
     }
 
-    public void addRelatedConflict(BladeTask bladeTask, Conflict conflict) {
-        bladeTask.addRelatedConflict(conflict);
-        bladeTaskRepository.save(bladeTask);
-    }
 
     private boolean checkForBTOverlap(LocalDate startDate, LocalDate endDate, BladeTask checkBladeTask) {
 
@@ -428,6 +422,41 @@ public class BladeTaskLogic {
         }
 
         return false;
+    }
+
+    public void deleteBladeTask(Long id){
+        BladeTask bladeTaskToDelete = bladeTaskRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
+
+        //Remove old bookings
+        bookingLogic.removeBookings(bladeTaskToDelete);
+        System.out.println("Bookings deleted");
+
+        //Finding all the related conflicts
+        Set<Conflict> relatedConflicts = bladeTaskToDelete.getRelatedConflicts();
+        Set<BladeTask> relatedBladeTasks = new HashSet<>();
+        System.out.println("Lists created");
+
+        //Removes the old relations on the bladetask that is being updated. This makes it possible to save the bladetask later
+        bookingLogic.resetRelatedConflicts(bladeTaskToDelete);
+        System.out.println("Related conflicts reset");
+
+        //run through all the related conflicts to find the related bladetasks
+        for (Conflict relatedConflict : relatedConflicts) {
+            Booking tempBooking = relatedConflict.fetchBooking();
+            relatedBladeTasks.add(tempBooking.fetchBladeTask());
+        }
+
+        //Deletes and recreates all the bookings on the related bladetasks
+        for (BladeTask relatedBladeTask : relatedBladeTasks) {
+            BladeTask tempBladeTask = bookingLogic.deleteAndRecreateBookings(relatedBladeTask);
+            bladeTaskRepository.save(tempBladeTask);
+        }
+        bookingLogic.recalculateConflicts(bladeTaskToDelete);
+
+        bladeTaskRepository.delete(bladeTaskToDelete);
+        onDatabaseUpdate();
+
     }
 
 }
