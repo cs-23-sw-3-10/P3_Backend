@@ -39,7 +39,10 @@ public class Booking implements Cloneable {
     @JoinColumn(name = "equipmentId")
     @Getter(AccessLevel.NONE) private Equipment equipment;
 
-    //Blade Task - Equipment Booking
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @Getter(AccessLevel.NONE) private Conflict conflict;
+
+
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -122,9 +125,11 @@ public class Booking implements Cloneable {
 
         // Reset the ID to indicate a new entity
         cloned.id = 0;
-        System.out.println("clone bladeTask in bookings" + cloned.getId());
         // Deep clone bladeTasks
         //cloned.bladeTask = this.bladeTask.clone();
+        if(this.conflict != null){
+            cloned.conflict = this.conflict.clone(cloned);
+        }
 
         return cloned;
     }

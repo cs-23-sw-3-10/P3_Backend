@@ -23,11 +23,14 @@ public class Schedule implements Cloneable {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<BladeProject> bladeProject = new ArrayList<>();
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
+
+    public Object clone(boolean isActive) throws CloneNotSupportedException {
         Schedule clonedSchedule = (Schedule) super.clone();
 
-        clonedSchedule.id = 1;
+        if(isActive)
+            clonedSchedule.id = 1;
+        else
+            clonedSchedule.id = 2;
         // Deep clone bladeProjects
         clonedSchedule.bladeProject = new ArrayList<>();
         for (BladeProject bp : this.bladeProject) {

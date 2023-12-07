@@ -61,12 +61,22 @@ public class Conflict implements Cloneable{
         setRelatedBladeTasks(hashedBladeTasks);
     }
 
-    @Override
-    public Conflict clone() throws CloneNotSupportedException {
+
+    public Conflict clone(Booking clonedbooking) throws CloneNotSupportedException {
         Conflict cloned = (Conflict) super.clone();
 
         // Reset the ID to indicate a new entity
         cloned.id = 0;
+
+        cloned.booking = clonedbooking;
+
+        cloned.relatedBladeTasks= Sets.newHashSet();
+
+
+        // Deep clone relatedBladeTasks
+        //cloned.relatedBladeTasks = Sets.newHashSet();
+
+
         return cloned;
     }
 

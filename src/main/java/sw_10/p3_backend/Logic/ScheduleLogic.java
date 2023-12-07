@@ -12,10 +12,12 @@ import java.util.Optional;
 @Service
 public class ScheduleLogic {
     private final ScheduleRepository scheduleRepository;
+    private final BladeTaskLogic bladeTaskLogic;
 
 
-    ScheduleLogic(ScheduleRepository scheduleRepository){
+    ScheduleLogic(ScheduleRepository scheduleRepository , BladeTaskLogic bladeTaskLogic){
         this.scheduleRepository = scheduleRepository;
+        this.bladeTaskLogic = bladeTaskLogic;
 
     }
 
@@ -49,16 +51,22 @@ public class ScheduleLogic {
 
 
         //clone active schedule
-        Schedule newViewSchedule = (Schedule) CurrentEditschedule.clone();
+        Schedule newViewSchedule = (Schedule) CurrentEditschedule.clone(true);
 
         //set the new schedule to viewable (not active)
         newViewSchedule.setActive(true);
 
         //TODO: Not secure. If something goes wrong is the old schedule lost and the new one is not saved.
         //save the new schedule (will be the new view only schedule) and delete the old one.
-        scheduleRepository.delete(CurrentViewSchedule);
+        System.out.println(CurrentViewSchedule);
+        if(CurrentViewSchedule != null) {
+            scheduleRepository.delete(CurrentViewSchedule);
+            System.out.println("Deleted");
+        }
+
         scheduleRepository.save(newViewSchedule);
 
+        bladeTaskLogic.onDatabaseUpdate();
         return newViewSchedule;
 
     }
@@ -68,5 +76,29 @@ public class ScheduleLogic {
         System.out.println("deleteSchedule");
         scheduleRepository.deleteById(Long.valueOf(id));
         return schedule;
+    }
+
+    public Schedule discardEditChanges()  throws CloneNotSupportedException {
+
+        //Find editable schedule (active)
+        Schedule CurrentEditschedule = scheduleRepository.findScheduleByIsActive(false);
+        Schedule CurrentViewSchedule = scheduleRepository.findScheduleByIsActive(true);
+
+        //delete editable schedule
+        scheduleRepository.delete(CurrentEditschedule);
+
+        //set the viewable schedule to editable
+        Schedule newEditSchedule = (Schedule) CurrentViewSchedule.clone(false);
+
+        newEditSchedule.setActive(false);
+
+        //save the new schedule (will be the new view only schedule) and delete the old one.
+        scheduleRepository.save(newEditSchedule);
+
+        cloneScheduleAndReplace();
+
+
+
+        return newEditSchedule;
     }
 }
