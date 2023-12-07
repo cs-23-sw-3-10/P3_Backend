@@ -36,7 +36,7 @@ public class ResourceOrder implements Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "bladeTaskId")
-    @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
+    BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
 
     public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
