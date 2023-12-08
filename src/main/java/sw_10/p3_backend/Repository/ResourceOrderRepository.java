@@ -15,6 +15,6 @@ public interface ResourceOrderRepository extends JpaRepository<ResourceOrder,Lon
     List<ResourceOrder> findAllByResourceName(String resourceName);
     List<ResourceOrder> findByBladeTask(BladeTask bladeTaskToUpdate);
 
-    @Query("SELECT r FROM ResourceOrder r WHERE r.bladeProject.id = :id")
+    @Query("SELECT r FROM ResourceOrder r WHERE r.bladeProject.id = :id AND r.bladeProject.schedule.isActive = false")
     List<ResourceOrder> findResourceOrderByBpId(Long id);
 }

@@ -132,9 +132,9 @@ public class BladeProjectLogic {
         BPToUpdate.setProjectLeader(updates.projectLeader());
 
         resourceOrderLogic.removeResourceOrdersBladeProject(BPId);
+        bookingLogic.removeBookingsBladeProject(BPId);
         if(updates.resourceOrders() != null){
             BPToUpdate.setResourceOrders(resourceOrderLogic.createResourceOrdersBladeProject(updates.resourceOrders(), BPToUpdate));
-            bookingLogic.removeBookingsBladeProject(BPId);
             bookingLogic.createBookings(BPToUpdate.getResourceOrders(), BPToUpdate);
         }else BPToUpdate.setResourceOrders(new ArrayList<>());
 

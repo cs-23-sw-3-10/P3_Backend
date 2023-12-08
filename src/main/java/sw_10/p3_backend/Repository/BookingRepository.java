@@ -27,6 +27,6 @@ public interface BookingRepository extends JpaRepository<Booking,Long> {
         @Query("SELECT b FROM Booking b WHERE b.startDate < :end AND b.endDate > :start AND b.resourceType = 'Equipment' AND b.bladeTask.bladeProject.schedule.isActive = false")
         List<Booking> findAllByPeriod(LocalDate start, LocalDate end);
 
-        @Query("SELECT b FROM Booking b WHERE b.bladeProject.id = :id")
+        @Query("SELECT b FROM Booking b WHERE b.bladeProject.id = :id AND b.bladeProject.schedule.isActive = false")
         List<Booking> findBookingsByBPId(Long id);
 }
