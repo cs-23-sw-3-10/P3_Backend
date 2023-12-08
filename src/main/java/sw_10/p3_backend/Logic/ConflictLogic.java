@@ -41,14 +41,16 @@ public class ConflictLogic {
         return conflictRepository.findAll();
     }
 
-    public void createConflict(Booking booking, BladeTask bladeTask) {
+    public Conflict createConflict(Booking booking, BladeTask bladeTask) {
         System.out.println("Getting related bladetasks");
 
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
         Set<BladeTask> hashedBladeTasks = Sets.newHashSet(relatedBladeTasks);
 
         Conflict conflict = new Conflict(booking, bladeTask, hashedBladeTasks);
-        conflictRepository.save(conflict);
+        //conflictRepository.save(conflict);
+
+        return conflict;
     }
 
     //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)

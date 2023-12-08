@@ -120,7 +120,13 @@ public class BookingLogic {
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, bladeTask ,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
 
-            conflictHandler(newBooking, bladeTask);
+            //conflictHandler(newBooking, bladeTask);
+
+            newBooking.setConflict(conflictHandler(newBooking, bladeTask));
+
+            bookingRepository.save(newBooking);
+
+
             return 1;
         }
     }
@@ -217,11 +223,12 @@ public class BookingLogic {
             return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
         }
     }
-    private void conflictHandler(Booking booking, BladeTask bladeTask){
+    private Conflict conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
         System.out.println("Creating Conflict");
-        conflictLogic.createConflict(booking, bladeTask);
+        Conflict conflict = conflictLogic.createConflict(booking, bladeTask);
         bladeTask.setInConflict(true);
+        return conflict;
     }
 
     private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {

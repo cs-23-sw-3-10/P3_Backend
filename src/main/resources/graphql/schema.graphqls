@@ -14,7 +14,7 @@ type Query {
     AllSchedules: [Schedule]
     ScheduleById(id:ID!):Schedule
     DeleteSchedule(id:ID!):Schedule
-    cloneScheduleAndReplace:Schedule
+
 
     AllEngineers: [Engineer]
     EngineerById(id:ID!):Engineer
@@ -59,6 +59,9 @@ type Mutation{
 
     CreateTechnician(type:String!, maxWorkHours:Int!, count:Int!):Technician
     DeleteTechnician(type:String!):Technician
+
+    cloneScheduleAndReplace:Schedule
+    discardEditChanges:Schedule
 }
 
 type AuthData {
@@ -138,6 +141,7 @@ type Booking {
     equipment: Equipment
     engineer: Engineer
     technician: Technician
+    conflict: Conflict
 }
 
 type Engineer {
