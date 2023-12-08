@@ -40,8 +40,10 @@ insert into technician (type, work_hours, max_work_hours, count) values ('electr
 
 
 
-insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-185', '2024-01-03 17:42:24');
-insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-186', '2024-01-03 17:42:24');
+insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-a-185', '2024-01-03 17:42:24');
+insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-a-186', '2024-01-03 17:42:24');
+insert into equipment (type, name, calibration_expiration_date) values ('stabilizer b', 'sta-b-187', '2024-01-03 17:42:24');
+insert into equipment (type, name, calibration_expiration_date) values ('stabilizer b', 'sta-b-188', '2024-01-03 17:42:24');
 insert into equipment (type, name, calibration_expiration_date) values ('adapter a', 'ada-184', '2023-08-26 13:40:29');
 insert into equipment (type, name, calibration_expiration_date) values ('adapter a', 'ada-185', '2023-08-26 13:40:29');
 insert into equipment (type, name, calibration_expiration_date) values ('adapter b', 'ada-186', '2022-11-23 05:54:57');
@@ -150,15 +152,15 @@ insert into blade_project (schedule_id,color, start_date, end_date, customer, pr
 
 --Edit--
 --blade project 1--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#77b280' , '2024-12-30', '2024-03-01', 'goldwind', 'curran chanter', 'gw-53', false);
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#77b280' , '2023-12-30', '2024-03-01', 'goldwind', 'curran chanter', 'gw-53', false);
 --blade task 5--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (4, '2023-12-30', 12, '2024-01-10', 'flapwise static proof', 4, 2, 'gw-53_bt-1', 2, 'false');
-insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2023-12-30', '12', '2024-01-10', 'equipment', 5, null, null, 1, 0, 'stabilizer a');
-insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2023-12-30', '12', '2024-01-10', 'technician', 5, null, 1, null, 10, 'smith');
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2023-12-30', '12', '2024-01-10', 'Equipment', 5,  null, null, 1, 0, 'Stabilizer A');
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2023-12-30', '12', '2024-01-10', 'technician', 5 ,null, 1, null, 10, 'smith');
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2023-12-30', '12', '2024-01-10', 'technician', 5, null, 2, null, 10, 'electrician');
 insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2023-12-30', '12', '2024-01-10', 'engineer', 5, 1, null, null, 20, 'rodney serle');
 
-insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 5, 0, 'stabilizer a', 'equipment' );
+insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 5, 0, 'stabilizer a', 'Equipment' );
 insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 5, 10, 'smith', 'technician' );
 insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 5, 10, 'electrician', 'technician' );
 insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 5, 20, 'rodney serle', 'engineer' );
