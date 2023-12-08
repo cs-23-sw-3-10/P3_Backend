@@ -39,20 +39,21 @@ insert into technician (type, work_hours, max_work_hours, count) values ('electr
 
 
 
+
 insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-185', '2024-01-03 17:42:24');
-insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-185', '2024-01-03 17:42:24');
+insert into equipment (type, name, calibration_expiration_date) values ('stabilizer a', 'sta-186', '2024-01-03 17:42:24');
 insert into equipment (type, name, calibration_expiration_date) values ('adapter a', 'ada-184', '2023-08-26 13:40:29');
-insert into equipment (type, name, calibration_expiration_date) values ('adapter a', 'ada-184', '2023-08-26 13:40:29');
-insert into equipment (type, name, calibration_expiration_date) values ('adapter b', 'ada-183', '2022-11-23 05:54:57');
-insert into equipment (type, name, calibration_expiration_date) values ('adapter b', 'ada-183', '2022-11-23 05:54:57');
+insert into equipment (type, name, calibration_expiration_date) values ('adapter a', 'ada-185', '2023-08-26 13:40:29');
+insert into equipment (type, name, calibration_expiration_date) values ('adapter b', 'ada-186', '2022-11-23 05:54:57');
+insert into equipment (type, name, calibration_expiration_date) values ('adapter b', 'ada-187', '2022-11-23 05:54:57');
 insert into equipment (type, name, calibration_expiration_date) values ('single axis exciter a', 'exc-187', '2023-11-02 09:17:02');
-insert into equipment (type, name, calibration_expiration_date) values ('single axis exciter a', 'exc-187', '2023-11-02 09:17:02');
+insert into equipment (type, name, calibration_expiration_date) values ('single axis exciter a', 'exc-188', '2023-11-02 09:17:02');
 insert into equipment (type, name, calibration_expiration_date) values ('single axis exciter b', 'exc-191', '2026-08-17 09:14:04');
-insert into equipment (type, name, calibration_expiration_date) values ('single axis exciter b', 'exc-191', '2026-08-17 09:14:04');
+insert into equipment (type, name, calibration_expiration_date) values ('single axis exciter b', 'exc-192', '2026-08-17 09:14:04');
 insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter a', 'exc-195', '2025-11-04 07:28:48');
-insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter a', 'exc-195', '2025-11-04 07:28:48');
+insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter a', 'exc-196', '2025-11-04 07:28:48');
 insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter b', 'exc-197', '2023-01-21 03:32:49');
-insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter b', 'exc-197', '2023-01-21 03:32:49');
+insert into equipment (type, name, calibration_expiration_date) values ('dual axis exciter b', 'exc-198', '2023-01-21 03:32:49');
 insert into equipment (type, name, calibration_expiration_date) values ('infrared camera', 'irc-157', '2026-01-29 04:24:00');
 
 
@@ -89,7 +90,8 @@ insert into booking (start_date, duration, end_date, resource_type, blade_task_i
 
 
 
-
+--blade project 3--
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (1, '#b28c77' ,'2023-12-15', '2024-02-19', 'goldwind', 'ringo fernando', 'gw-102', false);
 
 
 
