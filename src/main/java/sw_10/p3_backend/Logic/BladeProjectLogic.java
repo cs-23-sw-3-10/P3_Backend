@@ -114,9 +114,9 @@ public class BladeProjectLogic {
             bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
         }
 
-        if(bladeProject.getStartDate() == null || bladeProject.getEndDate() == null || finalStartDate != null && finalStartDate.isBefore(bladeProject.getStartDate()) || finalEndDate != null && finalEndDate.isAfter(bladeProject.getEndDate())) {
+
             bookingLogic.updateBookings(bladeProject, finalStartDate, finalEndDate);
-        }
+
 
 
 
