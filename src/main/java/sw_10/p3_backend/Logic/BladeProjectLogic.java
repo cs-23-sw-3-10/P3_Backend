@@ -16,6 +16,7 @@ import sw_10.p3_backend.exception.NotFoundException;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -114,34 +115,33 @@ public class BladeProjectLogic {
             bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
         }
 
-        if(bladeProject.getStartDate() == null || bladeProject.getEndDate() == null || finalStartDate != null && finalStartDate.isBefore(bladeProject.getStartDate()) || finalEndDate != null && finalEndDate.isAfter(bladeProject.getEndDate())) {
+
             bookingLogic.updateBookings(bladeProject, finalStartDate, finalEndDate);
-        }
+
 
 
 
         bladeProjectRepository.save(bladeProject);
     }
 
-    public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {
-        BladeProject BPToUpdate = bladeProjectRepository.findById(bpId)
+    public BladeProject updateBladeProject(Long BPId, BladeProjectInput updates) {
+        BladeProject BPToUpdate = bladeProjectRepository.findById(BPId)
                 .orElseThrow(() -> new InputInvalidException("Project with id " + updates.scheduleId() + " not found"));
+        BPToUpdate.setProjectName(updates.projectName());
+        BPToUpdate.setCustomer(updates.customer());
+        BPToUpdate.setProjectLeader(updates.projectLeader());
 
-        if (!BPToUpdate.getProjectName().equals(updates.projectName())){
-            BPToUpdate.setProjectName(updates.projectName());
-        }
-        if (!BPToUpdate.getCustomer().equals(updates.customer())){
-            BPToUpdate.setCustomer(updates.customer());
-        }
-        if (!BPToUpdate.getProjectLeader().equals(updates.projectLeader())){
-            BPToUpdate.setProjectLeader(updates.projectLeader());
-        }
+        resourceOrderLogic.removeResourceOrdersBladeProject(BPId);
+        bookingLogic.removeBookingsBladeProject(BPId);
+        if(updates.resourceOrders() != null){
+            BPToUpdate.setResourceOrders(resourceOrderLogic.createResourceOrdersBladeProject(updates.resourceOrders(), BPToUpdate));
+            bookingLogic.createBookings(BPToUpdate.getResourceOrders(), BPToUpdate);
+        }else BPToUpdate.setResourceOrders(new ArrayList<>());
 
         bladeProjectRepository.save(BPToUpdate);
 
         return BPToUpdate;
     }
-
     public List<BladeProject> lookUpBladeData() {
         return bladeProjectRepository.findAll();
     }

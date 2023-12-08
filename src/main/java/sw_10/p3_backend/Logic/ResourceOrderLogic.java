@@ -5,7 +5,6 @@ import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.ResourceOrder;
 import sw_10.p3_backend.Model.ResourceOrderInput;
-import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.ResourceOrderRepository;
 
 import java.util.ArrayList;
@@ -71,12 +70,24 @@ public class ResourceOrderLogic {
         return resourceOrderRepository.findAllByResourceName(resourceOrder);
     }
 
-    public void removeResourceOrders(BladeTask bladeTaskToUpdate) {
+    public void removeResourceOrdersBladeTask(BladeTask bladeTaskToUpdate) {
         //Finds the bladetasks resourceorders
         List<ResourceOrder> resourceOrders = resourceOrderRepository.findByBladeTask(bladeTaskToUpdate);
 
-        //Deletes the resourceorders
+        //Deletes the resource orders
         resourceOrderRepository.deleteAll(resourceOrders);
+    }
+
+    public void removeResourceOrdersBladeProject(Long BPId) {
+        //Finds Blade Project resource orders
+        List<ResourceOrder> resourceOrders = resourceOrderRepository.findResourceOrderByBpId(BPId);
+
+        //Deletes the resource orders
+        resourceOrderRepository.deleteAll(resourceOrders);
+    }
+
+    public List<ResourceOrder> findResourceOrderByBpId(Long id){
+        return resourceOrderRepository.findResourceOrderByBpId(id);
     }
 }
 

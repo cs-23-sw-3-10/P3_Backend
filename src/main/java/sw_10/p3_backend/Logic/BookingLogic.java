@@ -1,11 +1,9 @@
 package sw_10.p3_backend.Logic;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BookingRepository;
-import sw_10.p3_backend.Repository.ConflictRepository;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -236,7 +234,7 @@ public class BookingLogic {
         //bookingRepository.save(newBooking);
     }
 
-    public void removeBookings(BladeTask bladeTaskToUpdate) {
+    public void removeBookingsBladeTask(BladeTask bladeTaskToUpdate) {
         //Finds the bladetasks bookings
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
         System.out.println(bookings);
@@ -245,11 +243,16 @@ public class BookingLogic {
         bookingRepository.deleteAll(bookings);
     }
 
+    public void removeBookingsBladeProject(Long BPId) {
+        //Finds the Blade Project
+        List<Booking> bookings = bookingRepository.findBookingsByBPId(BPId);
 
-
+        //Deletes the bookings and their conflicts
+        bookingRepository.deleteAll(bookings);
+    }
     public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
         //Deletes bookings on a bladetask and then recreates them
-        removeBookings(bladeTask);
+        removeBookingsBladeTask(bladeTask);
         createBookings(bladeTask.getResourceOrders(), bladeTask);
         return bladeTask;
     }
@@ -279,5 +282,9 @@ public class BookingLogic {
             booking.setEndDate(endDate);
             bookingRepository.save(booking);
         }
+    }
+
+    public List<Booking> getBookingById(Long id){
+        return bookingRepository.findBookingsByBPId(id);
     }
 }
