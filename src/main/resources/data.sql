@@ -62,7 +62,7 @@ insert into equipment (type, name, calibration_expiration_date) values ('infrare
 
 --View --
 --blade project 1--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (1, '#77b280' , '2023-12-30', '2024-03-01', 'goldwind', 'curran chanter', 'gw-53', false);
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (1, '#77b280' , '2023-12-30', '2024-01-20', 'goldwind', 'curran chanter', 'gw-53', false);
 
 --blade task 1--
 insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, '2023-12-30', 12, '2024-01-10', 'flapwise static proof', 4, 2, 'gw-53_bt-1', 2, 'false');
@@ -86,10 +86,10 @@ insert into resource_order_equipment_assignment_status(equipment_assignment_stat
 insert into resource_order_equipment_assignment_status(equipment_assignment_status, resource_order_id) values (true, 4);
 
 --blade task 2--
-insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, '2024-01-11', 11, '2024-01-20', 'edgewise static proof', 4, 2, 'gw-53_bt-2', 2, 'false');
-insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-01-11', '11', '2024-01-20', 'equipment', 2, null, null, 11, 0, 'single axis exciter b');
-insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-01-11', '11', '2024-01-20', 'technician', 2, null, 2, null, 10, 'electrician');
-insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-01-11', '11', '2024-01-20', 'engineer', 2, 2, null, null, 20, 'garvey hush');
+insert into blade_task (blade_project_id, start_date, duration, end_date, test_type, attach_period, detach_period, task_name, test_rig, in_conflict) values (1, '2024-01-11', 10, '2024-01-20', 'edgewise static proof', 4, 2, 'gw-53_bt-2', 2, 'false');
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-01-11', '10', '2024-01-20', 'equipment', 2, null, null, 11, 0, 'single axis exciter b');
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-01-11', '10', '2024-01-20', 'technician', 2, null, 2, null, 10, 'electrician');
+insert into booking (start_date, duration, end_date, resource_type, blade_task_id, engineer_id, technician_id, equipment_id, work_hours, resource_name) values ('2024-01-11', '10', '2024-01-20', 'engineer', 2, 2, null, null, 20, 'garvey hush');
 
 insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 2, 0, 'single axis exciter b', 'equipment' );
 insert into resource_order( blade_task_id, work_hours, resource_name, resource_type) values ( 2, 10, 'electrician', 'technician' );
