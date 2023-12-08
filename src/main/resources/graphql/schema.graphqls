@@ -35,6 +35,8 @@ type Query {
     BookingByBPId(id: ID!): [Booking]
     findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
 
+    ResourceOrderByBPId(id: ID!): [ResourceOrder]
+
     authenticate: String
 
 }

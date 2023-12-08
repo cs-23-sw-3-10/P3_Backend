@@ -78,5 +78,8 @@ public class ResourceOrderLogic {
         //Deletes the resourceorders
         resourceOrderRepository.deleteAll(resourceOrders);
     }
+    public List<ResourceOrder> findResourceOrderByBpId(Long id){
+        return resourceOrderRepository.findResourceOrderByBpId(id);
+    }
 }
 
