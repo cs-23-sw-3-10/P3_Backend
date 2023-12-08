@@ -184,6 +184,7 @@ input BladeProjectInput {
     customer: String
     projectLeader: String
     projectName: String
+    resourceOrders: [ResourceOrderInput]
 }
 
 input BladeTaskInput {

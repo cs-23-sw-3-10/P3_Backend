@@ -10,7 +10,6 @@ import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
-import sw_10.p3_backend.Repository.ConflictRepository;
 import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
@@ -198,7 +197,7 @@ public class BladeTaskLogic {
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
         //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToUpdate);
+        bookingLogic.removeBookingsBladeTask(bladeTaskToUpdate);
         System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
@@ -303,7 +302,7 @@ public class BladeTaskLogic {
         bladeTaskToUpdate.setTaskName(updates.taskName());
         bladeTaskToUpdate.setTestType(updates.testType());
 
-        resourceOrderLogic.removeResourceOrders(bladeTaskToUpdate);
+        resourceOrderLogic.removeResourceOrdersBladeTask(bladeTaskToUpdate);
         resourceOrderLogic.createResourceOrdersBladeTask(updates.resourceOrders(), bladeTaskToUpdate);
 
         bladeTaskRepository.save(bladeTaskToUpdate);
@@ -430,7 +429,7 @@ public class BladeTaskLogic {
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
         //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToDelete);
+        bookingLogic.removeBookingsBladeTask(bladeTaskToDelete);
         System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
