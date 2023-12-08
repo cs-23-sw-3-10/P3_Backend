@@ -13,11 +13,13 @@ import java.util.List;
 @Controller
 public class  BookingController {
 
-    @Autowired
-    BookingRepository bookingRepository;
-    @Autowired
-    BookingLogic bookingLogic;
+    private final BookingRepository bookingRepository;
+    private final BookingLogic bookingLogic;
 
+    public BookingController(BookingRepository bookingRepository, BookingLogic bookingLogic){
+        this.bookingRepository = bookingRepository;
+        this.bookingLogic = bookingLogic;
+    }
     @QueryMapping
     public List<Booking> getAllBookings(){
         return bookingRepository.findAll();
