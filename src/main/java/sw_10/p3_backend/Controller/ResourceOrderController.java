@@ -12,8 +12,12 @@ import sw_10.p3_backend.Model.ResourceOrder;
 import java.util.List;
 @Controller
 public class ResourceOrderController {
-    @Autowired
-    ResourceOrderLogic resourceOrderLogic;
+
+    public final ResourceOrderLogic resourceOrderLogic;
+
+    public ResourceOrderController(ResourceOrderLogic resourceOrderLogic){
+        this.resourceOrderLogic = resourceOrderLogic;
+    }
     @QueryMapping
     public List<ResourceOrder> ResourceOrderByBPId(@Argument Long id){return resourceOrderLogic.findResourceOrderByBpId(id);}
 }

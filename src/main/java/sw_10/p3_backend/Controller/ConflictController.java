@@ -16,11 +16,11 @@ public class ConflictController {
 
     private final ConflictRepository conflictRepository;
 
-    @Autowired
-    private ConflictLogic conflictlogic;
+    private final ConflictLogic conflictlogic;
 
-    public ConflictController(ConflictRepository conflictRepository){
+    public ConflictController(ConflictRepository conflictRepository, ConflictLogic conflictLogic){
         this.conflictRepository = conflictRepository;
+        this.conflictlogic = conflictLogic;
     }
     @QueryMapping
     public List<Conflict> AllConflicts(){
