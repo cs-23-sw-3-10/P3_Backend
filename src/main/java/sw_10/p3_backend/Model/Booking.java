@@ -46,8 +46,8 @@ public class Booking implements Cloneable {
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.resourceType = resourceType;
-        this.resourceName = resourceName;
+        this.resourceType = resourceType.toLowerCase();
+        this.resourceName = resourceName.toLowerCase();
         this.equipment = equipment;
         this.bladeTask = bladeTask;
     }
@@ -56,22 +56,22 @@ public class Booking implements Cloneable {
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
-        this.resourceType = resourceType;
+        this.resourceType = resourceType.toLowerCase();
         this.technician = technician;
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
-        this.resourceName = resourceName;
+        this.resourceName = resourceName.toLowerCase();
     }
 
     //Blade Task - Engineer Booking
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
-        this.resourceType = resourceType;
+        this.resourceType = resourceType.toLowerCase();
         this.engineer = engineer;
         this.bladeTask = bladeTask;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
-        this.resourceName = resourceName;
+        this.resourceName = resourceName.toLowerCase();
     }
 
     //Blade Task - Empty Booking
@@ -79,17 +79,17 @@ public class Booking implements Cloneable {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
         this.bladeTask = bladeTask;
-        this.resourceType = resourceType;
+        this.resourceType = resourceType.toLowerCase();
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
-        this.resourceName = resourceName;
+        this.resourceName = resourceName.toLowerCase();
     }
 
     //Blade Project - Equipment Booking
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeProject bladeProject, String resourceType, String resourceName) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.resourceType = resourceType;
-        this.resourceName = resourceName;
+        this.resourceType = resourceType.toLowerCase();
+        this.resourceName = resourceName.toLowerCase();
         this.equipment = equipment;
         this.bladeProject = bladeProject;
     }
@@ -98,11 +98,11 @@ public class Booking implements Cloneable {
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeProject bladeProject, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
-        this.resourceType = resourceType;
+        this.resourceType = resourceType.toLowerCase();
         this.engineer = engineer;
         this.bladeProject = bladeProject;
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
-        this.resourceName = resourceName;
+        this.resourceName = resourceName.toLowerCase();
     }
 
     //Blade Project - Empty Booking
@@ -110,9 +110,9 @@ public class Booking implements Cloneable {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
         this.bladeProject = bladeProject;
-        this.resourceType = resourceType;
+        this.resourceType = resourceType.toLowerCase();
         this.duration = (int) ChronoUnit.DAYS.between(bookingStartDate, bookingEndDate);
-        this.resourceName = resourceName;
+        this.resourceName = resourceName.toLowerCase();
     }
 
     public BladeTask fetchBladeTask(){
