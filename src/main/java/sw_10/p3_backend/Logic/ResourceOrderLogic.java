@@ -31,7 +31,7 @@ public class ResourceOrderLogic {
             }
 
             //Create new resourceOrder
-            ResourceOrder newResourceOrder = new ResourceOrder(resourceOrder.resourceType().toLowerCase(), resourceOrder.resourceName().toLowerCase(),
+            ResourceOrder newResourceOrder = new ResourceOrder(resourceOrder.resourceType(), resourceOrder.resourceName(),
                     resourceOrder.equipmentAssignmentStatus(), workHours, bladeTask);
             bladeTask.addResourceOrder(newResourceOrder);
 
