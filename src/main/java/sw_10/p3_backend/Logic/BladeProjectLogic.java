@@ -78,18 +78,30 @@ public class BladeProjectLogic {
         return bladeProjectRepository.findAllBySchedule(isActive);
     }
 
+    //TODO: temp solution, should be handled by frontend with a color picker
     private static String generateRandomColorHexCode() {
         Random random = new Random();
 
-        // Generate random RGB values
-        int red = random.nextInt(256);   // 0-255
-        int green = random.nextInt(256); // 0-255
-        int blue = random.nextInt(256);  // 0-255
+        int red, green, blue;
+        do {
+            // Generate random RGB values
+            red = random.nextInt(256);   // 0-255
+            green = random.nextInt(256); // 0-255
+            blue = random.nextInt(256);  // 0-255
+        } while (!isLightColor(red, green, blue));
 
         // Convert to hexadecimal
         return String.format("#%02X%02X%02X", red, green, blue);
     }
 
+    // Ensure that the color is light enough to be readable on a white background and that black text will not be unreadable
+    private static boolean isLightColor(int red, int green, int blue) {
+        // Calculate luminance
+        double luminance = 0.299 * red + 0.587 * green + 0.114 * blue;
+        // A threshold value, above which the color can be considered light
+        // 128 is a middle value for an 8-bit color component, adjust as needed
+        return luminance > 128;
+    }
     public void updateStartAndEndDate(BladeProject bladeProject) {
         //Set bladeProject start and end date to the earliest and latest bladeTask start and end date
         List<BladeTask> bladeTasks = bladeProject.getBladeTasks();
