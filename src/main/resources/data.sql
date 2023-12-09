@@ -9,15 +9,6 @@ VALUES ('testType', 'Flapwise Static Proof'),
        ('testType', 'Post Fatigue Static'),
        ('testType', 'Flapwise Fatigue'),
        ('testType', 'Edgewise Fatigue'),
-       ('technician', 'Blacksmith'),
-       ('technician', 'Mechanical'),
-       ('equipmentType','Stabilizer A'),
-       ('equipmentType','Stabilizer B'),
-       ('equipmentType','Single Axis Exciter A'),
-       ('equipmentType','Single Axis Exciter B'),
-       ('equipmentType','Adapter A'),
-       ('equipmentType','Adapter B'),
-       ('equipmentType','Infrared Camera'),
        ('testRigs', '6');
 
 
