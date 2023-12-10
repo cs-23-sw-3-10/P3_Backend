@@ -72,7 +72,7 @@ type AuthData {
 
 type Subscription {
     AllBladeTasksInRangeSub(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
-    AllBladeTasksPendingSub:[BladeTask]
+    AllBladeTasksPendingSub(isActive:Boolean):[BladeTask]
 }
 
 type greetings{
