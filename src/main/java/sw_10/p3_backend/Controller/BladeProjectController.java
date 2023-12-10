@@ -35,6 +35,11 @@ public class BladeProjectController {
         return bladeProjectLogic.findAllBySchedule(isActive);
     }
 
+    @QueryMapping
+    public BladeProject BladeProjectById(@Argument Long id){
+        return bladeProjectLogic.findBladeProjectById(id);
+    }
+
     //PreAuthorize: Checks if the user invoking the method is authorized to do so
     //Authorization criteria: User is logged in on the website -> Editing privileges
     //@PreAuthorize("isAuthenticated()")

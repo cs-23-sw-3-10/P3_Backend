@@ -169,7 +169,10 @@ public class BladeProjectLogic {
 
             return "BladeProject with id: " + bladeProjectToDelete.getId() + " has bladetasks and can therefore not be deleted";
         }
+    }
 
+    public BladeProject findBladeProjectById(Long id){
+        return bladeProjectRepository.findBladeProjectById(id);
     }
 }
 

@@ -2,12 +2,14 @@ type Query {
 
     AllBladeProjects: [BladeProject]
     AllBladeProjectsBySchedule(isActive: Boolean): [BladeProject]
+    BladeProjectById(id: ID!): BladeProject
 
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
     AllBladeTasksInRange(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
     AllBladeTasksPending:[BladeTask]
+
 
     AllConflicts: [Conflict]
 
