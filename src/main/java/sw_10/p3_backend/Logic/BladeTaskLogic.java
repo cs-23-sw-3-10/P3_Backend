@@ -338,9 +338,9 @@ public class BladeTaskLogic {
         //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
     }
 
-    public Flux<List<BladeTask>> bladeTasksPendingSub() {
+    public Flux<List<BladeTask>> bladeTasksPendingSub(boolean isActive) {
         // Create a Flux stream to emit the list of blade tasks pending when to subscribers whenever an update occurs.
-        return createFlux(bladeTaskRepository::bladeTasksPending);
+        return createFlux(() -> bladeTaskRepository.bladeTasksPending(isActive));
     }
 
     private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
@@ -372,11 +372,6 @@ public class BladeTaskLogic {
         processor.tryEmitNext(new Object());
     }
 
-
-    public List<BladeTask> bladeTasksPending() {
-        return bladeTaskRepository.bladeTasksPending();
-
-    }
 
     //TODO: Find a better way to do this?
     public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
@@ -455,6 +450,7 @@ public class BladeTaskLogic {
         bookingLogic.recalculateConflicts(bladeTaskToDelete);
 
         bladeTaskRepository.delete(bladeTaskToDelete);
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToDelete.getBladeProject());
         onDatabaseUpdate();
 
     }

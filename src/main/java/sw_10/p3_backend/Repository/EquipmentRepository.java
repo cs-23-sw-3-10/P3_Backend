@@ -16,8 +16,7 @@ public interface EquipmentRepository extends JpaRepository<Equipment,Long> {
     List<Equipment> findAllByType(String type);
 
     @Query("SELECT e FROM Equipment e WHERE e.type = :type AND e NOT IN " +
-            "(SELECT b.equipment FROM Booking b WHERE b.bladeTask.bladeProject.schedule.isActive = false  AND b.startDate < :end AND b.endDate > :start AND b.equipment is not null)")
-
+            "(SELECT b.equipment FROM Booking b WHERE b.bladeTask.bladeProject.schedule.isActive = false  AND b.startDate <= :end AND b.endDate >= :start AND b.equipment is not null)")
     List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String type);
 
     @Query("SELECT DISTINCT e.type FROM Equipment e")
