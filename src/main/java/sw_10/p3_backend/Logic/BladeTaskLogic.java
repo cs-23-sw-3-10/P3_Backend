@@ -102,10 +102,10 @@ public class BladeTaskLogic {
         );
         if (checkForBTOverlap(input.startDate(),
                 calculateEndDate(input.startDate(), input.duration()),
-                newBladeTask)){
+                newBladeTask)) {
             throw new InputInvalidException("BladeTask with testRig " + input.testRig() + " already exists in the given time period");
         }
-        
+
         // Create resource orders for the blade task (if any)
         List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
 
@@ -179,14 +179,11 @@ public class BladeTaskLogic {
         if (input.taskName() == null) {
             throw new InputInvalidException("taskName is mandatory");
         }
-        if (input.startDate() != null && LocalDate.now().isAfter(input.startDate())) {
-            throw new InputInvalidException("startDate cannot be in the past");
-        }
     }
 
     private LocalDate calculateEndDate(LocalDate startDate, Integer duration) {
         if (startDate != null && duration != null) {
-            return startDate.plusDays(duration-1);
+            return startDate.plusDays(duration - 1);
         }
         return null;
     }
@@ -287,7 +284,7 @@ public class BladeTaskLogic {
         //Checks for overlap with other bladetasks
         if (bladeTaskToUpdate.getStartDate() != updates.startDate()
                 || bladeTaskToUpdate.getEndDate() != endDate) {
-            if (checkForBTOverlap(updates.startDate(), endDate, bladeTaskToUpdate)){
+            if (checkForBTOverlap(updates.startDate(), endDate, bladeTaskToUpdate)) {
                 throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
             }
             bladeTaskToUpdate.setStartDate(updates.startDate());
@@ -308,7 +305,7 @@ public class BladeTaskLogic {
         bladeTaskRepository.save(bladeTaskToUpdate);
         bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
 
-        bladeTaskToUpdate = updateStartAndDurationBladeTask((long) bladeTaskToUpdate.getId(), bladeTaskToUpdate.getStartDate().toString(),bladeTaskToUpdate.getDuration(), bladeTaskToUpdate.getTestRig() );
+        bladeTaskToUpdate = updateStartAndDurationBladeTask((long) bladeTaskToUpdate.getId(), bladeTaskToUpdate.getStartDate().toString(), bladeTaskToUpdate.getDuration(), bladeTaskToUpdate.getTestRig());
 
         return bladeTaskToUpdate;
     }
@@ -397,7 +394,7 @@ public class BladeTaskLogic {
 
     private boolean checkForBTOverlap(LocalDate startDate, LocalDate endDate, BladeTask checkBladeTask) {
 
-        List <BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(startDate, endDate, false);
+        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(startDate, endDate, false);
 
         for (BladeTask bladeTask : bladeTasksInRange) {
             LocalDate btStartDate = bladeTask.getStartDate();
@@ -419,7 +416,7 @@ public class BladeTaskLogic {
         return false;
     }
 
-    public void deleteBladeTask(Long id){
+    public void deleteBladeTask(Long id) {
         BladeTask bladeTaskToDelete = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 

@@ -138,7 +138,7 @@ insert into resource_order_equipment_assignment_status(equipment_assignment_stat
 
 
 --blade project 3--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (1, '#b28c77' ,'2023-12-15', '2024-02-19', 'goldwind', 'ringo fernando', 'gw-102', false);
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (1, '#b28c77' ,null, null, 'goldwind', 'ringo fernando', 'gw-102', false);
 
 
 --Edit--
@@ -223,7 +223,7 @@ insert into resource_order_equipment_assignment_status(equipment_assignment_stat
 insert into resource_order_equipment_assignment_status(equipment_assignment_status, resource_order_id) values (true, 26);
 
 --blade project 3--
-insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#b28c77' ,'2023-12-15', '2024-02-19', 'general electric', 'ringo fernando', 'ge-21', false);
+insert into blade_project (schedule_id,color, start_date, end_date, customer, project_leader, project_name, in_conflict) values (2, '#b28c77' ,null, null, 'general electric', 'ringo fernando', 'ge-21', false);
 
 
 
