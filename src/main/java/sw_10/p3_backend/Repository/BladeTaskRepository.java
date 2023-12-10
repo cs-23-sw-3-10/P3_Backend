@@ -23,7 +23,7 @@ public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
     BladeTask getBladeTaskById(int id);
 
 
-    @Query("SELECT bt FROM BladeTask bt  WHERE (bt.bladeProject.schedule.isActive = false) AND ((bt.startDate IS NULL) OR (bt.endDate IS NULL) OR (bt.testRig IS NULL))")
-    List<BladeTask> bladeTasksPending();
+    @Query("SELECT bt FROM BladeTask bt  WHERE (bt.bladeProject.schedule.isActive = :isActive) AND ((bt.startDate IS NULL) OR (bt.endDate IS NULL) OR (bt.testRig IS NULL))")
+    List<BladeTask> bladeTasksPending(boolean isActive);
 
 }

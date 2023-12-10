@@ -31,10 +31,6 @@ public class BladeTaskController {
         return bladeTaskLogic.bladeTasksInRange(startDate, endDate, isActive);
     }
 
-    @QueryMapping
-    public List<BladeTask> AllBladeTasksPending(){
-        return bladeTaskLogic.bladeTasksPending();
-    }
 
     @QueryMapping
     public List<BladeTask> AllBladeTasks(){
@@ -103,9 +99,9 @@ public class BladeTaskController {
     }
 
     @SubscriptionMapping
-    public Flux<List<BladeTask>> AllBladeTasksPendingSub() {
+    public Flux<List<BladeTask>> AllBladeTasksPendingSub(@Argument boolean isActive) {
         System.out.println("bladeTasksPendingSub");
-        return bladeTaskLogic.bladeTasksPendingSub();
+        return bladeTaskLogic.bladeTasksPendingSub(isActive);
     }
 
 }
