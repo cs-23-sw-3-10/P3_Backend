@@ -77,16 +77,46 @@ public class BladeTaskLogic {
 
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
+        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
+
+        if(input.testRig()==0 ) {
+            System.out.println("Testrig creating BT with no start or end date");
+
+            // Create a new BladeTask instance
+            BladeTask newBladeTask = new BladeTask(
+                    null,
+                    null,
+                    totalDuration,
+                    input.testType(),
+                    input.attachPeriod(),
+                    input.detachPeriod(),
+                    input.taskName(),
+                    0,
+                    bladeProject
+            );
+            // Create resource orders for the blade task (if any)
+            List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
+
+
+            // Save the new BladeTask in the database
+            bladeTaskRepository.save(newBladeTask);
+            onDatabaseUpdate();
+            return newBladeTask;
+        }
 
         LocalDate startDate = input.startDate();
-        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
 
         // Calculate the end date of the blade task
         LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
+
+
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
+
+        if(testRigValue == 0)
+            System.out.println("Testrig is 0");
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
