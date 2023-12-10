@@ -455,6 +455,7 @@ public class BladeTaskLogic {
         bookingLogic.recalculateConflicts(bladeTaskToDelete);
 
         bladeTaskRepository.delete(bladeTaskToDelete);
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToDelete.getBladeProject());
         onDatabaseUpdate();
 
     }
