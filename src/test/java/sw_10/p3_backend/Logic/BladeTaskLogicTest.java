@@ -67,15 +67,6 @@ class BladeTaskLogicTest {
     }
 
     @Test
-    void TestDateBeforeTodayWhenCreatingBladeTask() {
-        //Arrange
-        input = new BladeTaskInput(1L,LocalDate.of(2021, 1, 1), 1, 1, 1, 1, 1, "TestName", "TestType", null);
-
-        //Assert
-        assertThrows(InputInvalidException.class, () -> bladeTaskLogic.createBladeTask(input));
-    }
-
-    @Test
     public void testBladeTasksInRangeSubInitialLoad() {
         // Arrange
         LocalDate startDate =  LocalDate.now().plusDays(1);

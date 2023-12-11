@@ -56,11 +56,13 @@ public class BladeTask implements Cloneable {
     @ManyToMany(mappedBy = "relatedBladeTasks")
     Set<Conflict> relatedConflicts = new HashSet<>();
 
-    public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject){
+    public BladeTask(LocalDate startDate, int duration, BladeProject bladeProject) {
         setStartDate(startDate);
         setDuration(duration);
         setBladeProject(bladeProject);
-        setEndDate(startDate.plusDays(duration));
+        if (startDate != null && duration != 0){
+            setEndDate(startDate.plusDays(duration));
+        }
     }
 
     public BladeTask(LocalDate startDate, LocalDate endDate, int duration, String testType, int attachPeriod, int detachPeriod, String taskName, int testRig, BladeProject bladeProject) {

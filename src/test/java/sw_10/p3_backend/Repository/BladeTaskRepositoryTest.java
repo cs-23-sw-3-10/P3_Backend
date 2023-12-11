@@ -102,7 +102,7 @@ void testFindBladeWithNoTestRigShouldReturnListOfBtWithTestRigNull() {
     bladeTaskRepository.save(bt3);
 
     // When
-    List<BladeTask> PendingInEdit = bladeTaskRepository.bladeTasksPending();
+    List<BladeTask> PendingInEdit = bladeTaskRepository.bladeTasksPending(false);
 
     // Then
     assertThat(PendingInEdit).hasSize(2);
