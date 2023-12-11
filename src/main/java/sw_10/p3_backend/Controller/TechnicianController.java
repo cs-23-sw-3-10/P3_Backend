@@ -15,19 +15,16 @@ import java.util.List;
 @Controller
 public class TechnicianController {
     private final TechnicianLogic technicianLogic;
-    private final TechnicianRepository technicianRepository;
 
-
-    public TechnicianController(TechnicianLogic technicianLogic, TechnicianRepository technicianRepository){
+    public TechnicianController(TechnicianLogic technicianLogic){
         this.technicianLogic=technicianLogic;
-        this.technicianRepository = technicianRepository;
     }
 
 
 
     @QueryMapping
     public List<Technician> AllTechnicians(){
-        return technicianRepository.findAll();
+        return technicianLogic.findAll();
     }
 
     @QueryMapping

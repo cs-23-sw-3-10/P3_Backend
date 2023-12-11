@@ -84,10 +84,11 @@ public class EngineerLogic {
             throw new NotFoundException(e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting engineer",e);
-
         }
+    }
 
-
+    public List<Engineer> findAll(){
+        return engineerRepository.findAll();
     }
 
 }

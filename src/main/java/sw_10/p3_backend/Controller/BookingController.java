@@ -12,17 +12,14 @@ import java.util.List;
 
 @Controller
 public class  BookingController {
-
-    private final BookingRepository bookingRepository;
     private final BookingLogic bookingLogic;
 
-    public BookingController(BookingRepository bookingRepository, BookingLogic bookingLogic){
-        this.bookingRepository = bookingRepository;
+    public BookingController(BookingLogic bookingLogic){
         this.bookingLogic = bookingLogic;
     }
     @QueryMapping
     public List<Booking> getAllBookings(){
-        return bookingRepository.findAll();
+        return bookingLogic.findAll();
     }
 
     @QueryMapping

@@ -19,12 +19,10 @@ import java.util.List;
 
 @Controller
 public class EquipmentController {
-    private final EquipmentRepository equipmentRepository;
     private final EquipmentLogic equipmentLogic;
 
     @Autowired
-    public EquipmentController(EquipmentRepository equipmentRepository, EquipmentLogic equipmentLogic) { //dependency injection
-        this.equipmentRepository = equipmentRepository;
+    public EquipmentController(EquipmentLogic equipmentLogic) { //dependency injection
         this.equipmentLogic = equipmentLogic;
     }
 
@@ -32,12 +30,12 @@ public class EquipmentController {
 
     @QueryMapping
     public List<Equipment> AllEquipment() {
-        return equipmentRepository.findAll();
+        return equipmentLogic.findAll();
     }
 
     @QueryMapping
     public List<Equipment> EquipmentByType(@Argument String type) {
-        return equipmentRepository.findAllByType(type); //consider adding handling for nothing found
+        return equipmentLogic.findAllByType(type); //consider adding handling for nothing found
     }
 
 
@@ -56,7 +54,7 @@ public class EquipmentController {
     }
     @QueryMapping
     public List<String> GetEquipmentTypes() {
-        return equipmentRepository.getEquipmentTypes();
+        return equipmentLogic.getEquipmentTypes();
     }
 
 

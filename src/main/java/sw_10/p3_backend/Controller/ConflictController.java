@@ -13,18 +13,14 @@ import java.util.List;
 
 @Controller
 public class ConflictController {
-
-    private final ConflictRepository conflictRepository;
-
     private final ConflictLogic conflictlogic;
 
-    public ConflictController(ConflictRepository conflictRepository, ConflictLogic conflictLogic){
-        this.conflictRepository = conflictRepository;
+    public ConflictController(ConflictLogic conflictLogic){
         this.conflictlogic = conflictLogic;
     }
     @QueryMapping
     public List<Conflict> AllConflicts(){
-        return conflictRepository.findAll();
+        return conflictlogic.findAll();
     } //Consider adding logic and error handling
 
 }

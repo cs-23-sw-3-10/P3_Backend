@@ -287,4 +287,8 @@ public class BookingLogic {
     public List<Booking> getBookingById(Long id){
         return bookingRepository.findBookingsByBPId(id);
     }
+
+    public List<Booking> findAll(){
+        return bookingRepository.findAll();
+    }
 }
