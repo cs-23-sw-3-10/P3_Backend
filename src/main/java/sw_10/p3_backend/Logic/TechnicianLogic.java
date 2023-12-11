@@ -107,5 +107,9 @@ public class TechnicianLogic {
         }
     }
 
+    public List<Technician> findAll(){
+        return technicianRepository.findAll();
+    }
+
 }
 

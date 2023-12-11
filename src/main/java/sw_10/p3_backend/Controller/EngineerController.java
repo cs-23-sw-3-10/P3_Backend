@@ -15,17 +15,15 @@ import java.util.List;
 
 @Controller
 public class    EngineerController {
-    private final EngineerRepository engineerRepository;
     private final EngineerLogic engineerLogic;
 
-    public EngineerController(EngineerRepository engineerRepository, EngineerLogic engineerLogic){ //dependency injection
-        this.engineerRepository=engineerRepository;
+    public EngineerController(EngineerLogic engineerLogic){ //dependency injection
         this.engineerLogic = engineerLogic;
     }
 
     @QueryMapping
     public List<Engineer> AllEngineers(){
-        return engineerRepository.findAll();
+        return engineerLogic.findAll();
     }
 
     @QueryMapping

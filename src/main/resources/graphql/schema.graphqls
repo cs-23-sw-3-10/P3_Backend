@@ -2,12 +2,14 @@ type Query {
 
     AllBladeProjects: [BladeProject]
     AllBladeProjectsBySchedule(isActive: Boolean): [BladeProject]
+    BladeProjectById(id: ID!): BladeProject
 
 
     AllBladeTasks: [BladeTask]
     BladeTaskById(id:ID!):BladeTask
     AllBladeTasksInRange(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
     AllBladeTasksPending:[BladeTask]
+
 
     AllConflicts: [Conflict]
 
@@ -32,7 +34,10 @@ type Query {
     DeleteBladeProject(id:ID!):BladeProject
 
     getAllBookings:[Booking]
+    BookingByBPId(id: ID!): [Booking]
     findConflictsForBladeTask(id: ID!, isActive: Boolean!): [Conflict]
+
+    ResourceOrderByBPId(id: ID!): [ResourceOrder]
 
     authenticate: String
 
@@ -69,7 +74,7 @@ type AuthData {
 
 type Subscription {
     AllBladeTasksInRangeSub(startDate:String!, endDate:String!, isActive: Boolean):[BladeTask]
-    AllBladeTasksPendingSub:[BladeTask]
+    AllBladeTasksPendingSub(isActive:Boolean):[BladeTask]
 }
 
 type greetings{
@@ -134,6 +139,7 @@ type Booking {
     resourceType: String
     workHours: Int
     task: BladeTask
+    resourceName: String
     equipment: Equipment
     engineer: Engineer
     technician: Technician
@@ -180,6 +186,7 @@ input BladeProjectInput {
     customer: String
     projectLeader: String
     projectName: String
+    resourceOrders: [ResourceOrderInput]
 }
 
 input BladeTaskInput {

@@ -16,6 +16,7 @@ import sw_10.p3_backend.exception.NotFoundException;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -79,18 +80,30 @@ public class BladeProjectLogic {
         return bladeProjectRepository.findAllBySchedule(isActive);
     }
 
+    //TODO: temp solution, should be handled by frontend with a color picker
     private static String generateRandomColorHexCode() {
         Random random = new Random();
 
-        // Generate random RGB values
-        int red = random.nextInt(256);   // 0-255
-        int green = random.nextInt(256); // 0-255
-        int blue = random.nextInt(256);  // 0-255
+        int red, green, blue;
+        do {
+            // Generate random RGB values
+            red = random.nextInt(256);   // 0-255
+            green = random.nextInt(256); // 0-255
+            blue = random.nextInt(256);  // 0-255
+        } while (!isLightColor(red, green, blue));
 
         // Convert to hexadecimal
         return String.format("#%02X%02X%02X", red, green, blue);
     }
 
+    // Ensure that the color is light enough to be readable on a white background and that black text will not be unreadable
+    private static boolean isLightColor(int red, int green, int blue) {
+        // Calculate luminance
+        double luminance = 0.299 * red + 0.587 * green + 0.114 * blue;
+        // A threshold value, above which the color can be considered light
+        // 128 is a middle value for an 8-bit color component, adjust as needed
+        return luminance > 128;
+    }
     public void updateStartAndEndDate(BladeProject bladeProject) {
         //Set bladeProject start and end date to the earliest and latest bladeTask start and end date
         List<BladeTask> bladeTasks = bladeProject.getBladeTasks();
@@ -116,34 +129,33 @@ public class BladeProjectLogic {
             bookingLogic.createBookings(bladeProject.getResourceOrders(), bladeProject);
         }
 
-        if(bladeProject.getStartDate() == null || bladeProject.getEndDate() == null || finalStartDate != null && finalStartDate.isBefore(bladeProject.getStartDate()) || finalEndDate != null && finalEndDate.isAfter(bladeProject.getEndDate())) {
+
             bookingLogic.updateBookings(bladeProject, finalStartDate, finalEndDate);
-        }
+
 
 
 
         bladeProjectRepository.save(bladeProject);
     }
 
-    public BladeProject updateBladeProject(Long bpId, BladeProjectInput updates) {
-        BladeProject BPToUpdate = bladeProjectRepository.findById(bpId)
+    public BladeProject updateBladeProject(Long BPId, BladeProjectInput updates) {
+        BladeProject BPToUpdate = bladeProjectRepository.findById(BPId)
                 .orElseThrow(() -> new InputInvalidException("Project with id " + updates.scheduleId() + " not found"));
+        BPToUpdate.setProjectName(updates.projectName());
+        BPToUpdate.setCustomer(updates.customer());
+        BPToUpdate.setProjectLeader(updates.projectLeader());
 
-        if (!BPToUpdate.getProjectName().equals(updates.projectName())){
-            BPToUpdate.setProjectName(updates.projectName());
-        }
-        if (!BPToUpdate.getCustomer().equals(updates.customer())){
-            BPToUpdate.setCustomer(updates.customer());
-        }
-        if (!BPToUpdate.getProjectLeader().equals(updates.projectLeader())){
-            BPToUpdate.setProjectLeader(updates.projectLeader());
-        }
+        resourceOrderLogic.removeResourceOrdersBladeProject(BPId);
+        bookingLogic.removeBookingsBladeProject(BPId);
+        if(updates.resourceOrders() != null){
+            BPToUpdate.setResourceOrders(resourceOrderLogic.createResourceOrdersBladeProject(updates.resourceOrders(), BPToUpdate));
+            bookingLogic.createBookings(BPToUpdate.getResourceOrders(), BPToUpdate);
+        }else BPToUpdate.setResourceOrders(new ArrayList<>());
 
         bladeProjectRepository.save(BPToUpdate);
 
         return BPToUpdate;
     }
-
     public List<BladeProject> lookUpBladeData() {
         return bladeProjectRepository.findAll();
     }
@@ -159,7 +171,10 @@ public class BladeProjectLogic {
 
             return "BladeProject with id: " + bladeProjectToDelete.getId() + " has bladetasks and can therefore not be deleted";
         }
+    }
 
+    public BladeProject findBladeProjectById(Long id){
+        return bladeProjectRepository.findBladeProjectById(id);
     }
 }
 

@@ -10,7 +10,6 @@ import reactor.core.scheduler.Schedulers;
 import sw_10.p3_backend.Model.*;
 import sw_10.p3_backend.Repository.BladeProjectRepository;
 import sw_10.p3_backend.Repository.BladeTaskRepository;
-import sw_10.p3_backend.Repository.ConflictRepository;
 import sw_10.p3_backend.Repository.BookingRepository;
 import sw_10.p3_backend.exception.InputInvalidException;
 import sw_10.p3_backend.exception.NotFoundException;
@@ -78,16 +77,46 @@ public class BladeTaskLogic {
 
         // Find the blade project in the database
         BladeProject bladeProject = getBladeProject(Long.valueOf(input.bladeProjectId()));
+        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
+
+        if(input.testRig()==0 ) {
+            System.out.println("Testrig creating BT with no start or end date");
+
+            // Create a new BladeTask instance
+            BladeTask newBladeTask = new BladeTask(
+                    null,
+                    null,
+                    totalDuration,
+                    input.testType(),
+                    input.attachPeriod(),
+                    input.detachPeriod(),
+                    input.taskName(),
+                    0,
+                    bladeProject
+            );
+            // Create resource orders for the blade task (if any)
+            List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
+
+
+            // Save the new BladeTask in the database
+            bladeTaskRepository.save(newBladeTask);
+            onDatabaseUpdate();
+            return newBladeTask;
+        }
 
         LocalDate startDate = input.startDate();
-        Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
 
         // Calculate the end date of the blade task
         LocalDate endDate = calculateEndDate(startDate, totalDuration);
 
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
+
+
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
+
+        if(testRigValue == 0)
+            System.out.println("Testrig is 0");
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
@@ -103,10 +132,10 @@ public class BladeTaskLogic {
         );
         if (checkForBTOverlap(input.startDate(),
                 calculateEndDate(input.startDate(), input.duration()),
-                newBladeTask)){
+                newBladeTask)) {
             throw new InputInvalidException("BladeTask with testRig " + input.testRig() + " already exists in the given time period");
         }
-        
+
         // Create resource orders for the blade task (if any)
         List<ResourceOrder> resourceOrders = handleResourceOrders(input, newBladeTask);
 
@@ -180,14 +209,11 @@ public class BladeTaskLogic {
         if (input.taskName() == null) {
             throw new InputInvalidException("taskName is mandatory");
         }
-        if (input.startDate() != null && LocalDate.now().isAfter(input.startDate())) {
-            throw new InputInvalidException("startDate cannot be in the past");
-        }
     }
 
     private LocalDate calculateEndDate(LocalDate startDate, Integer duration) {
         if (startDate != null && duration != null) {
-            return startDate.plusDays(duration-1);
+            return startDate.plusDays(duration - 1);
         }
         return null;
     }
@@ -198,7 +224,7 @@ public class BladeTaskLogic {
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
         //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToUpdate);
+        bookingLogic.removeBookingsBladeTask(bladeTaskToUpdate);
         System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
@@ -288,7 +314,7 @@ public class BladeTaskLogic {
         //Checks for overlap with other bladetasks
         if (bladeTaskToUpdate.getStartDate() != updates.startDate()
                 || bladeTaskToUpdate.getEndDate() != endDate) {
-            if (checkForBTOverlap(updates.startDate(), endDate, bladeTaskToUpdate)){
+            if (checkForBTOverlap(updates.startDate(), endDate, bladeTaskToUpdate)) {
                 throw new InputInvalidException("BladeTask with testRig " + updates.testRig() + " already exists in the given time period");
             }
             bladeTaskToUpdate.setStartDate(updates.startDate());
@@ -303,13 +329,13 @@ public class BladeTaskLogic {
         bladeTaskToUpdate.setTaskName(updates.taskName());
         bladeTaskToUpdate.setTestType(updates.testType());
 
-        resourceOrderLogic.removeResourceOrders(bladeTaskToUpdate);
+        resourceOrderLogic.removeResourceOrdersBladeTask(bladeTaskToUpdate);
         resourceOrderLogic.createResourceOrdersBladeTask(updates.resourceOrders(), bladeTaskToUpdate);
 
         bladeTaskRepository.save(bladeTaskToUpdate);
         bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
 
-        bladeTaskToUpdate = updateStartAndDurationBladeTask((long) bladeTaskToUpdate.getId(), bladeTaskToUpdate.getStartDate().toString(),bladeTaskToUpdate.getDuration(), bladeTaskToUpdate.getTestRig() );
+        bladeTaskToUpdate = updateStartAndDurationBladeTask((long) bladeTaskToUpdate.getId(), bladeTaskToUpdate.getStartDate().toString(), bladeTaskToUpdate.getDuration(), bladeTaskToUpdate.getTestRig());
 
         return bladeTaskToUpdate;
     }
@@ -339,9 +365,9 @@ public class BladeTaskLogic {
         //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
     }
 
-    public Flux<List<BladeTask>> bladeTasksPendingSub() {
+    public Flux<List<BladeTask>> bladeTasksPendingSub(boolean isActive) {
         // Create a Flux stream to emit the list of blade tasks pending when to subscribers whenever an update occurs.
-        return createFlux(bladeTaskRepository::bladeTasksPending);
+        return createFlux(() -> bladeTaskRepository.bladeTasksPending(isActive));
     }
 
     private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
@@ -374,11 +400,6 @@ public class BladeTaskLogic {
     }
 
 
-    public List<BladeTask> bladeTasksPending() {
-        return bladeTaskRepository.bladeTasksPending();
-
-    }
-
     //TODO: Find a better way to do this?
     public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
         System.out.println("Getting relevant bookings");
@@ -403,7 +424,7 @@ public class BladeTaskLogic {
 
     private boolean checkForBTOverlap(LocalDate startDate, LocalDate endDate, BladeTask checkBladeTask) {
 
-        List <BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(startDate, endDate, false);
+        List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(startDate, endDate, false);
 
         for (BladeTask bladeTask : bladeTasksInRange) {
             LocalDate btStartDate = bladeTask.getStartDate();
@@ -425,12 +446,12 @@ public class BladeTaskLogic {
         return false;
     }
 
-    public void deleteBladeTask(Long id){
+    public void deleteBladeTask(Long id) {
         BladeTask bladeTaskToDelete = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));
 
         //Remove old bookings
-        bookingLogic.removeBookings(bladeTaskToDelete);
+        bookingLogic.removeBookingsBladeTask(bladeTaskToDelete);
         System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
@@ -456,6 +477,7 @@ public class BladeTaskLogic {
         bookingLogic.recalculateConflicts(bladeTaskToDelete);
 
         bladeTaskRepository.delete(bladeTaskToDelete);
+        bladeProjectLogic.updateStartAndEndDate(bladeTaskToDelete.getBladeProject());
         onDatabaseUpdate();
 
     }

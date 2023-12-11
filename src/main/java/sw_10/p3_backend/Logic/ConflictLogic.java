@@ -25,12 +25,9 @@ public class ConflictLogic {
 
     private BladeTaskLogic bladeTaskLogic;
 
-    private final BladeTaskRepository bladeTaskRepository;
-
-    public ConflictLogic(ConflictRepository conflictRepository, BladeTaskRepository bladeTaskRepository) {
+    public ConflictLogic(ConflictRepository conflictRepository) {
 
         this.conflictRepository = conflictRepository;
-        this.bladeTaskRepository = bladeTaskRepository;
     }
 
     public void setBladeTaskLogic(BladeTaskLogic bladeTaskLogic){
@@ -67,5 +64,9 @@ public class ConflictLogic {
         return conflictRepository.findConflictByBookingId(bookingId, isActive);
         //,isActive
 
+    }
+
+    public List<Conflict> findAll(){
+        return conflictRepository.findAll();
     }
 }
