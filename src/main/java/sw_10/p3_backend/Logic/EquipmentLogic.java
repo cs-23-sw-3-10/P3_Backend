@@ -1,5 +1,6 @@
 package sw_10.p3_backend.Logic;
 
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.stereotype.Service;
 import sw_10.p3_backend.Model.Engineer;
 import sw_10.p3_backend.Model.Equipment;
@@ -74,7 +75,7 @@ public class EquipmentLogic {
             throw new InputInvalidException("Calibration expiration date cannot be in the past");
         }
     }
-    private List<String> getEquipmentTypes(){
+    public List<String> getEquipmentTypes(){
         return equipmentRepository.getEquipmentTypes();
     }
 
@@ -104,9 +105,11 @@ public class EquipmentLogic {
         }
     }
 
+    public List<Equipment> findAll() {
+        return equipmentRepository.findAll();
+    }
 
-
-
-
-
+    public List<Equipment> findAllByType(String type) {
+        return equipmentRepository.findAllByType(type);
+    }
 }
