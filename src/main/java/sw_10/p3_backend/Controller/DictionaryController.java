@@ -15,6 +15,12 @@ public class DictionaryController {
     DictionaryController(DictionaryLogic dictionaryLogic){
         this.dictionaryLogic = dictionaryLogic;
     }
+
+    /**
+     * This method fetches all entries of a certain category
+     * @param category determines which category you wish to fetch
+     * @return all entries of a certain category
+     */
     @QueryMapping //this is the method that is called from the frontend
     public List<Dictionary> DictionaryAllByCategory(@Argument String category){
         return dictionaryLogic.dictionaryAllByCategory(category);

@@ -24,6 +24,11 @@ public class AuthController {
     }
 
 
+    /**
+     *
+     * @param authRequest
+     * @return a String that is either the bearer token or an error message
+     */
     @PostMapping("/authenticate")
     public  ResponseEntity<String> authenticate(@RequestBody AuthRequest authRequest) {
         System.out.println("Authenticating");

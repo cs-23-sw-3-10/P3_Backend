@@ -22,26 +22,50 @@ public class ScheduleController {
     }
 
 
+    /**
+     * This method copies the entire edit schedule and uses it to replace the view schedule
+     * @return the new view schedule
+     * @throws CloneNotSupportedException
+     */
     @MutationMapping
     public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
         return scheduleLogic.cloneScheduleAndReplace();
     }
 
+    /**
+     * This method copies the entire view schedule and uses it to replace the edit schedule
+     * @return the new edit schedule
+     * @throws CloneNotSupportedException
+     */
     @MutationMapping
     public Schedule discardEditChanges() throws CloneNotSupportedException {
         return scheduleLogic.discardEditChanges();
     }
 
+    /**
+     * This method fetches both schedules
+     * @return both schedules
+     */
     @QueryMapping
     public List<Schedule> AllSchedules() {
         return scheduleLogic.findAll();
     }
 
+    /**
+     * This method deletes a schedule and all its linked objects
+     * @param id
+     * @return the deleted schedule
+     */
     @QueryMapping
     public Schedule DeleteSchedule(@Argument Integer id){
         return scheduleLogic.deleteSchedule(id);
     }
 
+    /**
+     * This method fetches the schedule with a certain id
+     * @param id
+     * @return the schedule with the passed id
+     */
     @QueryMapping
     public Schedule ScheduleById(@Argument Integer id){
         try {

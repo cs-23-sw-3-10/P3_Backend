@@ -30,11 +30,22 @@ public class BladeProjectController {
     }
 
     //Returns all Blade Projects, based on if user is looking at "active" or "draft(inactive)" schedule
+
+    /**
+     * This method returns all blade projects from view schedule or edit schedule
+     * @param isActive determines whether you fetch from view schedule or edit schedule
+     * @return Returns all blade projects from one of the schedules
+     */
     @QueryMapping
     public List<BladeProject> AllBladeProjectsBySchedule(@Argument boolean isActive) {
         return bladeProjectLogic.findAllBySchedule(isActive);
     }
 
+    /**
+     * This method gets a blade project with the passed id
+     * @param id the id of the blade project you want to fetch
+     * @return the blade project with the passed id
+     */
     @QueryMapping
     public BladeProject BladeProjectById(@Argument Long id){
         return bladeProjectLogic.findBladeProjectById(id);
@@ -43,6 +54,15 @@ public class BladeProjectController {
     //PreAuthorize: Checks if the user invoking the method is authorized to do so
     //Authorization criteria: User is logged in on the website -> Editing privileges
     //@PreAuthorize("isAuthenticated()")
+
+    /**
+     * This method creates a new blade project with the passed values
+     * @param name
+     * @param customer
+     * @param projectLeader
+     * @param resourceOrders
+     * @return the created project
+     */
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {
         System.out.println("REQUEST RECEIVED");
@@ -57,11 +77,22 @@ public class BladeProjectController {
         return bladeProjectLogic.deleteProject(id);
     }*/
 
+    /**
+     * Updates the information of a blade project with a certain id
+     * @param bpId
+     * @param updates contains all the updated information about a blade project
+     * @return
+     */
     @MutationMapping
     public BladeProject updateBladeProject(@Argument Long bpId, @Argument BladeProjectInput updates) {
         return bladeProjectLogic.updateBladeProject(bpId, updates);
     }
 
+    /**
+     * Deletes a blade project with a certain id if it has no blade tasks
+     * @param id
+     * @return a string detailing the deleted blade project or an error message
+     */
     @MutationMapping
     public String deleteBladeProject(@Argument Long id){
         return bladeProjectLogic.deleteBladeProject(id);

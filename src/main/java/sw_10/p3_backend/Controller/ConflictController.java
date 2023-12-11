@@ -18,6 +18,11 @@ public class ConflictController {
     public ConflictController(ConflictLogic conflictLogic){
         this.conflictlogic = conflictLogic;
     }
+
+    /**
+     * Gets all conflicts
+     * @return all conflicts
+     */
     @QueryMapping
     public List<Conflict> AllConflicts(){
         return conflictlogic.findAll();

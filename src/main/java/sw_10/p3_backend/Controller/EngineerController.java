@@ -21,11 +21,20 @@ public class    EngineerController {
         this.engineerLogic = engineerLogic;
     }
 
+    /**
+     * This method fetches all engineers
+     * @return all engineers
+     */
     @QueryMapping
     public List<Engineer> AllEngineers(){
         return engineerLogic.findAll();
     }
 
+    /**
+     * Returns an engineer with a certain id
+     * @param id
+     * @return the engineer with the passed id
+     */
     @QueryMapping
     public Engineer EngineerById(@Argument Integer id) {
         try {
@@ -40,11 +49,23 @@ public class    EngineerController {
         }
     }
 
+    /**
+     * Creates a new engineer
+     * @param name the name of the engineer
+     * @param maxWorkHours the maximum wortk hours that the engineer can work
+     * @return the created engineer
+     */
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Engineer CreateEngineer(@Argument String name, @Argument Integer maxWorkHours){
         return engineerLogic.CreateEngineer(name, maxWorkHours);
     }
+
+    /**
+     * Deletes an engineer
+     * @param name the name of the engineer that should be deleted
+     * @return the deleted engineer
+     */
     @MutationMapping
     public Engineer DeleteEngineer(@Argument String name) {
         return engineerLogic.deleteEngineer(name);

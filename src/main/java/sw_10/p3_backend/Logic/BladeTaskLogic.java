@@ -58,7 +58,7 @@ public class BladeTaskLogic {
     @PostConstruct
     public void init() {
         conflictLogic.setBladeTaskLogic(this);
-    }
+    } //Sets
 
     public String deleteTask(Integer id) {
         try {
