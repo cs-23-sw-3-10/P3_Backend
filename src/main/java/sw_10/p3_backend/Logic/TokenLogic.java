@@ -44,7 +44,6 @@ public class TokenLogic {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(); // Encode the claims set into a JWT and return it as a string (the token value)
     }
 
-
     public Authentication authenticate(String username, String password) throws AuthenticationException {
         try {
             // Authenticate and return an Authentication object

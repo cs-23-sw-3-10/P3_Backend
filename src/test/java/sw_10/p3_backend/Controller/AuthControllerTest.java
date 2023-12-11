@@ -51,6 +51,9 @@ class AuthControllerTest {
 
     }
 
+    //TODO: Fix this method return ResourceAccessException when called with incorrect credentials. Any
+    // other exception is caught by the catch block uncertain why. Tested in Postman and Postman returns 401
+    // when called with incorrect credentials.
     @Test
     void testAuthenticateUnauthorized() throws AuthenticationException {
         String username = "user";
