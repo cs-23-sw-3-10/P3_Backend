@@ -46,6 +46,7 @@ class BladeProjectRepositoryTest {
         bladeProjectRepository.deleteAll();
 
         assertThat(bladeProjectRepository.findAll()).hasSize(0);
+        bladeProjectRepository.deleteAll();
     }
 
     @Test
@@ -53,5 +54,6 @@ class BladeProjectRepositoryTest {
         BladeProject bladeProject = new BladeProject();
         bladeProjectRepository.save(bladeProject);
         assertThat(bladeProjectRepository.findById((long) bladeProject.getId())).isNotNull();
+        bladeProjectRepository.deleteAll();
     }
 }

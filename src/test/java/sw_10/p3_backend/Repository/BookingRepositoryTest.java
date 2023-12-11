@@ -97,6 +97,8 @@ class BookingRepositoryTest {
         assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2);
         assertThat(bookingsByTypeHammerAndPeriod).hasSize(2);
 
+        scheduleRepository.deleteAll();
+
     }
 
 

@@ -1,15 +1,16 @@
 package sw_10.p3_backend.Controller;
 
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import jakarta.transaction.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import sw_10.p3_backend.Logic.TokenLogic;
 import sw_10.p3_backend.Model.BladeProject;
@@ -28,6 +29,7 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureHttpGraphQlTester
 @Testcontainers
+@DirtiesContext
 class BladeProjectControllerIntTest {
 
     @Autowired
@@ -144,6 +146,7 @@ class BladeProjectControllerIntTest {
         BladeProject bladeProjectPreUpdate = new BladeProject(scheduleRepository.findScheduleByIsActive(false), "Test", "Test", "Test", "Test");
         BladeProject btsaved = bladeProjectRepository.save(bladeProjectPreUpdate);
         int id = btsaved.getId();
+        String token = tokenLogic.generateToken(authentication);
 
         String query = String.format("""
                 mutation UpdateBladeProject {
@@ -165,7 +168,7 @@ class BladeProjectControllerIntTest {
                 }
                 """,id);
 
-        BladeProject updatedBladeProject = this.httpGraphQlTester.mutate().build().document(query).execute().errors().verify().path("updateBladeProject").entity(BladeProject.class).get();
+        BladeProject updatedBladeProject = this.httpGraphQlTester.mutate().header("Authorization", "Bearer " + token).build().document(query).execute().errors().verify().path("updateBladeProject").entity(BladeProject.class).get();
 
         assertThat(updatedBladeProject.getId()).isEqualTo(id);
         assertThat(updatedBladeProject.getCustomer()).isEqualTo("Test2");

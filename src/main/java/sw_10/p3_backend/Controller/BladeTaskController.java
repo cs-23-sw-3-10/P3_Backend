@@ -37,12 +37,6 @@ public class BladeTaskController {
         return bladeTaskLogic.findAll();
     }
 
-    @SubscriptionMapping
-    public List<BladeTask> bladeTasksAdded(){
-        System.out.println("bladeTasksAdded");
-        return bladeTaskLogic.findAll();
-    }
-
     @QueryMapping
     public BladeTask BladeTaskById(@Argument Integer id) {
         try {
@@ -80,11 +74,13 @@ public class BladeTaskController {
         return bladeTaskLogic.updateBTInfo(updates, btId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeTask updateStartAndDurationBladeTask(@Argument Long id, @Argument String startDate, @Argument Integer duration, @Argument Integer testRig){
         return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration, testRig);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeTask(@Argument Long id){
         System.out.println(id);

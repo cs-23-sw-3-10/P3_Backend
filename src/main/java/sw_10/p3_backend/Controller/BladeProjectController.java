@@ -42,7 +42,7 @@ public class BladeProjectController {
 
     //PreAuthorize: Checks if the user invoking the method is authorized to do so
     //Authorization criteria: User is logged in on the website -> Editing privileges
-    //@PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {
         System.out.println("REQUEST RECEIVED");
@@ -51,11 +51,13 @@ public class BladeProjectController {
         return bladeProjectLogic.createProject(name, customer, projectLeader, resourceOrders);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject updateBladeProject(@Argument Long bpId, @Argument BladeProjectInput updates) {
         return bladeProjectLogic.updateBladeProject(bpId, updates);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeProject(@Argument Long id){
         return bladeProjectLogic.deleteBladeProject(id);

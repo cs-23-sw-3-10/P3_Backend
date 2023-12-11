@@ -15,11 +15,13 @@ import sw_10.p3_backend.Model.BladeTask;
 import sw_10.p3_backend.Model.Schedule;
 import sw_10.p3_backend.TestP3BackendApplication;
 import sw_10.p3_backend.config.SecurityConfig;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -29,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Import(SecurityConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {TestP3BackendApplication.class})
+@Transactional
 class BladeTaskRepositoryTest {
 
     @Autowired
@@ -81,6 +84,8 @@ class BladeTaskRepositoryTest {
 
         assertThat(bladeTasksInView).isEmpty();
 
+        scheduleRepository.deleteAll();
+
     }
 
 
@@ -107,7 +112,7 @@ void testFindBladeWithNoTestRigShouldReturnListOfBtWithTestRigNull() {
     // Then
     assertThat(PendingInEdit).hasSize(2);
     assertThat(PendingInEdit).doesNotContain(bt3);
-
+    scheduleRepository.deleteAll();
 }
 
 }
