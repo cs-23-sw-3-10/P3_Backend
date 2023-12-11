@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -26,6 +26,9 @@ class AuthControllerTest {
 
     @Autowired
     TestRestTemplate restTemplate;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
 
     @Test
     void testAuthenticateSuccess() throws AuthenticationException {
@@ -48,6 +51,23 @@ class AuthControllerTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
+
+    }
+
+    @Test
+    void testAuthenticateNoHeader() throws AuthenticationException {
+        String username = "user";
+        String password = "passwor";
+
+        // Create headers and set Content-Type to application/json
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Perform the request and assert the response body
+        ResponseEntity<String> response = restTemplate.exchange("/authenticate", HttpMethod.POST, null, String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getBody()).isNull();
 
     }
 

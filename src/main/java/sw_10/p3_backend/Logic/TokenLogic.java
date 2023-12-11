@@ -46,6 +46,7 @@ public class TokenLogic {
 
     public Authentication authenticate(String username, String password) throws AuthenticationException {
         try {
+            System.out.println("Authenticating" + username + " " + password);
             // Authenticate and return an Authentication object
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             System.out.println("past authenticate");
