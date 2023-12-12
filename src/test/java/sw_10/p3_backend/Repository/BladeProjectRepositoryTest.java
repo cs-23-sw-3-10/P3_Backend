@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import sw_10.p3_backend.Model.BladeProject;
 import sw_10.p3_backend.TestP3BackendApplication;
+import sw_10.p3_backend.config.SecurityConfig;
 
 // ActiveProfiles specify that application-test.properties will be used for database config(In order to not inject data from data.sql)
 // Use Testcontainers to create a real PostgreSQL database container instead of mockup
@@ -18,6 +20,7 @@ import sw_10.p3_backend.TestP3BackendApplication;
 @ActiveProfiles("test")
 @Testcontainers
 @DataJpaTest
+@Import(SecurityConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {TestP3BackendApplication.class})
 class BladeProjectRepositoryTest {
@@ -43,6 +46,7 @@ class BladeProjectRepositoryTest {
         bladeProjectRepository.deleteAll();
 
         assertThat(bladeProjectRepository.findAll()).hasSize(0);
+        bladeProjectRepository.deleteAll();
     }
 
     @Test
@@ -50,5 +54,6 @@ class BladeProjectRepositoryTest {
         BladeProject bladeProject = new BladeProject();
         bladeProjectRepository.save(bladeProject);
         assertThat(bladeProjectRepository.findById((long) bladeProject.getId())).isNotNull();
+        bladeProjectRepository.deleteAll();
     }
 }

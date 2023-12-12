@@ -15,4 +15,8 @@ List<BladeProject> findAllBySchedule(boolean isActive);
 @Query("SELECT bp FROM BladeProject bp WHERE bp.id = :id")
 BladeProject findBladeProjectById(Long id);
 
+//for testing purpose
+@Query("SELECT bp FROM BladeProject bp LEFT JOIN FETCH bp.bladeTasks WHERE bp.id = :id")
+BladeProject findByIdWithBladeTasks(Long id);
+
 }

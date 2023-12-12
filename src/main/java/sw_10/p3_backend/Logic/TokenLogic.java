@@ -26,10 +26,10 @@ public class TokenLogic {
     public TokenLogic(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager) {
         this.jwtEncoder = jwtEncoder;
         this.authenticationManager = authenticationManager;
-
     }
 
     public String generateToken(Authentication authentication) {
+        System.out.println("Generating token");
         Instant now = Instant.now();// Create a JWT Claims Set instance with issuer, timestamp, subject, and scope claims
         String scope = authentication.getAuthorities().stream()// Create a space-separated string of authorities
                 .map(GrantedAuthority::getAuthority)// Create a space-separated string of authorities from the authentication object
@@ -44,12 +44,22 @@ public class TokenLogic {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(); // Encode the claims set into a JWT and return it as a string (the token value)
     }
 
-
     public Authentication authenticate(String username, String password) throws AuthenticationException {
-        // Create an Authentication token
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
-        // Authenticate the user
-        // If authentication fails, it will throw an AuthenticationException
-        return authenticationManager.authenticate(authRequest);
+        try {
+            System.out.println("Authenticating" + username + " " + password);
+            // Authenticate and return an Authentication object
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            System.out.println("past authenticate");
+            return authentication;
+        } catch (AuthenticationException e) {
+            // Handle authentication failure
+            System.out.println("Authentication failed: " + e.getMessage());
+            throw e;
+        }
+        catch (Exception e) {
+            // Handle any other errors
+            System.out.println("Something went wrong: " + e.getMessage());
+            throw e;
+        }
     }
 }

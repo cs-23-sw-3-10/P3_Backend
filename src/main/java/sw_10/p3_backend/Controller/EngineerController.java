@@ -45,6 +45,8 @@ public class    EngineerController {
     public Engineer CreateEngineer(@Argument String name, @Argument Integer maxWorkHours){
         return engineerLogic.CreateEngineer(name, maxWorkHours);
     }
+
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Engineer DeleteEngineer(@Argument String name) {
         return engineerLogic.deleteEngineer(name);

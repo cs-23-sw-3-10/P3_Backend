@@ -53,14 +53,17 @@ public class TechnicianLogic {
                 technician.setMaxWorkHours(maxWorkHours);
                 technician.setCount(count);
                 System.out.println("Technician updated");
-                return technicianRepository.save(technician);
+                technicianRepository.save(technician);
+                return technician;
             }
             technician = new Technician();
             technician.setType(type);
             technician.setMaxWorkHours(maxWorkHours);
             technician.setWorkHours(0);
             technician.setCount(count);
-            return technicianRepository.save(technician);
+
+            technicianRepository.save(technician);
+            return technician;
         } catch (InputInvalidException e) {
             throw new InputInvalidException(e.getMessage());
         } catch (Exception e) {
