@@ -30,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureHttpGraphQlTester
 @Testcontainers
 @DirtiesContext
-@Transactional
 public class BladeTaskControllerIntTest {
     @Autowired
     HttpGraphQlTester httpGraphQlTester;
@@ -63,7 +62,7 @@ public class BladeTaskControllerIntTest {
     public void testCreateBladeTaskShouldReturnBladeTask() {
         String token = tokenLogic.generateToken(authentication);
 
-        String query =  String.format("""
+        String query = """
                 mutation CreateBladeTask {
                          createBladeTask(
                              bladeTask: {
@@ -85,7 +84,7 @@ public class BladeTaskControllerIntTest {
                              inConflict
                          }
                      }
-                """);
+                """;
         BladeTask bladeTask = httpGraphQlTester.mutate().header("Authorization", "Bearer " + token).build().document(query).execute().errors().verify().path("createBladeTask").entity(BladeTask.class).get();
 
         assertThat(bladeTask.getStartDate()).isNull();
@@ -137,4 +136,80 @@ public class BladeTaskControllerIntTest {
         assertThat(bladeTask.isInConflict()).isTrue();
     }
 
+    @Test
+    public void testUpdateBTInfoShouldReturnBladeTaskWithUpdatedDates(){
+        //Arrange
+        authentication = tokenLogic.authenticate("user", "password");
+
+        BladeTask bladeTask = bladeTaskRepository.getBladeTaskById(1);
+
+        String token = tokenLogic.generateToken(authentication);
+        String query = String.format("""
+                mutation updateBTInfo {
+                    updateBTInfo(
+                        updates: {
+                                 startDate: "2021-05-05"
+                                 endDate: null
+                                 duration: 10
+                                 attachPeriod: 0
+                                 detachPeriod: 0
+                                 testRig: 1
+                                 bladeProjectId: 1
+                                 taskName: "henning"
+                                 testType: "test"
+                                 resourceOrders: []
+                             }
+                        btId: 1
+                    ) {
+                        startDate
+                        endDate
+                        duration
+                        inConflict
+                    }
+                }
+                """);
+        //Act
+        BladeTask bladeTask1 = this.httpGraphQlTester.mutate().header("Authorization", "Bearer " + token).build().document(query).execute().errors().verify().path("updateBTInfo").entity(BladeTask.class).get();
+        //Assert
+        assertThat(bladeTask1.getStartDate()).isEqualTo("2021-05-05");
+        assertThat(bladeTask1.getEndDate()).isEqualTo("2021-05-14");
+        assertThat(bladeTask1.getDuration()).isEqualTo(10);
+        assertThat(bladeTask1.isInConflict()).isFalse();
+    }
+
+    @Test
+    public void testUpdateStartAndDurationBladeTaskSetTestRig0ShouldReturnBladeTaskWithDatesNull(){
+        //Arrange
+        authentication = tokenLogic.authenticate("user", "password");
+
+        BladeTask bladeTask = bladeTaskRepository.getBladeTaskById(1);
+
+        String token = tokenLogic.generateToken(authentication);
+        String query = String.format("""
+                mutation UpdateStartAndDurationBladeTask {
+                     updateStartAndDurationBladeTask(
+                         id: "1"
+                         startDate: "undefined"
+                         duration: 20
+                         testRig: 0
+                     ) {
+                            startDate
+                            endDate
+                            duration
+                            inConflict
+                     }
+                 }
+                """);
+        //Act
+        BladeTask bladeTask1 = this.httpGraphQlTester.mutate().header("Authorization", "Bearer " + token).build().document(query).execute().errors().verify().path("updateStartAndDurationBladeTask").entity(BladeTask.class).get();
+
+        //Assert
+        assertThat(bladeTask1.getStartDate()).isNull();
+        assertThat(bladeTask1.getEndDate()).isNull();
+        assertThat(bladeTask1.getDuration()).isEqualTo(20);
+        assertThat(bladeTask1.isInConflict()).isFalse();
+    }
+
 }
+
+
