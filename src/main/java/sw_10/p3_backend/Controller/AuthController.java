@@ -25,8 +25,8 @@ public class AuthController {
 
 
     /**
-     *
-     * @param authRequest
+     * This method checks whether the passed AuthRequest fits with a user in the system and then creates a JWT if it does
+     * @param authRequest contains a username and a password
      * @return a String that is either the bearer token or an error message
      */
     @PostMapping("/authenticate")
