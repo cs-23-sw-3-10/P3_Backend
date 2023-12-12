@@ -8,5 +8,11 @@ import java.util.List;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule,Long> {
+
+    /**
+     * This query fetches either the view schedule or edit schedule
+     * @param active determines whether it fetches the view schedule (true) or the edit schedule (false)
+     * @return either the view schedule or edit schedule
+     */
     Schedule findScheduleByIsActive(boolean active);
 }

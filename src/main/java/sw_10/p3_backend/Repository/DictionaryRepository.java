@@ -9,8 +9,12 @@ import java.util.List;
 
 @Repository
 public interface DictionaryRepository extends JpaRepository<Dictionary,Long> {
-    //@Query(value = "SELECT * FROM Dictionary WHERE category = :category", nativeQuery = true)
+
+    /**
+     * This query fetches all entries with a certain category
+     * @param category determines which category is fetched
+     * @return all entries that has the passed category
+     */
     @Query("SELECT e FROM Dictionary e WHERE e.category = :category")
-    //@Query("SELECT e FROM Dictionary e WHERE e.category = :category" )
     List<Dictionary> findAllByCategory(String category);
 }
