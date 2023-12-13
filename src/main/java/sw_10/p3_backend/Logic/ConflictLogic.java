@@ -26,7 +26,6 @@ public class ConflictLogic {
     private BladeTaskLogic bladeTaskLogic;
 
     public ConflictLogic(ConflictRepository conflictRepository) {
-
         this.conflictRepository = conflictRepository;
     }
 
@@ -34,38 +33,60 @@ public class ConflictLogic {
         this.bladeTaskLogic = bladeTaskLogic;
     }
 
+    /**
+     * Finds all conflicts in the database
+     * @return A list of all conflicts in the database
+     */
     public List<Conflict> allConflicts() {
         return conflictRepository.findAll();
     }
 
+    /**
+     * This method creates a conflict and finds all related bladetasks
+     * @param booking The booking that is in conflict
+     * @param bladeTask The blade task that the booking belongs to
+     * @return The created conflict
+     */
     public Conflict createConflict(Booking booking, BladeTask bladeTask) {
         System.out.println("Getting related bladetasks");
 
+        //Finds all bladetasks that are related to the conflict
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
+        //Makes a hash set of the related bladetasks to ensure no duplicates
         Set<BladeTask> hashedBladeTasks = Sets.newHashSet(relatedBladeTasks);
 
         Conflict conflict = new Conflict(booking, bladeTask, hashedBladeTasks);
-        //conflictRepository.save(conflict);
 
         return conflict;
     }
 
     //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)
+    /**
+     * This method finds all conflicts related to the bookings in the list and deletes them
+     * @param bookings The bookings to delete conflicts for
+     */
     public void removeConflicts(List<Booking> bookings) {
+        //Runs through all bookings and deletes all conflicts related to them
         for (Booking booking : bookings) {
             List<Conflict> conflicts = conflictRepository.findAllByBooking(booking);
             conflictRepository.deleteAll(conflicts);
         }
     }
 
-
+    /**
+     * This method finds the conflict that belong to a certain booking
+     * @param bookingId The id of the booking to find the conflict for
+     * @param isActive Whether the conflict is in view schedule (true) or in edit schedule (false)
+     * @return The conflict that belongs to the booking and is in the correct schedule
+     */
     public Conflict findConflictByBookingId(int bookingId, boolean isActive) {
-
         return conflictRepository.findConflictByBookingId(bookingId, isActive);
-        //,isActive
-
     }
 
+    /**
+     * This method finds all conflicts
+     * @return A list of all conflicts
+     */
     public List<Conflict> findAll(){
         return conflictRepository.findAll();
     }

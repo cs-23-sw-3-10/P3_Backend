@@ -21,6 +21,11 @@ public class ScheduleLogic {
 
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     public Schedule ScheduleById(Integer id) {
         try {
              Optional<Schedule> schedule = scheduleRepository.findById(Long.valueOf(id));
@@ -38,17 +43,24 @@ public class ScheduleLogic {
 
     }
 
+    /**
+     * This method finds both schedules
+     * @return a list of both schedules
+     */
     public List<Schedule> findAll(){
         return scheduleRepository.findAll();
     }
 
+    /**
+     * This methode clones and replaces the view schedule with a copy of the edit schedule
+     * @return the new view schedule
+     * @throws CloneNotSupportedException
+     */
     public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
 
         //Find editable schedule (active)
         Schedule CurrentEditschedule = scheduleRepository.findScheduleByIsActive(false);
         Schedule CurrentViewSchedule = scheduleRepository.findScheduleByIsActive(true);
-
-
 
         //clone active schedule
         Schedule newViewSchedule = (Schedule) CurrentEditschedule.clone(true);
@@ -64,13 +76,20 @@ public class ScheduleLogic {
             System.out.println("Deleted");
         }
 
+        //Saves the new view schedule
         scheduleRepository.save(newViewSchedule);
 
+        //Sends the updated schedule to the front end
         bladeTaskLogic.onDatabaseUpdate();
         return newViewSchedule;
 
     }
 
+    /**
+     * This method deletes the schedule with a certain id
+     * @param id
+     * @return the deleted schedule
+     */
     public Schedule deleteSchedule(Integer id) {
         Schedule schedule = scheduleRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NotFoundException("Schedule with id " + id + " not found"));
         System.out.println("deleteSchedule");
@@ -78,6 +97,11 @@ public class ScheduleLogic {
         return schedule;
     }
 
+    /**
+     * This method replaces the edit schedule with a copy of the view schedule
+     * @return the new edit schedule
+     * @throws CloneNotSupportedException
+     */
     public Schedule discardEditChanges()  throws CloneNotSupportedException {
 
         //Find editable schedule (active)
@@ -95,9 +119,9 @@ public class ScheduleLogic {
         //save the new schedule (will be the new view only schedule) and delete the old one.
         scheduleRepository.save(newEditSchedule);
 
+        //TODO SEB SKRIV KOMMENTARER TIL DET HER!!!!
+
         cloneScheduleAndReplace();
-
-
 
         return newEditSchedule;
     }
