@@ -93,6 +93,8 @@ public class EquipmentController {
      * @param name the name of the equipment to be deleted
      * @return the deleted equipment
      */
+
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Equipment DeleteEquipment(@Argument String name) {
         return equipmentLogic.deleteEquipment(name);

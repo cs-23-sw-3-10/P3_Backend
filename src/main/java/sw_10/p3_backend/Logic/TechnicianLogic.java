@@ -67,7 +67,8 @@ public class TechnicianLogic {
                 technician.setMaxWorkHours(maxWorkHours);
                 technician.setCount(count);
                 System.out.println("Technician updated");
-                return technicianRepository.save(technician);
+                technicianRepository.save(technician);
+                return technician;
             }
             //Creates a new technician if it does not already exist and then sets its values
             technician = new Technician();
@@ -75,7 +76,9 @@ public class TechnicianLogic {
             technician.setMaxWorkHours(maxWorkHours);
             technician.setWorkHours(0);
             technician.setCount(count);
-            return technicianRepository.save(technician);
+
+            technicianRepository.save(technician);
+            return technician;
         } catch (InputInvalidException e) {
             throw new InputInvalidException(e.getMessage());
         } catch (Exception e) {

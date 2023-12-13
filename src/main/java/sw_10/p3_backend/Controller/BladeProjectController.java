@@ -53,8 +53,6 @@ public class BladeProjectController {
 
     //PreAuthorize: Checks if the user invoking the method is authorized to do so
     //Authorization criteria: User is logged in on the website -> Editing privileges
-    //@PreAuthorize("isAuthenticated()")
-
     /**
      * This method creates a new blade project with the passed values
      * @param name
@@ -63,6 +61,7 @@ public class BladeProjectController {
      * @param resourceOrders
      * @return the created project
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {
         System.out.println("REQUEST RECEIVED");
@@ -71,18 +70,13 @@ public class BladeProjectController {
         return bladeProjectLogic.createProject(name, customer, projectLeader, resourceOrders);
     }
 
-    /*@PreAuthorize("isAuthenticated()")
-    @MutationMapping
-    public String deleteBladeProject(@Argument Long id) {
-        return bladeProjectLogic.deleteProject(id);
-    }*/
-
     /**
      * Updates the information of a blade project with a certain id
      * @param bpId
      * @param updates contains all the updated information about a blade project
      * @return
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject updateBladeProject(@Argument Long bpId, @Argument BladeProjectInput updates) {
         return bladeProjectLogic.updateBladeProject(bpId, updates);
@@ -93,6 +87,7 @@ public class BladeProjectController {
      * @param id
      * @return a string detailing the deleted blade project or an error message
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeProject(@Argument Long id){
         return bladeProjectLogic.deleteBladeProject(id);

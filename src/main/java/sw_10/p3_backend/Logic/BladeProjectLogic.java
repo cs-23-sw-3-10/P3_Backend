@@ -48,11 +48,13 @@ public class BladeProjectLogic {
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false); //Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 
-            List<ResourceOrder> resourceOrders = handleResourceOrders(resourceOrderInput, project);
-            for (ResourceOrder resourceOrder: resourceOrders) {
-                project.addResourceOrder(resourceOrder);
+            //Creates resource orders and adds them to the project if any are given
+            if (resourceOrderInput != null) {
+                List<ResourceOrder> resourceOrders = handleResourceOrders(resourceOrderInput, project);
+                for (ResourceOrder resourceOrder : resourceOrders) {
+                    project.addResourceOrder(resourceOrder);
+                }
             }
-
             //Saves Blade Project in database
             bladeProjectRepository.save(project);
 

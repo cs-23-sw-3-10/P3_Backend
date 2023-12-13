@@ -4,9 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.testcontainers.containers.PostgreSQLContainer;
+import sw_10.p3_backend.config.SecurityConfig;
 
 
+@Import(SecurityConfig.class)
 @TestConfiguration(proxyBeanMethods = false)
 public class TestP3BackendApplication {
 
@@ -16,6 +19,7 @@ public class TestP3BackendApplication {
     public PostgreSQLContainer<?> postgreSQLContainer() {
         return new PostgreSQLContainer<>("postgres:16.0");
     }
+
 
     public static void main(String[] args) {
         SpringApplication.from(P3BackendApplication::main).with(TestP3BackendApplication.class).run(args);

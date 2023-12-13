@@ -48,17 +48,6 @@ public class BladeTaskController {
         return bladeTaskLogic.findAll();
     }
 
-    //TODO have Seb write this
-    /**
-     * Lets clients subscribe and receive updates when there is a change
-     * @return all blade tasks
-     */
-    @SubscriptionMapping
-    public List<BladeTask> bladeTasksAdded(){
-        System.out.println("bladeTasksAdded");
-        return bladeTaskLogic.findAll();
-    }
-
     /**
      * Gets a blade task by its id
      * @param id
@@ -126,6 +115,7 @@ public class BladeTaskController {
      * @param testRig the new test rig
      * @return the updated blade task
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeTask updateStartAndDurationBladeTask(@Argument Long id, @Argument String startDate, @Argument Integer duration, @Argument Integer testRig){
         return bladeTaskLogic.updateStartAndDurationBladeTask(id, startDate, duration, testRig);
@@ -136,6 +126,7 @@ public class BladeTaskController {
      * @param id the id of the deleted blade task
      * @return a String with the id of the deleted blade task
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public String deleteBladeTask(@Argument Long id){
         bladeTaskLogic.deleteBladeTask(id);

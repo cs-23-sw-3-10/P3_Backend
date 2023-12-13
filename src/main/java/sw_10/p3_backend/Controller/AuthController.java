@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sw_10.p3_backend.Logic.TokenLogic;
@@ -36,6 +37,8 @@ public class AuthController {
             //Authenticate and return an Authentication object
             Authentication authentication = tokenLogic.authenticate(authRequest.username(), authRequest.password());
 
+            System.out.println("past authenticate");
+
             //Generate a token from the Authentication object
             String token = tokenLogic.generateToken(authentication);
             System.out.println("Token: " + token);
@@ -43,6 +46,10 @@ public class AuthController {
         } catch (AuthenticationException e) {
             // Handle authentication failure
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: " + e.getMessage());
+        }
+        catch (Exception e) {
+            // Handle any other errors
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
         }
     }
 

@@ -36,7 +36,7 @@ public class ResourceOrder implements Cloneable {
 
     @ManyToOne
     @JoinColumn(name = "bladeTaskId")
-    @Getter(AccessLevel.NONE) BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
+    BladeTask bladeTask; //Ensures getter of will not get stuck in endless recursive loop
 
     @ManyToOne
     @JoinColumn(name = "bladeProjectId")
@@ -80,5 +80,9 @@ public class ResourceOrder implements Cloneable {
         }
 
         return cloned;
+    }
+
+    public BladeProject fetchBladeProject() {
+        return this.bladeProject;
     }
 }

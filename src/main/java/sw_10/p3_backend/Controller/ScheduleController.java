@@ -4,6 +4,7 @@ package sw_10.p3_backend.Controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import sw_10.p3_backend.Logic.ScheduleLogic;
 import sw_10.p3_backend.Model.Schedule;
@@ -27,6 +28,7 @@ public class ScheduleController {
      * @return the new view schedule
      * @throws CloneNotSupportedException
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
         return scheduleLogic.cloneScheduleAndReplace();
@@ -37,6 +39,7 @@ public class ScheduleController {
      * @return the new edit schedule
      * @throws CloneNotSupportedException
      */
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Schedule discardEditChanges() throws CloneNotSupportedException {
         return scheduleLogic.discardEditChanges();

@@ -66,6 +66,8 @@ public class    EngineerController {
      * @param name the name of the engineer that should be deleted
      * @return the deleted engineer
      */
+
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Engineer DeleteEngineer(@Argument String name) {
         return engineerLogic.deleteEngineer(name);

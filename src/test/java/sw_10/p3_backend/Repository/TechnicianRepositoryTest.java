@@ -35,5 +35,6 @@ class TechnicianRepositoryTest {
         technicianRepository.save(new Technician(1,"smith", 20, 37, 3, null));
 
         assertThat(technicianRepository.findByType("smith").getType()).isEqualTo("smith");
+        technicianRepository.deleteAll();
     }
 }

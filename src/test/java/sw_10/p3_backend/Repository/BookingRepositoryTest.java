@@ -1,5 +1,8 @@
 package sw_10.p3_backend.Repository;
 
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -7,9 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import sw_10.p3_backend.Model.BladeTask;
-import sw_10.p3_backend.Model.Booking;
-import sw_10.p3_backend.Model.Equipment;
+import sw_10.p3_backend.Model.*;
+
 import sw_10.p3_backend.TestP3BackendApplication;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,30 +36,69 @@ class BookingRepositoryTest {
     BookingRepository bookingRepository;
     @Autowired
     EquipmentRepository equipmentRepository;
+    @Autowired
+    ScheduleRepository scheduleRepository;
+    @Autowired
+    BladeProjectRepository bladeProjectRepository;
+    @Autowired
+    BladeTaskRepository bladeTaskRepository;
+
 
 
     @Test
     void testFindOverlappingEventsShouldReturnOverlappingBookings(){
+
+        // Given
+        Schedule schedule = new Schedule();
+        schedule.setActive(false);
+        scheduleRepository.save(schedule);
+
+        BladeProject bladeProject = new BladeProject(schedule, "test", "test", "test", "test");
+
+        bladeProjectRepository.save(bladeProject);
+
+
+        BladeTask bladeTask = new BladeTask(LocalDate.of(2020,10,1), 30, bladeProject);
+
+        bladeTaskRepository.save(bladeTask);
+
         Equipment e1 = new Equipment(1, "hammer", LocalDate.of(2000,10,10), "hammer1", null);
-        Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "hammer1", null);
+        Equipment e2 = new Equipment(2, "saw", LocalDate.of(2000,10,10), "saw1", null);
 
         equipmentRepository.save(e1);
         equipmentRepository.save(e2);
 
-        Booking booking1 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, (BladeTask) null, e1.getType() ,e1.getName());
-        Booking booking2 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, (BladeTask) null, e1.getType() ,e1.getName());
-        Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, (BladeTask) null, e1.getType() ,e1.getName());
 
+        Booking booking1 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,10), e1, bladeTask, e1.getType(), e1.getName());
+        Booking booking2 = new Booking(LocalDate.of(2020,10,20), LocalDate.of(2020,10,30), e1, bladeTask, e1.getType(), e1.getName());
+        Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,30), e2, bladeTask, e2.getType(), e2.getName());
+
+        System.out.println("look here" + booking1.fetchBladeTask());
+
+        Schedule test33 = scheduleRepository.findScheduleByIsActive(false);
+
+        System.out.println(test33);
+        // Save bookings to the repository
 
         bookingRepository.save(booking1);
         bookingRepository.save(booking2);
         bookingRepository.save(booking3);
 
-        List<Booking> overlappingBookings = bookingRepository.findBookedEquipmentByTypeAndPeriod("hammer", LocalDate.of(2020,10,1),LocalDate.of(2020,10,20));
 
+        // When
+        // Check for overlapping events for same type
+        List<Booking> bookingsByTypeHammerAndPeriod = bookingRepository.findBookedEquipmentByTypeAndPeriod("hammer1", LocalDate.of(2020,10,1), LocalDate.of(2020,10,30));
+        // Then
 
-        List<Booking> overlappingBookingsDifferentType = bookingRepository.findBookedEquipmentByTypeAndPeriod("saw", LocalDate.of(2020,10,1),LocalDate.of(2020,10,30));
-        assertThat(overlappingBookingsDifferentType).isEmpty();
+        System.out.println(bookingsByTypeHammerAndPeriod);
+
+        System.out.println("BP tasks: " + bladeProject.getBladeTasks().size());
+
+        assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2);
+        assertThat(bookingsByTypeHammerAndPeriod).hasSize(2);
+
+        scheduleRepository.deleteAll();
+
     }
 
 

@@ -68,6 +68,8 @@ public class TechnicianController {
      * @param type the type of technician that is deleted
      * @return the deleted technician
      */
+
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Technician DeleteTechnician(@Argument String type) {
         return technicianLogic.deleteTechnician(type);
