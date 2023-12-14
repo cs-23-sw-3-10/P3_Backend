@@ -18,6 +18,12 @@ public class ResourceOrderController {
     public ResourceOrderController(ResourceOrderLogic resourceOrderLogic){
         this.resourceOrderLogic = resourceOrderLogic;
     }
+
+    /**
+     * Fetches resource orders that belong to a blade project with a certain id
+     * @param id blade projects id
+     * @return the resources orders that belong to the blade project with the passed id
+     */
     @QueryMapping
     public List<ResourceOrder> ResourceOrderByBPId(@Argument Long id){return resourceOrderLogic.findResourceOrderByBpId(id);}
 }

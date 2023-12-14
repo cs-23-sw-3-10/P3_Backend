@@ -17,11 +17,21 @@ public class  BookingController {
     public BookingController(BookingLogic bookingLogic){
         this.bookingLogic = bookingLogic;
     }
+
+    /**
+     * Fetches all bookings
+     * @return all bookings
+     */
     @QueryMapping
     public List<Booking> getAllBookings(){
         return bookingLogic.findAll();
     }
 
+    /**
+     * Fetches all bookings on a blade task with a certain id
+     * @param id
+     * @return all bookings that is on a blade task with a certain id
+     */
     @QueryMapping
     public List<Booking> BookingByBPId(@Argument Long id){return bookingLogic.getBookingById(id);}
 }

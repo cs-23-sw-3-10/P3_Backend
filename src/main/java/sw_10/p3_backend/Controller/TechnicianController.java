@@ -21,12 +21,20 @@ public class TechnicianController {
     }
 
 
-
+    /**
+     * This method fetches all the technicians
+     * @return all the technicians
+     */
     @QueryMapping
     public List<Technician> AllTechnicians(){
         return technicianLogic.findAll();
     }
 
+    /**
+     * This method fetches technician by type
+     * @param type
+     * @return the technician with the passed type
+     */
     @QueryMapping
     public Technician TechnicianByType(@Argument String type) {
         try {
@@ -42,11 +50,24 @@ public class TechnicianController {
         }
     }
 
+    /**
+     * This method creates a new technician
+     * @param type the type of technician
+     * @param maxWorkHours the maximum work hours of the technician
+     * @param count the amount of technicians of this type there is
+     * @return the created technician
+     */
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Technician CreateTechnician(@Argument String type, @Argument Integer maxWorkHours, @Argument Integer count){
         return technicianLogic.CreateTechnician(type, maxWorkHours, count);
     }
+
+    /**
+     * This method deletes a technician
+     * @param type the type of technician that is deleted
+     * @return the deleted technician
+     */
 
     @PreAuthorize("isAuthenticated()")
     @MutationMapping

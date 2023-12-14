@@ -43,6 +43,15 @@ public class Booking implements Cloneable {
     @Getter(AccessLevel.NONE) private Conflict conflict;
 
 
+    /**
+     * Constructor for booking of equipment for blade task
+     * @param startDate Start date of booking
+     * @param endDate End date of booking
+     * @param equipment Equipment to be booked
+     * @param bladeTask Blade task the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -52,7 +61,15 @@ public class Booking implements Cloneable {
         this.bladeTask = bladeTask;
     }
 
-    //Blade Task - Technician Booking
+    /**
+     * Constructor for booking of technicians for blade task
+     * @param bookingStartDate  Start date of booking
+     * @param bookingEndDate End date of booking
+     * @param technician Technician to be booked
+     * @param bladeTask Blade task the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Technician technician, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -63,7 +80,15 @@ public class Booking implements Cloneable {
         this.resourceName = resourceName.toLowerCase();
     }
 
-    //Blade Task - Engineer Booking
+    /**
+     * Constructor for booking of an engineer for blade task
+     * @param bookingStartDate Start date of booking
+     * @param bookingEndDate End date of booking
+     * @param engineer Engineer to be booked
+     * @param bladeTask Blade task the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -74,7 +99,14 @@ public class Booking implements Cloneable {
         this.resourceName = resourceName.toLowerCase();
     }
 
-    //Blade Task - Empty Booking
+    /**
+     * Constructor for empty booking for blade task
+     * @param bookingStartDate Start date of booking
+     * @param bookingEndDate End date of booking
+     * @param bladeTask Blade task the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -84,7 +116,15 @@ public class Booking implements Cloneable {
         this.resourceName = resourceName.toLowerCase();
     }
 
-    //Blade Project - Equipment Booking
+    /**
+     * Constructor for booking of equipment for blade project
+     * @param startDate Start date of booking
+     * @param endDate End date of booking
+     * @param equipment Equipment to be booked
+     * @param bladeProject Blade project the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate startDate, LocalDate endDate, Equipment equipment, BladeProject bladeProject, String resourceType, String resourceName) {
         this.startDate = startDate;
         this.endDate = endDate;
@@ -94,7 +134,15 @@ public class Booking implements Cloneable {
         this.bladeProject = bladeProject;
     }
 
-    //Blade Project - Engineer Booking
+    /**
+     * Constructor for booking of engineers for blade project
+     * @param bookingStartDate Start date of booking
+     * @param bookingEndDate End date of booking
+     * @param engineer Engineer to be booked
+     * @param bladeProject Blade project the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, Engineer engineer, BladeProject bladeProject, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -105,7 +153,14 @@ public class Booking implements Cloneable {
         this.resourceName = resourceName.toLowerCase();
     }
 
-    //Blade Project - Empty Booking
+    /**
+     * Constructor for empty booking for a blade project
+     * @param bookingStartDate Start date of booking
+     * @param bookingEndDate End date of booking
+     * @param bladeProject Blade project the booking is for
+     * @param resourceType Type of resource to be booked
+     * @param resourceName Name of resource to be booked
+     */
     public Booking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeProject bladeProject, String resourceType, String resourceName) {
         this.startDate = bookingStartDate;
         this.endDate = bookingEndDate;
@@ -119,6 +174,11 @@ public class Booking implements Cloneable {
         return bladeTask;
     }
 
+    /**
+     * Method to clone a booking
+     * @return cloned booking
+     * @throws CloneNotSupportedException
+     */
     @Override
     public Booking clone() throws CloneNotSupportedException {
         Booking cloned = (Booking) super.clone();

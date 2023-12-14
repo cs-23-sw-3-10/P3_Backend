@@ -28,6 +28,11 @@ public class TokenLogic {
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * This method generates a JSON Web Token (JWT)
+     * @param authentication a Spring object type
+     * @return a JWT token
+     */
     public String generateToken(Authentication authentication) {
         System.out.println("Generating token");
         Instant now = Instant.now();// Create a JWT Claims Set instance with issuer, timestamp, subject, and scope claims
@@ -44,6 +49,14 @@ public class TokenLogic {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(); // Encode the claims set into a JWT and return it as a string (the token value)
     }
 
+
+    /**
+     * This method authenticates a user against the registered users in the system
+     * @param username
+     * @param password
+     * @return a Authentization Spring object
+     * @throws AuthenticationException
+     */
     public Authentication authenticate(String username, String password) throws AuthenticationException {
         try {
             System.out.println("Authenticating" + username + " " + password);

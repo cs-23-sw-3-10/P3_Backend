@@ -13,16 +13,24 @@ import java.util.List;
 @Repository
 public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
 
-
+    /**
+     * This query fetches all blade tasks that overlaps with a certain period and belongs to a certain schedule
+     * @param start start of the overlapping period
+     * @param end end of the overlapping period
+     * @param isActive determines which schedule you fetch from
+     * @return all blade tasks that overlap with the passed period and belongs to the passed schedule
+     */
     @Query("SELECT bt FROM BladeTask bt WHERE (bt.bladeProject.schedule.isActive = :isActive) " +
             "AND (((bt.startDate > :start AND bt.startDate < :end) " +
             "OR (bt.endDate > :start AND bt.endDate < :end)) OR (bt.startDate <= :start AND bt.endDate > :start))")
     List<BladeTask> bladeTasksInRange(LocalDate start, LocalDate end, boolean isActive);
 
 
-    BladeTask getBladeTaskById(int id);
-
-
+    /**
+     * This query fetches all blade tasks from a certain schedule that should lie in pending on the client
+     * @param isActive determines which schedule you fetch from
+     * @return all blade tasks that belongs to the passed schedule and should be placed in the pending
+     */
     @Query("SELECT bt FROM BladeTask bt  WHERE (bt.bladeProject.schedule.isActive = :isActive) AND ((bt.startDate IS NULL) OR (bt.endDate IS NULL) OR (bt.testRig IS NULL))")
     List<BladeTask> bladeTasksPending(boolean isActive);
 

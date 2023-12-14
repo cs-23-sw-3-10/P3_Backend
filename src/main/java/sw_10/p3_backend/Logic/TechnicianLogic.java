@@ -22,6 +22,11 @@ public class TechnicianLogic {
         this.resourceOrderLogic = resourceOrderLogic;
     }
 
+    /**
+     * This method finds a technician depending on its type
+     * @param type the type of technician you wish to find
+     * @return the technician with the passed type
+     */
     public Technician TechnicianByType(String type) {
         try {
             Technician technician = technicianRepository.findByType(type);
@@ -42,20 +47,30 @@ public class TechnicianLogic {
         }
     }
 
-    // If technician exists, update. Else create new technician with param values
+    /**
+     * This method checks if the technician already exists, if it does it updates it with the passed values, if not it creates a new technician
+     * @param type the type of the technician
+     * @param maxWorkHours the maximum work hours this type of technicians should be assigned
+     * @param count the number of technicians of this type
+     * @return the created/updated technician
+     */
     public Technician CreateTechnician(String type, Integer maxWorkHours, Integer count) {
+        //Finds the technician in the database if it exists
         Technician technician = technicianRepository.findByType(type);
         try {
+            //Checks if the values passed are valid
             if (type == null || maxWorkHours == null || count == null) {
                 throw new InputInvalidException("cannot parse null");
             } //check if technician exists
             if (technician != null) {
+                //Update values
                 technician.setMaxWorkHours(maxWorkHours);
                 technician.setCount(count);
                 System.out.println("Technician updated");
                 technicianRepository.save(technician);
                 return technician;
             }
+            //Creates a new technician if it does not already exist and then sets its values
             technician = new Technician();
             technician.setType(type);
             technician.setMaxWorkHours(maxWorkHours);
@@ -71,28 +86,48 @@ public class TechnicianLogic {
         }
     }
 
+    /**
+     * This method updates a certain technicians work hours by the passed duration
+     * @param technician the technician to be updated
+     * @param duration how much work hours should increase
+     */
     public void updateTechnician(Technician technician, int duration) {
         technician.setWorkHours(technician.getWorkHours() + duration);
         technicianRepository.save(technician);
     }
+
+    /**
+     * This method finds a technician by its type
+     * @param resourceName equal to the technicians type
+     * @return the technician with the passed type
+     */
     public Technician findTechnicians(String resourceName) {
         return technicianRepository.findByType(resourceName);
     }
 
+    /**
+     * This method deletes a technician, if it is not assigned to any blade tasks
+     * @param type the type of technician to be deleted
+     * @return the deleted technician
+     */
     public Technician deleteTechnician(String type) {
         try {
+            //Finds the technician in the database if it exists
             Technician technician = technicianRepository.findByType(type);
+            //Checks if the technician exists
             if (technician != null) {
                 /*if (technician.getWorkHours() > 0) {
                     throw new InputInvalidException("Technician has " + technician.getWorkHours() + " work hours assigned. Cannot delete technician with work");
                 }*/
+                //Finds all resourceOrders that has the technician assigned
                 List<ResourceOrder> resourceOrders = resourceOrderLogic.findResourceName(technician.getType());
+                //Checks if there are any resourceOrders assigned to the technician, since it cannot be deleted if there are
                 if (!resourceOrders.isEmpty()) {
                     throw new InputInvalidException("Cannot delete technician with assigned BladeTasks. Currently assigned " + resourceOrders.size() + " blade tasks");
 
                 }
-                // TODO ressourceoOrders check efter typex
-                // kald fra TechnicianLogic til ressourceOrderLogic som kalder resourceorderrepository
+                // TODO ressourceoOrders check efter type
+                // Deletes the technician
                 technicianRepository.delete(technician);
                 return technician;
             } else {
@@ -107,6 +142,10 @@ public class TechnicianLogic {
         }
     }
 
+    /**
+     * This method finds all technicians
+     * @return a list of all technicians
+     */
     public List<Technician> findAll(){
         return technicianRepository.findAll();
     }

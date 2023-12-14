@@ -16,6 +16,11 @@ public class DictionaryLogic {
         this.dictionaryRepository = dictionaryRepository;
     }
 
+    /**
+     * Finds all entries of a certain category in the dictionary
+     * @param category The category to search for
+     * @return A list of all entries in the dictionary with the given category
+     */
     public List<Dictionary> dictionaryAllByCategory(String category) {
         try {
             List<Dictionary> dictionaries = dictionaryRepository.findAllByCategory(category);

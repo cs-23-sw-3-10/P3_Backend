@@ -58,18 +58,14 @@ public class BladeTaskLogic {
     @PostConstruct
     public void init() {
         conflictLogic.setBladeTaskLogic(this);
-    }
-
-    public String deleteTask(Integer id) {
-        try {
-            bladeTaskRepository.deleteById(id.longValue());
-            return "BT deleted";
-        } catch (Exception e) {
-            return "Error deleting BT" + e;
-        }
-    }
+    } //Sets
 
     //TODO: add validation of equipmentAssignmentStatus of resource orders "Must be consecutive" or add logic to handle this e.g. multiple bookings pr resource order
+    /**
+     * Creates a new BladeTask from the provided BladeTaskInput object
+     * @param input The BladeTaskInput object containing the data for the new BladeTask
+     * @return The newly created BladeTask
+     */
     public BladeTask createBladeTask(BladeTaskInput input) {
         System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
@@ -154,11 +150,23 @@ public class BladeTaskLogic {
         return newBladeTask;
     }
 
+    /**
+     * Finds the blade project with the provided ID in the database
+     * @param bladeProjectId The ID of the blade project to find
+     * @return The blade project with the provided ID
+     * @throws NotFoundException If no blade project with the provided ID exists in the database
+     */
     private BladeProject getBladeProject(Long bladeProjectId) {
         return bladeProjectRepository.findById(bladeProjectId)
                 .orElseThrow(() -> new NotFoundException("BladeProject not found with ID: " + bladeProjectId));
     }
 
+    /**
+     * Creates resource orders for the provided blade task if any are provided in the BladeTaskInput object
+     * @param input The BladeTaskInput object containing the resource orders to create
+     * @param newBladeTask The blade task to create the resource orders for
+     * @return The list of created resource orders
+     */
     private @Nullable List<ResourceOrder> handleResourceOrders(BladeTaskInput input, BladeTask newBladeTask) {
         if (input.resourceOrders() != null) {
             return resourceOrderLogic.createResourceOrdersBladeTask(input.resourceOrders(), newBladeTask);
@@ -166,10 +174,20 @@ public class BladeTaskLogic {
         return null;
     }
 
+    /**
+     * Finds all blade tasks in the database
+     * @return A list of all blade tasks in the database
+     */
     public List<BladeTask> findAll() {
         return bladeTaskRepository.findAll();
     }
 
+    /**
+     * Finds the blade task with the provided ID in the database
+     * @param id The ID of the blade task to find
+     * @return The blade task with the provided ID
+     * @throws NotFoundException If no blade task with the provided ID exists in the database
+     */
     public BladeTask findOne(Integer id) throws NotFoundException {
         try {
             Optional<BladeTask> bladeTask = bladeTaskRepository.findById(Long.valueOf(id));
@@ -183,6 +201,11 @@ public class BladeTaskLogic {
         }
     }
 
+    /**
+     * Validates the provided BladeTaskInput object
+     * @param input The BladeTaskInput object to validate
+     * @throws InputInvalidException If the provided BladeTaskInput object is invalid
+     */
     private void validateBladeTaskInput(BladeTaskInput input) {
 
         if ((input.startDate() == null && input.testRig() != null) || (input.startDate() != null && input.testRig() == null)) {
@@ -211,6 +234,12 @@ public class BladeTaskLogic {
         }
     }
 
+    /**
+     * Calculates the end date of a blade task based on the provided start date and duration
+     * @param startDate The start date of the blade task
+     * @param duration The duration of the blade task
+     * @return The end date of the blade task
+     */
     private LocalDate calculateEndDate(LocalDate startDate, Integer duration) {
         if (startDate != null && duration != null) {
             return startDate.plusDays(duration - 1);
@@ -218,6 +247,16 @@ public class BladeTaskLogic {
         return null;
     }
 
+    /**
+     * Updates the start date and duration of the blade task with the provided ID
+     * This method also deletes and recreates bookings for the blade task
+     * and all related blade tasks in order to update conflict
+     * @param id The ID of the blade task to update
+     * @param startDate The new start date of the blade task
+     * @param duration The new duration of the blade task
+     * @param testRig The new test rig of the blade task
+     * @return The updated blade task
+     */
     public BladeTask updateStartAndDurationBladeTask(Long id, String startDate, Integer duration, Integer testRig) {
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(id)
@@ -296,11 +335,22 @@ public class BladeTaskLogic {
         return bladeTaskToUpdate;
     }
 
+    /**
+     * Finds all blade tasks in the database that are pending
+     * @param isActive Whether to find pending blade tasks from view schedule or edit schedule
+     * @return A list of all blade tasks in the database that are pending from the provided schedule
+     */
     public List<BladeTask> bladeTasksInRange(String startDate, String endDate, boolean isActive) {
         return bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive);
     }
 
 
+    /**
+     * Updates the blade task with the provided ID with the provided values in the BladeTaskInput object
+     * @param updates The BladeTaskInput object containing the values to update
+     * @param btId The ID of the blade task to update
+     * @return The updated blade task
+     */
     public BladeTask updateBTInfo(BladeTaskInput updates, Long btId) {
         BladeTask bladeTaskToUpdate = bladeTaskRepository.findById(btId)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + btId));
@@ -340,6 +390,13 @@ public class BladeTaskLogic {
         return bladeTaskToUpdate;
     }
 
+    /**
+     * Finds all conflicts for the blade task with the provided ID
+     * @param id The ID of the blade task to find conflicts for
+     * @param isActive Whether to find conflicts from view schedule or edit schedule
+     * @return A list of all conflicts for the blade task with the provided ID
+     * @throws NotFoundException
+     */
     public List<Conflict> findConflictsForBladeTask(int id, boolean isActive) throws NotFoundException {
 
         BladeTask bladeTask = this.findOne(id);
@@ -359,17 +416,38 @@ public class BladeTaskLogic {
         return conflicts;
     }
 
+
+    //TODO: Få Seb til at skrive den her
+    /**
+     *
+     * @param startDate
+     * @param endDate
+     * @param isActive
+     * @return
+     */
     public Flux<List<BladeTask>> bladeTasksInRangeSub(String startDate, String endDate, boolean isActive) {
         // Create a Flux stream to emit the list of blade tasks in a given range when to subscribers whenever an update occurs.
         return createFlux(() -> bladeTaskRepository.bladeTasksInRange(LocalDate.parse(startDate), LocalDate.parse(endDate), isActive));
         //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
     }
 
+    //TODO: Få Seb til at skrive den her
+    /**
+     *
+     * @param isActive
+     * @return
+     */
     public Flux<List<BladeTask>> bladeTasksPendingSub(boolean isActive) {
         // Create a Flux stream to emit the list of blade tasks pending when to subscribers whenever an update occurs.
         return createFlux(() -> bladeTaskRepository.bladeTasksPending(isActive));
     }
 
+    //TODO: Få Seb til at skrive den her
+    /**
+     *
+     * @param supplier
+     * @return
+     */
     private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
         // Generalization of the creation of the Flux stream based on a supplier.
         // The supplier provides the actual data (list of BladeTasks) to be emitted by the Flux.
@@ -394,6 +472,9 @@ public class BladeTaskLogic {
                 .share(); // Share the Flux to keep it active
     }
 
+    /**
+     * Emits a signal to all subscribers that the database has been updated
+     */
     public void onDatabaseUpdate() {
         //Updates the processor with a new object to trigger a signal emission to subscribers that will run the query again
         processor.tryEmitNext(new Object());
@@ -401,27 +482,33 @@ public class BladeTaskLogic {
 
 
     //TODO: Find a better way to do this?
+
+    /**
+     * Finds all blade tasks that has a booking of a resource with the provided name in the provided period
+     * @param equipmentName The name of the resource to find blade tasks for
+     * @param startDate The start date of the period to find blade tasks for
+     * @param endDate The end date of the period to find blade tasks for
+     * @return A list of all blade tasks that has a booking of a resource with the provided name in the provided period
+     */
     public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
         System.out.println("Getting relevant bookings");
-        List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate); //Implement
-
-        //System.out.println("Bookings:");
-        //System.out.println(bookings);
+        List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate);
 
         List<BladeTask> bladeTasks = new ArrayList<>();
         for (Booking booking : bookings) {
-            //System.out.println(booking);
             BladeTask tempBladeTask = booking.fetchBladeTask();
-            //System.out.println(tempBladeTask);
             bladeTasks.add(tempBladeTask);
         }
-        System.out.println("BladeTasks:");
-        System.out.println(bladeTasks);
-
         return bladeTasks;
     }
 
-
+    /**
+     * This method checks for overlap between blade tasks in the provided period
+     * @param startDate The start date of the period to check for overlap
+     * @param endDate The end date of the period to check for overlap
+     * @param checkBladeTask The blade task to check for overlap with
+     * @return Whether the provided blade task overlaps with any other blade tasks in the provided period
+     */
     private boolean checkForBTOverlap(LocalDate startDate, LocalDate endDate, BladeTask checkBladeTask) {
 
         List<BladeTask> bladeTasksInRange = bladeTaskRepository.bladeTasksInRange(startDate, endDate, false);
@@ -446,6 +533,10 @@ public class BladeTaskLogic {
         return false;
     }
 
+    /**
+     * Deletes the blade task with the provided ID
+     * @param id The ID of the blade task to delete
+     */
     public void deleteBladeTask(Long id) {
         BladeTask bladeTaskToDelete = bladeTaskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("BladeTask not found with ID: " + id));

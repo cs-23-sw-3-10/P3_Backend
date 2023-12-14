@@ -28,6 +28,12 @@ public class BookingLogic {
     }
 
     //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
+
+    /**
+     * Creates bookings based on the resource orders and the bladetask
+     * @param resourceOrders List of resource orders
+     * @param bladeTask The bladetask that the bookings belong to
+     */
     public void createBookings(List<ResourceOrder> resourceOrders, BladeTask bladeTask) {
         int tempconflictcheck = 0;
         for (ResourceOrder resourceOrder: resourceOrders) {
@@ -65,6 +71,11 @@ public class BookingLogic {
         }
     }
 
+    /**
+     * Creates bookings based on the resource orders and the blade project
+     * @param resourceOrders List of resource orders
+     * @param bladeProject The blade project that the bookings belong to
+     */
     public void createBookings(List<ResourceOrder> resourceOrders, BladeProject bladeProject) {
         int tempconflictcheck = 0;
         for (ResourceOrder resourceOrder: resourceOrders) {
@@ -88,7 +99,6 @@ public class BookingLogic {
                     handleEngineerBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
                     break;
                 }
-
             }
         }
         if(tempconflictcheck == 0){
@@ -96,7 +106,16 @@ public class BookingLogic {
         }
     }
 
+
     //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
+    /**
+     * Handles the creation of bookings with equipment for a blade task
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeTask The bladetask that the booking belongs to
+     * @param bookingStartDate The start date of the booking
+     * @param bookingEndDate The end date of the booking
+     * @return 0 if no conflict was created, 1 if a conflict was created
+     */
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
@@ -123,12 +142,18 @@ public class BookingLogic {
             newBooking.setConflict(conflictHandler(newBooking, bladeTask));
 
             bookingRepository.save(newBooking);
-
-
             return 1;
         }
     }
 
+    /**
+     * Handles the creation of bookings with equipment for a blade project
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeProject The blade project that the booking belongs to
+     * @param bookingStartDate The start date of the booking
+     * @param bookingEndDate The end date of the booking
+     * @return 0 if no conflict was created, 1 if a conflict was created
+     */
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeProject bladeProject, LocalDate bookingStartDate, LocalDate bookingEndDate) {
         System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
@@ -155,6 +180,13 @@ public class BookingLogic {
         }
     }
 
+    /**
+     * Handles the creation of bookings with technicians for a blade task
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeTask The blade task that the booking belongs to
+     * @param bookingStartDate The start date of the booking
+     * @param bookingEndDate The end date of the booking
+     */
     private void handleTechnicianBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
         //Find the technician that is assigned to the resource order
@@ -168,6 +200,13 @@ public class BookingLogic {
         technicianLogic.updateTechnician(technician, resourceOrder.getWorkHours());
     }
 
+    /**
+     * Handles the creation of bookings with engineers for a blade task
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeTask The blade task that the booking belongs to
+     * @param bookingStartDate The start date of the booking
+     * @param bookingEndDate The end date of the booking
+     */
     private void handleEngineerBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
         //Find the engineer that is assigned to the resource order
         Engineer engineer = engineerLogic.findByName(resourceOrder.getResourceName());
@@ -185,6 +224,13 @@ public class BookingLogic {
     }
 
 
+    /**
+     * Handles the creation of bookings with engineers for a blade project
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeProject The blade project that the booking belongs to
+     * @param bookingStartDate The start date of the booking
+     * @param bookingEndDate The end date of the booking
+     */
     private void handleEngineerBooking(ResourceOrder resourceOrder, BladeProject bladeProject, LocalDate bookingStartDate, LocalDate bookingEndDate) {
         //Find the engineer that is assigned to the resource order
         Engineer engineer = engineerLogic.findByName(resourceOrder.getResourceName());
@@ -202,6 +248,12 @@ public class BookingLogic {
     }
 
     //TODO: ultra stupid logic for finding start and end date of booking refactor plox
+    /**
+     * Finds the start date of a booking based on the equipmentAssignmentStatus of a resource order
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeTask The blade task that the booking belongs to
+     * @return The start date of the booking
+     */
     private LocalDate bookingStartDate(ResourceOrder resourceOrder, BladeTask bladeTask) {
         //startDate if [true,...]
         if (resourceOrder.getEquipmentAssignmentStatus().get(0)) {
@@ -211,6 +263,13 @@ public class BookingLogic {
             return bladeTask.getStartDate().plusDays(bladeTask.getAttachPeriod());
         }
     }
+
+    /**
+     * Finds the end date of a booking based on the equipmentAssignmentStatus of a resource order
+     * @param resourceOrder The resource order that the booking is based on
+     * @param bladeTask The blade task that the booking belongs to
+     * @return The end date of the booking
+     */
     private LocalDate bookingEndDate(ResourceOrder resourceOrder, BladeTask bladeTask){
         //endDate if [...,true]
         if(resourceOrder.getEquipmentAssignmentStatus().get(1)){
@@ -221,6 +280,13 @@ public class BookingLogic {
             return bladeTask.getEndDate().minusDays(bladeTask.getDetachPeriod());
         }
     }
+
+    /**
+     * Handles the creation of a conflict
+     * @param booking The booking that the conflict is based on
+     * @param bladeTask The blade task that the booking belongs to
+     * @return
+     */
     private Conflict conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
         System.out.println("Creating Conflict");
@@ -229,11 +295,10 @@ public class BookingLogic {
         return conflict;
     }
 
-    private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {
-        //Booking newBooking = new Booking(bookingStartDate, bookingEndDate, (Equipment) bookedResource, bladeTask, resourceOrder.getResourceType());
-        //bookingRepository.save(newBooking);
-    }
-
+    /**
+     * Removes all bookings (and their conflicts) that belong to a bladetask
+     * @param bladeTaskToUpdate The bladetask that the bookings belong to
+     */
     public void removeBookingsBladeTask(BladeTask bladeTaskToUpdate) {
         //Finds the bladetasks bookings
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
@@ -243,6 +308,10 @@ public class BookingLogic {
         bookingRepository.deleteAll(bookings);
     }
 
+    /**
+     * Removes all bookings that belong to a blade project
+     * @param BPId The id of the blade project that the bookings belong to
+     */
     public void removeBookingsBladeProject(Long BPId) {
         //Finds the Blade Project
         List<Booking> bookings = bookingRepository.findBookingsByBPId(BPId);
@@ -250,6 +319,12 @@ public class BookingLogic {
         //Deletes the bookings and their conflicts
         bookingRepository.deleteAll(bookings);
     }
+
+    /**
+     * Deletes all bookings on a bladetask and then recreates them
+     * @param bladeTask The bladetask that the bookings belong to
+     * @return The bladetask with the new bookings
+     */
     public BladeTask deleteAndRecreateBookings(BladeTask bladeTask) {
         //Deletes bookings on a bladetask and then recreates them
         removeBookingsBladeTask(bladeTask);
@@ -257,13 +332,21 @@ public class BookingLogic {
         return bladeTask;
     }
 
-    public void resetRelatedConflicts(BladeTask bladeTaskToUpdate) {
-        bladeTaskToUpdate.setRelatedConflicts(new HashSet<>());
+    /**
+     * Deletes all conflicts that are related to the blade task
+     * @param bladeTask The blade task that the conflicts are related to
+     */
+    public void resetRelatedConflicts(BladeTask bladeTask) {
+        bladeTask.setRelatedConflicts(new HashSet<>());
     }
 
-    public void recalculateConflicts(BladeTask bladeTaskToUpdate) {
+    /**
+     * This method recalculates the conflicts of a bladetask to make sure that the conflicts are up to date
+     * @param bladeTask The bladetask that the conflicts are related to
+     */
+    public void recalculateConflicts(BladeTask bladeTask) {
         //Finds all bookings that overlaps with the bladetask in regard to dates
-        List<Booking> bookings = bookingRepository.findAllByPeriod(bladeTaskToUpdate.getStartDate(), bladeTaskToUpdate.getEndDate());
+        List<Booking> bookings = bookingRepository.findAllByPeriod(bladeTask.getStartDate(), bladeTask.getEndDate());
         //Removes the conflicts from the fetched bookings
         conflictLogic.removeConflicts(bookings);
 
@@ -275,6 +358,12 @@ public class BookingLogic {
         }
     }
 
+    /**
+     * This method updates the start and end date of all bookings that belong to a blade project
+     * @param bladeProject The blade project that the bookings belong to
+     * @param startDate The new start date of the bookings
+     * @param endDate The new end date of the bookings
+     */
     public void updateBookings(BladeProject bladeProject, LocalDate startDate, LocalDate endDate){
         List<Booking> bookings = bladeProject.getBookings();
         for (Booking booking: bookings) {
@@ -284,10 +373,19 @@ public class BookingLogic {
         }
     }
 
+    /**
+     * This method finds a booking based on its id
+     * @param id The id of the booking
+     * @return The booking with the given id
+     */
     public List<Booking> getBookingById(Long id){
         return bookingRepository.findBookingsByBPId(id);
     }
 
+    /**
+     * This method finds all bookings in the database
+     * @return A list of all bookings in the database
+     */
     public List<Booking> findAll(){
         return bookingRepository.findAll();
     }
