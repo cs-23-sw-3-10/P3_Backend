@@ -81,6 +81,10 @@ public class BladeTask implements Cloneable {
         return bladeProject;
     }
 
+    /**
+     * This method copies the current BladeTask and all its associated entities
+     * @return A cloned BladeTask with all its associated entities
+     */
     @Override
     public BladeTask clone() throws CloneNotSupportedException {
         BladeTask cloned = (BladeTask) super.clone();

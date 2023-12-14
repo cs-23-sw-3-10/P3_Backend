@@ -43,6 +43,7 @@ public class BladeProject implements Cloneable {
     @ManyToOne
     @JoinColumn(name = "scheduleId")
     @Getter(AccessLevel.NONE) Schedule schedule; //Ensures getter will not get stuck in endless recursive loop
+
     public BladeProject(Schedule schedule, String projectName, String customer, String projectLeader, String color) {
         setSchedule(schedule);
         setProjectName(projectName);
@@ -60,6 +61,12 @@ public class BladeProject implements Cloneable {
         BladeProject.bladeProjectList = bladeProjectList;
     }
 
+    /**
+     * This method copies the current BladeProject and all its associated entities
+     * and links them to the passed schedule
+     * @param newSchedule The schedule to associate the cloned BladeProject with
+     * @return A cloned BladeProject with all its associated entities
+     */
     public BladeProject cloneWithSchedule(Schedule newSchedule) {
         try {
             BladeProject cloned = (BladeProject) super.clone();

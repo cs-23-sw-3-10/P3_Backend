@@ -43,11 +43,19 @@ public class ResourceOrder implements Cloneable {
     @Getter(AccessLevel.NONE) BladeProject bladeProject; //Ensures getter of will not get stuck in endless recursive loop
 
 
-    public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer integer, BladeTask newBladeTask) {
+    /**
+     * This constructor is used for creating a resource order for a blade task
+     * @param type Type of resource
+     * @param resourceName Name of resource
+     * @param booleans List of booleans indicating if the resource is assigned to the attachment or detach period
+     * @param integer Number of work hours
+     * @param bladeTask Blade task the resource order is for
+     */
+    public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer integer, BladeTask bladeTask) {
         this.resourceType = type.toLowerCase();
         this.resourceName = resourceName.toLowerCase();
         this.workHours = integer;
-        this.bladeTask = newBladeTask;
+        this.bladeTask = bladeTask;
         //Fills up remaining list with false, if booleans.size() < 2(The expected size)
         if (booleans.size() < 2) {
             booleans.addAll(Collections.nCopies(2 - booleans.size(), false));
@@ -55,6 +63,14 @@ public class ResourceOrder implements Cloneable {
         this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 2));
     }
 
+    /**
+     * This constructor is used for creating a resource order for a blade project
+     * @param type Type of resource
+     * @param resourceName Name of resource
+     * @param booleans //Not used
+     * @param workHours Number of work hours
+     * @param BladeProject Blade project the resource order is for
+     */
     public ResourceOrder(String type, String resourceName, List<Boolean> booleans, Integer workHours, BladeProject BladeProject) {
         this.resourceType = type.toLowerCase();
         this.resourceName = resourceName.toLowerCase();
@@ -68,6 +84,11 @@ public class ResourceOrder implements Cloneable {
         this.equipmentAssignmentStatus = new ArrayList<>(booleans.subList(0, 2));
     }
 
+    /**
+     * This method is used to clone a resource order
+     * @return Cloned resource order
+     * @throws CloneNotSupportedException
+     */
     @Override
     public ResourceOrder clone() throws CloneNotSupportedException {
         ResourceOrder cloned = (ResourceOrder) super.clone();

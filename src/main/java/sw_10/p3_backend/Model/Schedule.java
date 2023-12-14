@@ -24,6 +24,12 @@ public class Schedule implements Cloneable {
     private List<BladeProject> bladeProject = new ArrayList<>();
 
 
+    /**
+     * Deep clone of Schedule
+     * @param isActive - if true, then the cloned schedule will be active, else inactive
+     * @return cloned Schedule
+     * @throws CloneNotSupportedException
+     */
     public Object clone(boolean isActive) throws CloneNotSupportedException {
         Schedule clonedSchedule = (Schedule) super.clone();
 

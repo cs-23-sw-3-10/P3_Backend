@@ -43,14 +43,21 @@ public class Conflict implements Cloneable{
     @ManyToMany
     Set<BladeTask> relatedBladeTasks;
 
+    /**
+     * Constructor for conflict of type Equipment
+     * @param booking Booking that caused the conflict
+     * @param bladeTask Blade task that the booking was for
+     * @param hashedBladeTasks Blade tasks that has bookings of the same equipment in the same period
+     */
     public Conflict(Booking booking, BladeTask bladeTask, Set<BladeTask> hashedBladeTasks) {
         setType(booking.getResourceType());
         setBooking(booking);
-
+        //Create start of error message
         String errorMessage = "Conflict! \n" +
                                 "Booking of equipment: " + booking.getResourceName() + " in period " + booking.getStartDate() + " - " + booking.getEndDate() + " for " + bladeTask.getTaskName() + " was not possible due to lack of resources.\n" +
                                 "Bladetasks: ";
         boolean first = true;
+        //Add all bladetasks that has bookings of the same equipment in the same period to the error message
         for (BladeTask hashedBladeTask : hashedBladeTasks) {
             if(!first){
                 errorMessage += ", ";
@@ -58,6 +65,7 @@ public class Conflict implements Cloneable{
             errorMessage += hashedBladeTask.getTaskName();
             first = false;
         }
+        //Add end of error message
         errorMessage += " has bookings of this equipment in this period.";
 
         System.out.println(errorMessage);
@@ -66,6 +74,12 @@ public class Conflict implements Cloneable{
     }
 
 
+    /**
+     * Method for cloning a conflict
+     * @param clonedbooking Booking that the new conflict is for
+     * @return Cloned conflict
+     * @throws CloneNotSupportedException
+     */
     public Conflict clone(Booking clonedbooking) throws CloneNotSupportedException {
         Conflict cloned = (Conflict) super.clone();
 
