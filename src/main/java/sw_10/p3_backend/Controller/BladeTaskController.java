@@ -78,12 +78,6 @@ public class BladeTaskController {
         return bladeTaskLogic.findConflictsForBladeTask(id,isActive);
     }
 
-/*    @PreAuthorize("isAuthenticated()")
-    @MutationMapping
-    public String deleteBladeTask(@Argument Integer id){
-        return bladeTaskLogic.deleteTask(id);
-    }*/
-
     /**
      * Creates a new blade task
      * @param bladeTask contains all the information needed to create a new blade task

@@ -60,17 +60,7 @@ public class BladeTaskLogic {
         conflictLogic.setBladeTaskLogic(this);
     } //Sets
 
-    public String deleteTask(Integer id) {
-        try {
-            bladeTaskRepository.deleteById(id.longValue());
-            return "BT deleted";
-        } catch (Exception e) {
-            return "Error deleting BT" + e;
-        }
-    }
-
     //TODO: add validation of equipmentAssignmentStatus of resource orders "Must be consecutive" or add logic to handle this e.g. multiple bookings pr resource order
-
     /**
      * Creates a new BladeTask from the provided BladeTaskInput object
      * @param input The BladeTaskInput object containing the data for the new BladeTask

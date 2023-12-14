@@ -14,10 +14,6 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking,Long> {
 
-        @Query("SELECT e FROM Equipment e WHERE e.type = :type AND e NOT IN " +
-                "(SELECT b.equipment FROM Booking b WHERE b.startDate < :end AND b.endDate > :start)")
-        List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String type);
-
         /**
          * This query fetches all bookings that belong to a certain blade task
          * @param bladeTaskToUpdate

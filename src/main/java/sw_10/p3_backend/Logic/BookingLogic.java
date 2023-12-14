@@ -295,11 +295,6 @@ public class BookingLogic {
         return conflict;
     }
 
-    private void createAndSaveBooking(LocalDate bookingStartDate, LocalDate bookingEndDate, BladeTask bladeTask, Object bookedResource) {
-        //Booking newBooking = new Booking(bookingStartDate, bookingEndDate, (Equipment) bookedResource, bladeTask, resourceOrder.getResourceType());
-        //bookingRepository.save(newBooking);
-    }
-
     /**
      * Removes all bookings (and their conflicts) that belong to a bladetask
      * @param bladeTaskToUpdate The bladetask that the bookings belong to

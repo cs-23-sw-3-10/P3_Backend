@@ -34,14 +34,6 @@ public class ConflictLogic {
     }
 
     /**
-     * Finds all conflicts in the database
-     * @return A list of all conflicts in the database
-     */
-    public List<Conflict> allConflicts() {
-        return conflictRepository.findAll();
-    }
-
-    /**
      * This method creates a conflict and finds all related bladetasks
      * @param booking The booking that is in conflict
      * @param bladeTask The blade task that the booking belongs to
