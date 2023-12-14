@@ -130,10 +130,10 @@ public class BladeTaskController {
 
     /**
      * Subscribes to all blade tasks that overlaps with the passed period and is in the schedule that you want
-     * @param startDate
-     * @param endDate
-     * @param isActive
-     * @return
+     * @param startDate start of the overlap period
+     * @param endDate end of the overlap period
+     * @param isActive determines which schedule you fetch from
+     * @return all blade tasks that overlaps with the passed period and is in the chosen schedule
      */
     @SubscriptionMapping
     public Flux<List<BladeTask>> AllBladeTasksInRangeSub(@Argument String startDate, @Argument String endDate, @Argument boolean isActive) {
