@@ -21,8 +21,8 @@ public interface BladeTaskRepository extends JpaRepository<BladeTask,Long> {
      * @return all blade tasks that overlap with the passed period and belongs to the passed schedule
      */
     @Query("SELECT bt FROM BladeTask bt WHERE (bt.bladeProject.schedule.isActive = :isActive) " +
-            "AND ((bt.startDate > :start AND bt.startDate < :end) " +
-            "OR (bt.endDate > :start AND bt.endDate < :end))")
+            "AND (((bt.startDate > :start AND bt.startDate < :end) " +
+            "OR (bt.endDate > :start AND bt.endDate < :end)) OR (bt.startDate < :start AND bt.endDate > :start))")
     List<BladeTask> bladeTasksInRange(LocalDate start, LocalDate end, boolean isActive);
 
 
