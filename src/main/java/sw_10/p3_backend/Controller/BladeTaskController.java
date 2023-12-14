@@ -127,9 +127,9 @@ public class BladeTaskController {
         return "BladeTask with id: " + id;
     }
 
-    //TODO have Seb write this
+
     /**
-     *
+     * Subscribes to all blade tasks that overlaps with the passed period and is in the schedule that you want
      * @param startDate
      * @param endDate
      * @param isActive
@@ -141,15 +141,14 @@ public class BladeTaskController {
         return bladeTaskLogic.bladeTasksInRangeSub(startDate, endDate, isActive);
     }
 
-    //TODO have Seb write this
+
     /**
-     *
-     * @param isActive
-     * @return
+     * Subscribes to all blade tasks that are pending and in the schedule that you want to fetch from (view or edit)
+     * @param isActive determines which schedule you fetch from
+     * @return all blade tasks that are pending and in the chosen schedule
      */
     @SubscriptionMapping
     public Flux<List<BladeTask>> AllBladeTasksPendingSub(@Argument boolean isActive) {
-        System.out.println("bladeTasksPendingSub");
         return bladeTaskLogic.bladeTasksPendingSub(isActive);
     }
 

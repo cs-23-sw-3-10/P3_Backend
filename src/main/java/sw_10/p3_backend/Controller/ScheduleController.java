@@ -31,7 +31,7 @@ public class ScheduleController {
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
-        return scheduleLogic.cloneScheduleAndReplace();
+        return scheduleLogic.cloneAndReplaceSchedule(true);
     }
 
     /**
@@ -42,7 +42,7 @@ public class ScheduleController {
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Schedule discardEditChanges() throws CloneNotSupportedException {
-        return scheduleLogic.discardEditChanges();
+        return scheduleLogic.cloneAndReplaceSchedule(false);
     }
 
     /**

@@ -247,7 +247,6 @@ public class BookingLogic {
         engineerLogic.updateEngineer(engineer, resourceOrder.getWorkHours());
     }
 
-    //TODO: ultra stupid logic for finding start and end date of booking refactor plox
     /**
      * Finds the start date of a booking based on the equipmentAssignmentStatus of a resource order
      * @param resourceOrder The resource order that the booking is based on

@@ -141,8 +141,6 @@ public class BladeTaskControllerIntTest {
         //Arrange
         authentication = tokenLogic.authenticate("user", "password");
 
-        BladeTask bladeTask = bladeTaskRepository.getBladeTaskById(1);
-
         String token = tokenLogic.generateToken(authentication);
         String query = String.format("""
                 mutation updateBTInfo {
@@ -181,8 +179,6 @@ public class BladeTaskControllerIntTest {
     public void testUpdateStartAndDurationBladeTaskSetTestRig0ShouldReturnBladeTaskWithDatesNull(){
         //Arrange
         authentication = tokenLogic.authenticate("user", "password");
-
-        BladeTask bladeTask = bladeTaskRepository.getBladeTaskById(1);
 
         String token = tokenLogic.generateToken(authentication);
         String query = String.format("""
