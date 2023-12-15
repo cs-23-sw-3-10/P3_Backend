@@ -126,7 +126,6 @@ public class TechnicianLogic {
                     throw new InputInvalidException("Cannot delete technician with assigned BladeTasks. Currently assigned " + resourceOrders.size() + " blade tasks");
 
                 }
-                // TODO ressourceoOrders check efter type
                 // Deletes the technician
                 technicianRepository.delete(technician);
                 return technician;

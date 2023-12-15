@@ -15,27 +15,26 @@ public class ScheduleLogic {
     private final BladeTaskLogic bladeTaskLogic;
 
 
-    ScheduleLogic(ScheduleRepository scheduleRepository , BladeTaskLogic bladeTaskLogic){
+    ScheduleLogic(ScheduleRepository scheduleRepository, BladeTaskLogic bladeTaskLogic) {
         this.scheduleRepository = scheduleRepository;
         this.bladeTaskLogic = bladeTaskLogic;
 
     }
 
     /**
-     *
      * @param id
      * @return
      */
     public Schedule ScheduleById(Integer id) {
         try {
-             Optional<Schedule> schedule = scheduleRepository.findById(Long.valueOf(id));
+            Optional<Schedule> schedule = scheduleRepository.findById(Long.valueOf(id));
             if (schedule.isEmpty()) {
                 throw new NotFoundException("No schedule found with id: " + id);
             }
             return schedule.get();
-        } catch (NotFoundException  e) {
+        } catch (NotFoundException e) {
             throw new NotFoundException(e.getMessage());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Cannot parse null");
         } catch (Exception e) {
             throw new RuntimeException("Error getting Schedule");
@@ -45,48 +44,16 @@ public class ScheduleLogic {
 
     /**
      * This method finds both schedules
+     *
      * @return a list of both schedules
      */
-    public List<Schedule> findAll(){
+    public List<Schedule> findAll() {
         return scheduleRepository.findAll();
     }
 
     /**
-     * This methode clones and replaces the view schedule with a copy of the edit schedule
-     * @return the new view schedule
-     * @throws CloneNotSupportedException
-     */
-    public Schedule cloneScheduleAndReplace() throws CloneNotSupportedException {
-
-        //Find editable schedule (active)
-        Schedule CurrentEditschedule = scheduleRepository.findScheduleByIsActive(false);
-        Schedule CurrentViewSchedule = scheduleRepository.findScheduleByIsActive(true);
-
-        //clone active schedule
-        Schedule newViewSchedule = (Schedule) CurrentEditschedule.clone(true);
-
-        //set the new schedule to viewable (not active)
-        newViewSchedule.setActive(true);
-
-        //TODO: Not secure. If something goes wrong is the old schedule lost and the new one is not saved.
-        //save the new schedule (will be the new view only schedule) and delete the old one.
-        System.out.println(CurrentViewSchedule);
-        if(CurrentViewSchedule != null) {
-            scheduleRepository.delete(CurrentViewSchedule);
-            System.out.println("Deleted");
-        }
-
-        //Saves the new view schedule
-        scheduleRepository.save(newViewSchedule);
-
-        //Sends the updated schedule to the front end
-        bladeTaskLogic.onDatabaseUpdate();
-        return newViewSchedule;
-
-    }
-
-    /**
      * This method deletes the schedule with a certain id
+     *
      * @param id
      * @return the deleted schedule
      */
@@ -98,31 +65,32 @@ public class ScheduleLogic {
     }
 
     /**
-     * This method replaces the edit schedule with a copy of the view schedule
-     * @return the new edit schedule
+     * This method replaces a schedule based on the isActive boolean passed to the method and returns the
+     *
+     * @return the updated schedule
      * @throws CloneNotSupportedException
      */
-    public Schedule discardEditChanges()  throws CloneNotSupportedException {
+    public Schedule cloneAndReplaceSchedule(boolean isActive) throws CloneNotSupportedException {
 
-        //Find editable schedule (active)
-        Schedule CurrentEditschedule = scheduleRepository.findScheduleByIsActive(false);
-        Schedule CurrentViewSchedule = scheduleRepository.findScheduleByIsActive(true);
+        //Find the schedules to clone from and to clone to (view and edit) based on the isActive boolean
+        Schedule ScheduleToUpdate = scheduleRepository.findScheduleByIsActive(isActive);
+        Schedule ScheduleToClone = scheduleRepository.findScheduleByIsActive(!isActive);
 
-        //delete editable schedule
-        scheduleRepository.delete(CurrentEditschedule);
+        //deletes the schedule to update
+        scheduleRepository.delete(ScheduleToUpdate);
 
-        //set the viewable schedule to editable
-        Schedule newEditSchedule = (Schedule) CurrentViewSchedule.clone(false);
+        //Clones the schedule to from the schedule to clone
+        Schedule UpdatedSchedule = (Schedule) ScheduleToClone.clone(isActive);
 
-        newEditSchedule.setActive(false);
+        //Sets the new schedule to active or not active based on the isActive boolean
+        UpdatedSchedule.setActive(isActive);
 
-        //save the new schedule (will be the new view only schedule) and delete the old one.
-        scheduleRepository.save(newEditSchedule);
+        //save the updated schedule
+        scheduleRepository.save(UpdatedSchedule);
 
-        //TODO SEB SKRIV KOMMENTARER TIL DET HER!!!!
+        //Sends the updated schedule to the front end
+        bladeTaskLogic.onDatabaseUpdate();
 
-        cloneScheduleAndReplace();
-
-        return newEditSchedule;
+        return UpdatedSchedule;
     }
 }

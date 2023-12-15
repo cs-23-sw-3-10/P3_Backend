@@ -417,9 +417,11 @@ public class BladeTaskLogic {
     }
 
 
-    //TODO: Få Seb til at skrive den her
+
     /**
-     *
+     * Finds all blade tasks in the database that are pending and creates a Flux stream to emit the list
+     * of blade tasks in a given range to subscribers whenever an update occurs. Updates are handle using
+     * onDatabaseUpdate whenever this is called in the code blade tasks will be emitted to subscribers.
      * @param startDate
      * @param endDate
      * @param isActive
@@ -431,9 +433,11 @@ public class BladeTaskLogic {
         //The call to the repository is the supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
     }
 
-    //TODO: Få Seb til at skrive den her
+
     /**
-     *
+     * Finds all blade tasks in the database that are pending and creates a Flux stream to emit the list
+     * of blade tasks pending to subscribers whenever an update occurs. Updates are handle using
+     *      * onDatabaseUpdate whenever this is called in the code blade tasks will be emitted to subscribers.
      * @param isActive
      * @return
      */
@@ -442,11 +446,12 @@ public class BladeTaskLogic {
         return createFlux(() -> bladeTaskRepository.bladeTasksPending(isActive));
     }
 
-    //TODO: Få Seb til at skrive den her
+
     /**
-     *
-     * @param supplier
-     * @return
+     * This method creates a Flux stream based on a supplier. The supplier provides the actual data (list of BladeTasks)
+     * to be emitted by the Flux. The Flux stream is shared to keep it active.
+     * @param supplier The supplier that provides the actual data (list of BladeTasks) to be emitted by the Flux.
+     * @return A Flux stream that emits the list of BladeTasks provided by the supplier.
      */
     private Flux<List<BladeTask>> createFlux(Supplier<List<BladeTask>> supplier) {
         // Generalization of the creation of the Flux stream based on a supplier.
