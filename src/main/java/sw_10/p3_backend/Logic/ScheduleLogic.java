@@ -59,7 +59,6 @@ public class ScheduleLogic {
      */
     public Schedule deleteSchedule(Integer id) {
         Schedule schedule = scheduleRepository.findById(Long.valueOf(id)).orElseThrow(() -> new NotFoundException("Schedule with id " + id + " not found"));
-        System.out.println("deleteSchedule");
         scheduleRepository.deleteById(Long.valueOf(id));
         return schedule;
     }

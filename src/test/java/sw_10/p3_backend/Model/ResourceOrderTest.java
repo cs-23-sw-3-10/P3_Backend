@@ -47,8 +47,6 @@ public class ResourceOrderTest {
         resourceOrder.setWorkHours(10);
         resourceOrder.setBladeTask(new BladeTask());
 
-        System.out.println(resourceOrder.getEquipmentAssignmentStatus());
-
         ResourceOrder clonedResourceOrder = resourceOrder.clone();
 
         assertNotSame(resourceOrder, clonedResourceOrder);

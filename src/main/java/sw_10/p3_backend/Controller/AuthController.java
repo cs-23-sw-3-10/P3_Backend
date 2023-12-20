@@ -32,16 +32,12 @@ public class AuthController {
      */
     @PostMapping("/authenticate")
     public  ResponseEntity<String> authenticate(@RequestBody AuthRequest authRequest) {
-        System.out.println("Authenticating");
         try {
             //Authenticate and return an Authentication object
             Authentication authentication = tokenLogic.authenticate(authRequest.username(), authRequest.password());
 
-            System.out.println("past authenticate");
-
             //Generate a token from the Authentication object
             String token = tokenLogic.generateToken(authentication);
-            System.out.println("Token: " + token);
             return ResponseEntity.ok(token); // Return the bearer token with an OK status
         } catch (AuthenticationException e) {
             // Handle authentication failure
@@ -49,7 +45,7 @@ public class AuthController {
         }
         catch (Exception e) {
             // Handle any other errors
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error: " + e.getMessage());
         }
     }
 

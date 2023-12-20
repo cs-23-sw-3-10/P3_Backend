@@ -56,7 +56,6 @@ public class EquipmentLogic {
             //Checks if the equipment exists, if it does, update it, otherwise create a new equipment
             if (equipment != null) {
                 equipment.setCalibrationExpirationDate(LocalDate.parse(calibrationExpirationDate));
-                System.out.println("Equipment updated");
                 return equipmentRepository.save(equipment);
             }
             Equipment newEquipment = new Equipment();
@@ -77,9 +76,6 @@ public class EquipmentLogic {
      * @return the list of equipment that does not have a booking in the given time period
      */
     public List<Equipment> findAvailableEquipment(LocalDate start, LocalDate end, String ResourceName) {
-        System.out.println("ResourceName: " + ResourceName);
-        System.out.println("Start: " + start);
-        System.out.println("End: " + end);
         return equipmentRepository.findAvailableEquipment(start, end, ResourceName);
     }
 
@@ -112,15 +108,12 @@ public class EquipmentLogic {
         return equipmentRepository.getEquipmentTypes();
     }
 
-    //TODO Ideally we would check if the equipment is in use, if so, then we would check if there's enough equipment to cover the BT and then delete the equipment.
-
     /**
      * This method deletes an equipment by its name if it does not have any bookings
      * @param name the name of the equipment you wish to delete
      * @return the equipment that was deleted
      */
     public Equipment deleteEquipment(String name) {
-        System.out.println(name);
         try {
             //Finds the equipment by name if it exists
             Equipment equipment = equipmentRepository.findByName(name);

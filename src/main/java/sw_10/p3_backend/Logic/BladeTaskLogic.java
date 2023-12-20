@@ -60,14 +60,12 @@ public class BladeTaskLogic {
         conflictLogic.setBladeTaskLogic(this);
     } //Sets
 
-    //TODO: add validation of equipmentAssignmentStatus of resource orders "Must be consecutive" or add logic to handle this e.g. multiple bookings pr resource order
     /**
      * Creates a new BladeTask from the provided BladeTaskInput object
      * @param input The BladeTaskInput object containing the data for the new BladeTask
      * @return The newly created BladeTask
      */
     public BladeTask createBladeTask(BladeTaskInput input) {
-        System.out.println(input.startDate());
         // Validate input here (e.g., check for mandatory fields other than startDate and testRig)
         validateBladeTaskInput(input);
 
@@ -76,7 +74,6 @@ public class BladeTaskLogic {
         Integer totalDuration = input.duration() + input.attachPeriod() + input.detachPeriod();
 
         if(input.testRig()==0 ) {
-            System.out.println("Testrig creating BT with no start or end date");
 
             // Create a new BladeTask instance
             BladeTask newBladeTask = new BladeTask(
@@ -111,8 +108,6 @@ public class BladeTaskLogic {
 
         int testRigValue = Optional.ofNullable(input.testRig()).orElse(noTestRigAssignedValue);
 
-        if(testRigValue == 0)
-            System.out.println("Testrig is 0");
 
         // Create a new BladeTask instance
         BladeTask newBladeTask = new BladeTask(
@@ -264,16 +259,13 @@ public class BladeTaskLogic {
 
         //Remove old bookings
         bookingLogic.removeBookingsBladeTask(bladeTaskToUpdate);
-        System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
         Set<Conflict> relatedConflicts = bladeTaskToUpdate.getRelatedConflicts();
         Set<BladeTask> relatedBladeTasks = new HashSet<>();
-        System.out.println("Lists created");
 
         //Removes the old relations on the bladetask that is being updated. This makes it possible to save the bladetask later
         bookingLogic.resetRelatedConflicts(bladeTaskToUpdate);
-        System.out.println("Related conflicts reset");
 
         //run through all the related conflicts to find the related bladetasks
         for (Conflict relatedConflict : relatedConflicts) {
@@ -304,27 +296,19 @@ public class BladeTaskLogic {
         //Set testrig to 0 if none is provided
         int noTestRigAssignedValue = 0;
         int testRigValue = Optional.of(bladeTaskToUpdate.getTestRig()).orElse(noTestRigAssignedValue);
-        System.out.println(testRigValue);
-        System.out.println("Number of resource orders: " + bladeTaskToUpdate.getResourceOrders().size());
 
-
-        System.out.println("Just before saving bladetask");
-        System.out.println(bladeTaskToUpdate);
 
         // Save the new BladeTask in the database. This creates problems, if you do not reset the relatedConflicts after deleting them
         bladeTaskRepository.save(bladeTaskToUpdate);
-        System.out.println("BT saved");
 
         // Create bookings for the blade task if the blade task is assigned to a test rig and resource orders are provided
         if (testRigValue != 0 && bladeTaskToUpdate.getResourceOrders() != null) {
-            System.out.println("Creating bookings");
             bookingLogic.createBookings(bladeTaskToUpdate.getResourceOrders(), bladeTaskToUpdate);
         }
 
         //Checks if the start date and end date of the bladeproject should change and then saves the bladetask
         bladeProjectLogic.updateStartAndEndDate(bladeTaskToUpdate.getBladeProject());
         bladeTaskRepository.save(bladeTaskToUpdate);
-        System.out.println(testRigValue);
 
         //Ensures that older conflicts are updated with the related bladetasks
         bookingLogic.recalculateConflicts(bladeTaskToUpdate);
@@ -486,8 +470,6 @@ public class BladeTaskLogic {
     }
 
 
-    //TODO: Find a better way to do this?
-
     /**
      * Finds all blade tasks that has a booking of a resource with the provided name in the provided period
      * @param equipmentName The name of the resource to find blade tasks for
@@ -496,7 +478,6 @@ public class BladeTaskLogic {
      * @return A list of all blade tasks that has a booking of a resource with the provided name in the provided period
      */
     public List<BladeTask> getRelatedBladeTasksByEquipmentType(String equipmentName, LocalDate startDate, LocalDate endDate) {
-        System.out.println("Getting relevant bookings");
         List<Booking> bookings = bookingRepository.findBookedEquipmentByTypeAndPeriod(equipmentName, startDate, endDate);
 
         List<BladeTask> bladeTasks = new ArrayList<>();
@@ -548,16 +529,13 @@ public class BladeTaskLogic {
 
         //Remove old bookings
         bookingLogic.removeBookingsBladeTask(bladeTaskToDelete);
-        System.out.println("Bookings deleted");
 
         //Finding all the related conflicts
         Set<Conflict> relatedConflicts = bladeTaskToDelete.getRelatedConflicts();
         Set<BladeTask> relatedBladeTasks = new HashSet<>();
-        System.out.println("Lists created");
 
         //Removes the old relations on the bladetask that is being updated. This makes it possible to save the bladetask later
         bookingLogic.resetRelatedConflicts(bladeTaskToDelete);
-        System.out.println("Related conflicts reset");
 
         //run through all the related conflicts to find the related bladetasks
         for (Conflict relatedConflict : relatedConflicts) {

@@ -64,9 +64,6 @@ public class BladeProjectController {
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public BladeProject createBladeProject(@Argument String name, @Argument String customer, @Argument String projectLeader, @Argument List<ResourceOrderInput> resourceOrders) {
-        System.out.println("REQUEST RECEIVED");
-        System.out.println(name);
-        System.out.println(resourceOrders);
         return bladeProjectLogic.createProject(name, customer, projectLeader, resourceOrders);
     }
 
