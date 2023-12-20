@@ -73,11 +73,8 @@ class BookingRepositoryTest {
         Booking booking2 = new Booking(LocalDate.of(2020,10,20), LocalDate.of(2020,10,30), e1, bladeTask, e1.getType(), e1.getName());
         Booking booking3 = new Booking(LocalDate.of(2020,10,1), LocalDate.of(2020,10,30), e2, bladeTask, e2.getType(), e2.getName());
 
-        System.out.println("look here" + booking1.fetchBladeTask());
-
         Schedule test33 = scheduleRepository.findScheduleByIsActive(false);
 
-        System.out.println(test33);
         // Save bookings to the repository
 
         bookingRepository.save(booking1);
@@ -89,10 +86,6 @@ class BookingRepositoryTest {
         // Check for overlapping events for same type
         List<Booking> bookingsByTypeHammerAndPeriod = bookingRepository.findBookedEquipmentByTypeAndPeriod("hammer1", LocalDate.of(2020,10,1), LocalDate.of(2020,10,30));
         // Then
-
-        System.out.println(bookingsByTypeHammerAndPeriod);
-
-        System.out.println("BP tasks: " + bladeProject.getBladeTasks().size());
 
         assertThat(bookingsByTypeHammerAndPeriod).containsExactlyInAnyOrder(booking1, booking2);
         assertThat(bookingsByTypeHammerAndPeriod).hasSize(2);

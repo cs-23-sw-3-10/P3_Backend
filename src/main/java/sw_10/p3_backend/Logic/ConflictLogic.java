@@ -40,7 +40,6 @@ public class ConflictLogic {
      * @return The created conflict
      */
     public Conflict createConflict(Booking booking, BladeTask bladeTask) {
-        System.out.println("Getting related bladetasks");
 
         //Finds all bladetasks that are related to the conflict
         List<BladeTask> relatedBladeTasks = bladeTaskLogic.getRelatedBladeTasksByEquipmentType(booking.getResourceName(), booking.getStartDate(), booking.getEndDate());
@@ -52,7 +51,6 @@ public class ConflictLogic {
         return conflict;
     }
 
-    //TODO: Write log to update conflicts when bookings delete or changed (currently only deletes conflicts when associated booking is deleted)
     /**
      * This method finds all conflicts related to the bookings in the list and deletes them
      * @param bookings The bookings to delete conflicts for

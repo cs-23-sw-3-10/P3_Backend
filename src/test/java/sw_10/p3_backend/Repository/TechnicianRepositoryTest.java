@@ -30,8 +30,6 @@ class TechnicianRepositoryTest {
     @Test
     void testFindByIdShouldReturnTechnician(){
 
-        System.out.println("Number of techs" + technicianRepository.findAll());
-
         technicianRepository.save(new Technician(1,"smith", 20, 37, 3, null));
 
         assertThat(technicianRepository.findByType("smith").getType()).isEqualTo("smith");

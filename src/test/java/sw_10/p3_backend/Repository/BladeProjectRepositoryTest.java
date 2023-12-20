@@ -31,7 +31,6 @@ class BladeProjectRepositoryTest {
 
     @Test
     void findAllBladeProjectsShouldReturnAllBladeProjects() {
-        System.out.println("Number of BP" + bladeProjectRepository.findAll());
         // Add tests to interact with bladeProjectRepository
         bladeProjectRepository.save(new BladeProject());
         bladeProjectRepository.save(new BladeProject());

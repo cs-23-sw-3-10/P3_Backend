@@ -43,8 +43,6 @@ public class BladeProjectLogic {
      * @return The created BladeProject
      */
     public BladeProject createProject(String name, String customer, String projectLeader, List<ResourceOrderInput> resourceOrderInput) {
-            System.out.println("BP CREATION STARTED");
-            System.out.println(resourceOrderInput);
             Schedule schedule = scheduleRepository.findScheduleByIsActive(false); //Makes sure all new assigned projects are assigned to the draft schedule
             BladeProject project = new BladeProject(schedule, name, customer, projectLeader, generateRandomColorHexCode());
 

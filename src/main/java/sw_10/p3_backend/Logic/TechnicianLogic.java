@@ -66,7 +66,6 @@ public class TechnicianLogic {
                 //Update values
                 technician.setMaxWorkHours(maxWorkHours);
                 technician.setCount(count);
-                System.out.println("Technician updated");
                 technicianRepository.save(technician);
                 return technician;
             }
@@ -150,4 +149,3 @@ public class TechnicianLogic {
     }
 
 }
-

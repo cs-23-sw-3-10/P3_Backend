@@ -27,7 +27,6 @@ public class BookingLogic {
         this.conflictLogic = conflictLogic;
     }
 
-    //TODO: Currently does not handle amount and workhours of resource orders add this and optimize saving of bookings
 
     /**
      * Creates bookings based on the resource orders and the bladetask
@@ -46,19 +45,16 @@ public class BookingLogic {
             switch (resourceOrder.getResourceType().toLowerCase()){
                 case "equipment":
                 {
-                    System.out.println("Equipment booking");
                     tempconflictcheck += handleEquipmentBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
                 }
                 case "technician":
                 {
-                    System.out.println("Technician booking");
                     handleTechnicianBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
                 }
                 case "engineer":
                 {
-                    System.out.println("Engineer booking");
                     handleEngineerBooking(resourceOrder, bladeTask, bookingStartDate, bookingEndDate);
                     break;
                 }
@@ -79,7 +75,6 @@ public class BookingLogic {
     public void createBookings(List<ResourceOrder> resourceOrders, BladeProject bladeProject) {
         int tempconflictcheck = 0;
         for (ResourceOrder resourceOrder: resourceOrders) {
-            System.out.println("Creating bookings for" + resourceOrder);
 
             //When you create a booking, the start and end date of the project are null
             LocalDate bookingStartDate = bladeProject.getStartDate();
@@ -89,13 +84,11 @@ public class BookingLogic {
             switch (resourceOrder.getResourceType().toLowerCase()){
                 case "equipment":
                 {
-                    System.out.println("Equipment booking");
                     tempconflictcheck += handleEquipmentBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
                     break;
                 }
                 case "engineer":
                 {
-                    System.out.println("Engineer booking");
                     handleEngineerBooking(resourceOrder, bladeProject, bookingStartDate, bookingEndDate);
                     break;
                 }
@@ -107,7 +100,6 @@ public class BookingLogic {
     }
 
 
-    //TODO: Refactor the handlers for bookings to be more generic and remove duplicate code (maybe use a factory pattern)
     /**
      * Handles the creation of bookings with equipment for a blade task
      * @param resourceOrder The resource order that the booking is based on
@@ -118,17 +110,13 @@ public class BookingLogic {
      */
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeTask bladeTask, LocalDate bookingStartDate, LocalDate bookingEndDate) {
 
-        System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
         String equipmentName = resourceOrder.getResourceName().toLowerCase();
         List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, equipmentName);
-        System.out.println(freeEquipmentList);
-        System.out.println("Number of free equipment: " + freeEquipmentList.size());
 
 
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
-            System.out.println("Creating booking with equipment: " + freeEquipmentList.get(0).getName());
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeTask,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
             return 0;
@@ -155,17 +143,13 @@ public class BookingLogic {
      * @return 0 if no conflict was created, 1 if a conflict was created
      */
     private int handleEquipmentBooking(ResourceOrder resourceOrder, BladeProject bladeProject, LocalDate bookingStartDate, LocalDate bookingEndDate) {
-        System.out.printf("Booking start date: %s, Booking end date: %s  :%s\n ", bookingStartDate, bookingEndDate,resourceOrder.getResourceName());
         //Find available equipment
         String equipmentName = resourceOrder.getResourceName().toLowerCase();
         List<Equipment> freeEquipmentList = equipmentLogic.findAvailableEquipment(bookingStartDate, bookingEndDate, equipmentName);
-        System.out.println(freeEquipmentList);
-        System.out.println("Number of free equipment: " + freeEquipmentList.size());
 
 
         if (!freeEquipmentList.isEmpty()){
             //If there is available equipment create a booking using the first available equipment
-            System.out.println("Creating booking with equipment: " + freeEquipmentList.get(0).getName());
             Booking newBooking = new Booking(bookingStartDate, bookingEndDate, freeEquipmentList.get(0), bladeProject,resourceOrder.getResourceType(), resourceOrder.getResourceName());
             bookingRepository.save(newBooking);
             bladeProject.getBookings().add(newBooking);
@@ -214,8 +198,6 @@ public class BookingLogic {
         //Create a new booking with the engineer
         Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeTask, resourceOrder.getResourceType(), resourceOrder.getResourceName());
 
-        System.out.println(newBooking);
-
         //Save the booking to the database
         bookingRepository.save(newBooking);
 
@@ -237,8 +219,6 @@ public class BookingLogic {
 
         //Create a new booking with the engineer
         Booking newBooking = new Booking(bookingStartDate, bookingEndDate, engineer, bladeProject, resourceOrder.getResourceType(), resourceOrder.getResourceName());
-
-        System.out.println(newBooking);
 
         //Save the booking to the database
         bookingRepository.save(newBooking);
@@ -288,7 +268,6 @@ public class BookingLogic {
      */
     private Conflict conflictHandler(Booking booking, BladeTask bladeTask){
         //call conflict logic that will handle the conflict and push it to the database
-        System.out.println("Creating Conflict");
         Conflict conflict = conflictLogic.createConflict(booking, bladeTask);
         bladeTask.setInConflict(true);
         return conflict;
@@ -301,7 +280,6 @@ public class BookingLogic {
     public void removeBookingsBladeTask(BladeTask bladeTaskToUpdate) {
         //Finds the bladetasks bookings
         List<Booking> bookings = bookingRepository.findByBladeTask(bladeTaskToUpdate);
-        System.out.println(bookings);
         //Deletes the bookings and their conflicts
         conflictLogic.removeConflicts(bookings);
         bookingRepository.deleteAll(bookings);

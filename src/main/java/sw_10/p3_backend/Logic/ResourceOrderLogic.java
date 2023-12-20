@@ -29,7 +29,6 @@ public class ResourceOrderLogic {
 
             int workHours = 0;
             //Validate resourceOrder have required fields
-            //TODO: Find better solution for this
             validateResourceOrder(resourceOrder);
 
             //Check is made since it can be either equipment or employee
@@ -127,4 +126,3 @@ public class ResourceOrderLogic {
         return resourceOrderRepository.findResourceOrderByBpId(id);
     }
 }
-

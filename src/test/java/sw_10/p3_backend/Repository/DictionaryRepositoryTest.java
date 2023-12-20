@@ -31,7 +31,6 @@ class DictionaryRepositoryTest {
 
     @Test
     void testFindAllDictionaryByCategoryShouldReturnListOfLabels(){
-        System.out.println("number of dics" + dictionaryRepository.findAll());
         dictionaryRepository.save(new Dictionary("testType","Stress test"));
         dictionaryRepository.save(new Dictionary("testType","Flap test"));
         dictionaryRepository.save(new Dictionary("technician","Carpenter"));

@@ -68,7 +68,6 @@ public class Conflict implements Cloneable{
         //Add end of error message
         errorMessage += " has bookings of this equipment in this period.";
 
-        System.out.println(errorMessage);
         setMessage(errorMessage);
         setRelatedBladeTasks(hashedBladeTasks);
     }
