@@ -1,9 +1,7 @@
 
 # Blade Test Management System
 
-A brief description of what this project does and who it's for
-
-
+The final product allows for dynamic planning by utilizing drag-and-drop functionality. Furthermore, the system automatically manages and monitors the allocation of test activities and equipment, while notifying conflicts.
 
 
 ## Installation
